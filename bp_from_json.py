@@ -32,6 +32,12 @@ class position():
         return "{{'x': {0}, 'y': {1}}}".format(self.data['x'],
                                                self.data['y'])
 
+    def read_x(self):
+        return self.data['x']
+
+    def read_y(self):
+        return self.data['y']
+
 
 #############################################
 class entity():
@@ -114,6 +120,16 @@ class entity():
         else:
             return None
 
+    def __eq__(self, other):
+        a = self.data.copy()
+        b = other.data.copy()
+        a['entity_number'] = 0
+        b['entity_number'] = 0
+        return a == b
+
+    def get_pos(self):
+        return position(self.data['position'])
+
 
 #############################################
 def print_id(s, a):
@@ -156,7 +172,7 @@ class dict_bp(dict):
     def __str__(self):
         s = str()
         for k, v in self.items():
-            s += '{} = {}\n'.format(k, v)
+            s += '"{}" = {}\n'.format(k, v)
         return s
 
 
@@ -292,53 +308,53 @@ class blueprint:
             return 'blueprint' in self.data
 
     def read_blueprints(self):
-        if 'blueprints' in self.obj:
-            return self.obj['blueprints']
-        else:
-            return list()
+        return self.obj.get('blueprints', list())
 
     def get_entities(self):
         return list(map(lambda x: entity(x), self.obj['entities']))
-        # return [entity(x) for x in self.obj['entities']]
+
+    def normalize_entities(self):
+        # position -= pos_min
+        x = list()
+        y = list()
+        entities = self.get_entities()
+        for e in entities:
+            x.append(e.get_pos().read_x())
+            y.append(e.get_pos().read_y())
+
+        pmin = position.new_position(min(x), min(y))
+        for e in entities:
+            e.get_pos().__isub__(pmin)
 
     def read_tiles(self):
-        if 'tiles' in self.obj:
-            return self.obj['tiles']
-        else:
-            return list()
+        return self.obj.get('tiles', list())
 
     def read_label(self):
-        if 'label' in self.obj:
-            return self.obj['label']
-        else:
-            return 'untitled'
+        return self.obj.get('label', 'untitled')
 
     def set_label(self, str):
         self.obj['label'] = str
 
     def read_description(self):
-        if 'description' in self.obj:
-            return self.obj['description']
-        else:
-            return 'description is missing'
+        return self.obj.get('description', 'description is missing')
 
     def set_description(self, str):
         self.obj['description'] = str
 
     def read_label_color(self):
-        if 'label_color' in self.obj:
-            return self.obj['label_color']
-        else:
-            return None
+        return self.obj.get('label_color', None)
 
     def set_label_color(self, r, g, b):
         self.obj['label_color'] = {"r": r, "g": g, "b": b}
 
     def read_icons(self):
-        if 'icons' in self.obj:
-            return self.obj['icons']
-        else:
-            return None
+        return self.obj.get('icons', None)
+
+    def read_schedules(self):
+        return self.obj.get('schedules', list())
+
+    def read_version(self):
+        return self.obj.get('version', '')
 
     def set_icons(self, index, icon_type, name):
         new_icon = {'signal': {'type': icon_type, 'name': name},
@@ -358,10 +374,86 @@ class blueprint:
     def read_item(self):
         return self.obj['item']
 
+    def __md5(self, data):
+        return hashlib.md5(json.dumps(data,
+                           sort_keys=True).encode('utf-8')).hexdigest()
+
     def get_md5(self):
-        data_md5 = hashlib.md5(json.dumps(self.data,
-                               sort_keys=True).encode('utf-8')).hexdigest()
-        return data_md5
+        return self.__md5(self.data)
+
+    def __compare_entities(self, bp, debug):
+        e1 = sorted(self.get_entities(),
+                    key=lambda a: (a.data['position']['x'],
+                                   a.data['position']['y']))
+        e2 = sorted(bp.get_entities(),
+                    key=lambda a: (a.data['position']['x'],
+                                   a.data['position']['y']))
+        if e1 == e2:
+            return True
+        else:
+            '''
+            print("len1={} len2={}".format(len(e1), len(e2)))
+            for i in range(len(e1)):
+                print(f"{i} ", e1[i].data)
+                print(f"{i} ", e2[i].data)
+            '''
+            return False
+
+    def __compare_bp_bp(self, bp, debug):
+        result = dict()
+        if debug:
+            print("blueprint vs bplueprint")
+        result['md5'] = self.get_md5() == bp.get_md5()
+        if result['md5'] and debug:
+            print('md5 are equal')
+        result['label'] = self.read_label() == bp.read_label()
+        if result['label'] and debug:
+            print('label are equal')
+        result['label_color'] = \
+            self.read_label_color() == bp.read_label_color()
+        if result['label_color'] and debug:
+            print('label_color are equal')
+        result['description'] = \
+            self.read_description() == bp.read_description()
+        if result['description'] and debug:
+            print('description are equal')
+        self.normalize_entities()
+        bp.normalize_entities()
+        result['entities'] = self.__compare_entities(bp, debug)
+        if result['entities'] and debug:
+            print('entities are equal')
+        result['tiles'] = self.read_tiles() == bp.read_tiles()
+        if result['tiles'] and debug:
+            print('tiles are equal')
+        result['icons'] = self.read_icons() == bp.read_icons()
+        if result['icons'] and debug:
+            print('icons are equal')
+        result['schedules'] = self.read_schedules() == bp.read_schedules()
+        if result['schedules'] and debug:
+            print('schedules are equal')
+        result['version'] = self.read_version() == bp.read_version()
+        if result['version'] and debug:
+            print('version are equal')
+        return [self.get_md5(), bp.get_md5(), result]
+
+    def __compare_bp_book(self, bp, debug):
+        result = list()
+        if debug:
+            print("blueprint vs book")
+        for b in bp.get_all_bp(onedimensional=True, blueprint_only=True):
+            result.append(self.__compare_bp_bp(b, debug))
+        return result
+
+    def compare(self, bp, debug=False):
+        if self.is_blueprint() and bp.is_blueprint():
+            return self.__compare_bp_bp(bp, debug)
+        elif self.is_blueprint_book() and bp.is_blueprint_book():
+            return {}
+        else:
+            if self.is_blueprint():
+                return self.__compare_bp_book(bp, debug)
+            else:
+                return bp.__compare_bp_book(self, debug)
 
 
 #############################################
@@ -400,6 +492,30 @@ if __name__ == "__main__":
     bp1 = blueprint.from_string(bp_txt)
     bp2 = blueprint.from_string(bp_book_txt)
     bp3 = blueprint.from_file('bp.txt')
+    bp4_txt = '0eNqdk9tugzAMht/F16RaoRxfZZqmABZYCwElabuq4t3n' +\
+              'gNSxLtqhl3bw5//H9hVqdcTJkHZQXYGaUVuonq9gqdNS+' +\
+              'Zy7TAgVkMMBItBy8JGRpGCOgHSL71Dt5+jXEmktDrUi3Y' +\
+              'lBNj1pFMkGEc8vEaB25AhXCUtwedXHoUbDPX4mRTCNlot' +\
+              'H7RUwsMySXRrBhSuTvNyl3MpgQ6syM2rRoTTi3CMqLvZa' +\
+              'ra+0E2IrhrE9KlyabhMi/p5KltRkOGocnVjy9mX2f+bOS' +\
+              'XxzYp1s3gRpi8bxS8BD+umhWDy0xC7WT7IAO3mMXd6z4w' +\
+              'D7cGOfx7FFLZoerQuRs6/kACvd6OQJ/AlVhFHZBsV72fV' +\
+              'OLOsZgJU3VSFQ/n9QERxw8QAomf0BLCdTbY4yAiVr3lDO' +\
+              'TXuOTmjsOqBif8jLOM+esqLIDvP8ASH5Owg='
+    bp4 = blueprint.from_string(bp4_txt)
+
+    print("bp1")
+    print(bp1.to_str())
+
+    print("bp2")
+    print(bp1.to_str())
+
+    print("bp3")
+    print(bp1.to_str())
+
+    print("bp4")
+    print(bp4.to_str())
+    print()
 
     print_id("bp1", bp1)
     print_id("bp2", bp2)
@@ -467,7 +583,48 @@ if __name__ == "__main__":
     e = entity.new_entity('locomotive', 70, 35)
     e.update_items({'nuclear-fuel': 3})
 
+    """
     print()
     print_id("", bp1.get_md5())
     print_id("", bp2.get_md5())
     print_id("", bp3.get_md5())
+    """
+
+    '''
+    print()
+    bps = bp2.get_all_bp(onedimensional=True, blueprint_only=True)
+    for a in bps:
+        print('****************************')
+        print(a.to_str())
+        print('****************************')
+        print()
+    '''
+
+    print('****************************')
+    print('print(bp1.compare(bp2))')
+    print(bp1.compare(bp2))
+
+    print('****************************')
+    print('print(bp4.compare(bp2))')
+    print(bp4.compare(bp2))
+
+    """
+    print()
+    bp4 = blueprint.from_string(bp_txt)
+    print(bp1.compare(bp4))
+    print()
+    bp4.set_label("1")
+    print(bp1.compare(bp4))
+    """
+
+    print('****************************')
+    print('print(bp1.compare(bp4))')
+    print(bp1.compare(bp4))
+
+    """
+    print('****************************')
+    for e in bp1.get_entities():
+        print(e.get_pos(), " ", e.data)
+    for e in bp4.get_entities():
+        print(e.get_pos(), " ", e.data)
+    """
