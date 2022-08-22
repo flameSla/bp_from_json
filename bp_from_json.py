@@ -219,10 +219,10 @@ class blueprint:
                                                             9)).decode('utf-8')
         return exchange_str
 
-    def _get_all_items_parse(self, bp, items):
+    def __get_all_items_parse(self, bp, items):
         if bp.is_blueprint_book():
             for b in bp.read_blueprints():
-                self._get_all_items_parse(blueprint(b), items)
+                self.__get_all_items_parse(blueprint(b), items)
         elif bp.is_blueprint():
             for entity in bp.get_entities():
                 if entity.read_name() == 'curved-rail':
@@ -235,29 +235,29 @@ class blueprint:
 
     def get_all_items(self):
         items = dict_bp()
-        self._get_all_items_parse(self, items)
+        self.__get_all_items_parse(self, items)
         return items
 
-    def _get_all_tiles_parse(self, bp, tiles):
+    def __get_all_tiles_parse(self, bp, tiles):
         if bp.is_blueprint_book():
             for b in bp.read_blueprints():
-                self._get_all_tiles_parse(blueprint(b), tiles)
+                self.__get_all_tiles_parse(blueprint(b), tiles)
         elif bp.is_blueprint():
             for t in bp.read_tiles():
                 tiles += {t['name']: 1}
 
     def get_all_tiles(self):
         tiles = dict_bp()
-        self._get_all_tiles_parse(self, tiles)
+        self.__get_all_tiles_parse(self, tiles)
         return tiles
 
-    def _get_all_bp_parse(self, bp, bps, current_directory):
+    def __get_all_bp_parse(self, bp, bps, current_directory):
         if bp.is_blueprint_book():
             md5 = bp.get_md5()
             current_directory += md5 + '\\'
             bps.append([bp, md5, current_directory])
             for b in bp.read_blueprints():
-                self._get_all_bp_parse(blueprint(b), bps, current_directory)
+                self.__get_all_bp_parse(blueprint(b), bps, current_directory)
         elif bp.is_blueprint():
             md5 = bp.get_md5()
             bps.append([bp, md5, current_directory])
@@ -266,7 +266,7 @@ class blueprint:
                    onedimensional=False,
                    blueprint_only=False):
         bps = list()
-        self._get_all_bp_parse(self, bps, '')
+        self.__get_all_bp_parse(self, bps, '')
 
         if onedimensional is False:
             return bps
