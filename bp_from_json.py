@@ -342,16 +342,16 @@ class blueprint:
     def set_icons(self, index, icon_type, name):
         new_icon = {'signal': {'type': icon_type, 'name': name},
                     'index': index}
-        if 'icons' in self.obj:
-            if index in [icon['index'] for icon in self.obj['icons']]:
-                for i in range(len(self.obj['icons'])):
-                    if self.obj['icons'][i]['index'] == index:
-                        self.obj['icons'][i] = new_icon
-                        break
+        if index >= 1 and index <= 4:
+            if 'icons' in self.obj:
+                if index in [icon['index'] for icon in self.obj['icons']]:
+                    for i in range(len(self.obj['icons'])):
+                        if self.obj['icons'][i]['index'] == index:
+                            self.obj['icons'][i] = new_icon
+                            break
+                else:
+                    self.obj['icons'].append(new_icon)
             else:
-                self.obj['icons'].append(new_icon)
-        else:
-            if index >= 1 and index <= 4:
                 self.obj['icons'] = [new_icon]
 
     def read_item(self):
