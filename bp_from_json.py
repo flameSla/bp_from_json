@@ -251,36 +251,33 @@ class blueprint:
         self._get_all_tiles_parse(self, tiles)
         return tiles
 
-    def _get_all_bp_parse(self, bp, bps, level):
-        level += 1
+    def _get_all_bp_parse(self, bp, bps, current_directory):
         if bp.is_blueprint_book():
-            if len(bps) < level + 1:
-                bps.append(list())
-            bps[level].append(bp)
+            md5 = bp.get_md5()
+            current_directory += md5 + '\\'
+            bps.append([bp, md5, current_directory])
             for b in bp.read_blueprints():
-                self._get_all_bp_parse(blueprint(b), bps, level)
+                self._get_all_bp_parse(blueprint(b), bps, current_directory)
         elif bp.is_blueprint():
-            if len(bps) < level + 1:
-                bps.append(list())
-            bps[level].append(bp)
+            md5 = bp.get_md5()
+            bps.append([bp, md5, current_directory])
 
     def get_all_bp(self,
                    onedimensional=False,
                    blueprint_only=False):
         bps = list()
-        self._get_all_bp_parse(self, bps, -1)
+        self._get_all_bp_parse(self, bps, '')
 
         if onedimensional is False:
             return bps
         elif onedimensional is True:
             temp = list()
             for a in bps:
-                for b in a:
-                    if blueprint_only is False:
-                        temp.append(b)
-                    else:
-                        if b.is_blueprint():
-                            temp.append(b)
+                if blueprint_only is False:
+                    temp.append(a[0])
+                else:
+                    if a[0].is_blueprint():
+                        temp.append(a[0])
             return temp
         else:
             return list()
@@ -300,7 +297,8 @@ class blueprint:
             return list()
 
     def get_entities(self):
-        return [entity(x) for x in self.obj['entities']]
+        return list(map(lambda x: entity(x), self.obj['entities']))
+        # return [entity(x) for x in self.obj['entities']]
 
     def read_tiles(self):
         if 'tiles' in self.obj:
@@ -417,12 +415,15 @@ if __name__ == "__main__":
     print('------------------------------')
 
     bps = bp2.get_all_bp()
+    print(bps)
+    '''
     for level in range(len(bps)):
         for x in range(len(bps[level])):
             str = '{}{}'.format(level, x)
             # print(str,' '*level,bps[level][x].read_item(),
             #       '\t',bps[level][x].read_label())
             bps[level][x].set_label(str)
+    '''
 
     bps = bp2.get_all_bp(onedimensional=True, blueprint_only=True)
     n = 1
