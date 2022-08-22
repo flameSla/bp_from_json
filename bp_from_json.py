@@ -153,10 +153,11 @@ class dict_bp(dict):
                 self[key] = value
         return self
 
-    def print(self):
+    def __str__(self):
+        s = str()
         for k, v in self.items():
-            print('{} = {}'.format(k, v))
-        print()
+            s += '{} = {}\n'.format(k, v)
+        return s
 
 
 #############################################
@@ -405,13 +406,13 @@ if __name__ == "__main__":
     print_id("bp3", bp3)
 
     print('------------------------------')
-    bp1.get_all_items().print()
+    print(bp1.get_all_items())
 
     print('------------------------------')
-    bp2.get_all_items().print()
+    print(bp2.get_all_items())
 
     print('------------------------------')
-    bp3.get_all_items().print()
+    print(bp3.get_all_items())
     print('------------------------------')
 
     bps = bp2.get_all_bp()
