@@ -153,6 +153,8 @@ def requester_trains(bp, contents, train_number, train_car_position,
                 slot_count += slots
 
     bp.append_entity(cargo_wagon)
+    bp.set_icons(1, 'virtual', 'signal-B')
+    bp.set_icons(2, 'item', 'construction-robot')
 
 
 #############################################
@@ -215,6 +217,8 @@ def filtered_trains(bp, contents, train_number, train_car_position,
     append_chests(bp, filtrs, train_car_position, train_number, items)
 
     bp.append_entity(cargo_wagon)
+    bp.set_icons(1, 'virtual', 'signal-B')
+    bp.set_icons(2, 'item', 'logistic-chest-requester')
 
 
 #############################################
