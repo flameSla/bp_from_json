@@ -138,6 +138,19 @@ class entity():
 
         self.data['inventory']['filters'].append(filtr)
 
+    def set_request_filters(self, filtr):
+        if 'request_filters' not in self.data:
+            self.data['request_filters'] = list()
+        self.data['request_filters'].append(filtr)
+
+    def set_request_from_buffers(self, val):
+        self.data['request_from_buffers'] = val
+
+    def set_inventory_bar(self, val):
+        if 'inventory' not in self.data:
+            self.data['inventory'] = dict()
+        self.data['inventory']['bar'] = val
+
     def read_name(self):
         return self.data['name']
 
