@@ -83,7 +83,7 @@ class entity():
         entity = dict()
         entity['entity_number'] = 0
         entity['name'] = name
-        entity['position'] = position.new_position(pos_x, pos_y)
+        entity['position'] = position.new_position(pos_x, pos_y).data
         if direction is not None:
             entity['direction'] = direction
         if orientation is not None:
@@ -140,6 +140,15 @@ class entity():
 
     def read_name(self):
         return self.data['name']
+
+    def read_entity_number(self):
+        return self.data['entity_number']
+
+    def set_entity_number(self, val):
+        self.data['entity_number'] = val
+
+    def set_station(self, val):
+        self.data['station'] = val
 
     def read_items(self):
         return self.data.get('items', dict())
@@ -336,6 +345,10 @@ class blueprint:
 
     def read_blueprints(self):
         return self.obj.get('blueprints', list())
+
+    def append_entity(self, e):
+        e.set_entity_number(len(self.obj['entities']) + 1)
+        self.obj['entities'].append(e.data)
 
     def get_entities(self):
         return list(map(lambda x: entity(x), self.obj['entities']))
