@@ -6,10 +6,6 @@ from bp_from_json import blueprint
 from bp_from_json import dict_bp
 from bp_from_json import entity
 from bp_from_json import get_items
-# import base64
-# import collections
-# import json
-# import zlib
 import sys
 import os
 import argparse
@@ -19,47 +15,11 @@ import enum
 
 
 #############################################
-def error(*args):
-    print(*args, file=sys.stderr, flush=True)
-
-
-#############################################
 def debug(*args):
     if opt.d:
         print(*args, file=sys.stderr, flush=True)
 
 
-#############################################
-# def entity_add_items(entity, item):
-#     if 'items' in entity:
-#         entity['items'].update(item)
-#     else:
-#         entity['items'] = item
-
-
-#############################################
-# def set_inventory_filter(entity, filtr):
-#     if 'inventory' not in entity:
-#         entity['inventory'] = dict()
-
-#     if 'filters' not in entity['inventory']:
-#         entity['inventory']['filters'] = list()
-
-#     entity['inventory']['filters'].append(filtr)
-
-
-#############################################
-# def get_items():
-#     # read json file
-#     with open('items.json', 'r') as read_file:
-#         json_items = json.load(read_file)
-
-#     # json -> dist()
-#     items = dict()
-#     for i in json_items['items']:
-#         items[i['name']] = float(i['stack'])  # items["wooden-chest"] = 50.0
-
-#     return items
 #############################################
 @enum.unique
 class type_of_train(enum.Enum):
@@ -153,6 +113,8 @@ def requester_trains(bp, contents, train_number, train_car_position,
         stack_size = items[item]
 
         if item == 'landfill':
+            # for landfill, we start a new train,
+            #   so it's easier to remove these trains from the bp
             bp.append_entity(cargo_wagon)
             train_number += 1
             train_car_position = add_train(bp,
@@ -207,6 +169,8 @@ def filtered_trains(bp, contents, train_number, train_car_position,
         slots = math.ceil(amount/stack_size)
 
         if item == 'landfill':
+            # for landfill, we start a new train,
+            #   so it's easier to remove these trains from the bp
             wagon_close_slots(cargo_wagon, slot_count)
             append_chests(bp, filtrs,
                           train_car_position, train_number, items)
@@ -273,7 +237,7 @@ def get_bp(locomotives, cars, contents, station_name, type_of_Train):
     bp.set_label(f"{locomotives}-{cars} construction_train")
 
     print('==================================')
-    print(type_of_Train)
+    print(str(type_of_Train))
     print(bp.to_str())
     print('==================================')
 
@@ -289,7 +253,6 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--debug", action="store_true", dest="d",
                         help="debug output on STDERR")
     opt = parser.parse_args()
-    opt.d = True
 
     locomotives = input('locomotives:')
     cars = input('cars:')
