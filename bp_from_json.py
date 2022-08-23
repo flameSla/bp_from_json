@@ -388,7 +388,6 @@ class blueprint:
     def denormalization_entities(self, p):
         for e in self.get_entities():
             e.get_pos().__iadd__(p)
-        pass
 
     def read_tiles(self):
         return self.obj.get('tiles', list())
