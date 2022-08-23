@@ -3,6 +3,7 @@ import collections
 import json
 import zlib
 import hashlib
+import math
 
 
 #############################################
@@ -18,15 +19,47 @@ class position():
     def from_dict(cls, d):
         return cls(d)
 
+    def __packing_numbers(self, a):
+        """ 100.0 -> 100(int) """
+        """ 100.1 -> 100.1    """
+        fractional, integer = math.modf(a)
+        if fractional == 0:
+            return int(integer)
+        else:
+            return a
+
+    def __packing_pos(self):
+        """ 100.0 -> 100(int) """
+        """ 100.1 -> 100.1    """
+        self.data['x'] = self.__packing_numbers(self.data['x'])
+        self.data['y'] = self.__packing_numbers(self.data['y'])
+
     def __iadd__(self, other):
         self.data['x'] += other.data['x']
         self.data['y'] += other.data['y']
+        self.__packing_pos()
         return self
 
     def __isub__(self, other):
         self.data['x'] -= other.data['x']
         self.data['y'] -= other.data['y']
+        self.__packing_pos()
         return self
+
+    def rotate(self, cent_x, cent_y, angle_degrees):
+        cent = position.new_position(cent_x, cent_y)
+        self -= cent
+
+        angle_radians = angle_degrees * math.pi / 180.0
+        x = self.data['x']*math.cos(angle_radians) - \
+            self.data['y']*math.sin(angle_radians)
+        y = self.data['x']*math.sin(angle_radians) + \
+            self.data['y']*math.cos(angle_radians)
+
+        self.data['x'] = x
+        self.data['x'] = y
+        self += cent
+        self.__packing_pos()
 
     def __str__(self):
         return "{{'x': {0}, 'y': {1}}}".format(self.data['x'],
@@ -109,16 +142,10 @@ class entity():
         return self.data['name']
 
     def read_items(self):
-        if 'items' in self.data:
-            return self.data['items']
-        else:
-            return dict()
+        return self.data.get('items', dict())
 
     def read_recipe(self):
-        if 'recipe' in self.data:
-            return self.data['recipe']
-        else:
-            return None
+        return self.data.get('recipe', None)
 
     def __eq__(self, other):
         a = self.data.copy()
@@ -313,6 +340,11 @@ class blueprint:
     def get_entities(self):
         return list(map(lambda x: entity(x), self.obj['entities']))
 
+    def print_entities(self):
+        for e in self.get_entities():
+            print(e.data)
+            # print(e.get_pos(), " ", e.data)
+
     def normalize_entities(self):
         # position -= pos_min
         x = list()
@@ -325,6 +357,12 @@ class blueprint:
         pmin = position.new_position(min(x), min(y))
         for e in entities:
             e.get_pos().__isub__(pmin)
+        return pmin
+
+    def denormalization_entities(self, p):
+        for e in self.get_entities():
+            e.get_pos().__iadd__(p)
+        pass
 
     def read_tiles(self):
         return self.obj.get('tiles', list())
@@ -417,11 +455,13 @@ class blueprint:
             self.read_description() == bp.read_description()
         if result['description'] and debug:
             print('description are equal')
-        self.normalize_entities()
-        bp.normalize_entities()
+        pmin_self = self.normalize_entities()
+        pmin_bp = bp.normalize_entities()
         result['entities'] = self.__compare_entities(bp, debug)
         if result['entities'] and debug:
             print('entities are equal')
+        self.denormalization_entities(pmin_self)
+        bp.denormalization_entities(pmin_bp)
         result['tiles'] = self.read_tiles() == bp.read_tiles()
         if result['tiles'] and debug:
             print('tiles are equal')
@@ -508,10 +548,10 @@ if __name__ == "__main__":
     print(bp1.to_str())
 
     print("bp2")
-    print(bp1.to_str())
+    print(bp2.to_str())
 
     print("bp3")
-    print(bp1.to_str())
+    # print(bp3.to_str())
 
     print("bp4")
     print(bp4.to_str())
@@ -565,19 +605,6 @@ if __name__ == "__main__":
     print(bp2.get_all_tiles())
     print(bp3.get_all_tiles())
 
-    p1 = position.new_position(10, 10)
-    p2 = position.new_position(1, 1)
-
-    print()
-    print(p1)
-    print(p2)
-    p1 += p2
-    print(p1)
-    print(p2)
-    p1 -= position.new_position(5, 255)
-    print(p1)
-    print(p2)
-
     e = entity.new_entity('stack-inserter', 70, 35)
     e.update_items({'nuclear-fuel': 3})
     e = entity.new_entity('locomotive', 70, 35)
@@ -600,13 +627,13 @@ if __name__ == "__main__":
         print()
     '''
 
-    print('****************************')
-    print('print(bp1.compare(bp2))')
-    print(bp1.compare(bp2))
+#    print('****************************')
+#    print('print(bp1.compare(bp2))')
+#    print(bp1.compare(bp2))
 
-    print('****************************')
-    print('print(bp4.compare(bp2))')
-    print(bp4.compare(bp2))
+#    print('****************************')
+#    print('print(bp4.compare(bp2))')
+#    print(bp4.compare(bp2))
 
     """
     print()
@@ -617,14 +644,28 @@ if __name__ == "__main__":
     print(bp1.compare(bp4))
     """
 
+    """
+    print('****************************')
+    bp1.print_entities()
+    print('----------------------------')
+    bp4.print_entities()
+    """
+
     print('****************************')
     print('print(bp1.compare(bp4))')
     print(bp1.compare(bp4))
 
     """
     print('****************************')
-    for e in bp1.get_entities():
-        print(e.get_pos(), " ", e.data)
-    for e in bp4.get_entities():
-        print(e.get_pos(), " ", e.data)
+    bp1.print_entities()
+    print('----------------------------')
+    bp4.print_entities()
     """
+
+    print()
+    print("bp1")
+    print('bp_txt == bp1.to_str():', bp_txt == bp1.to_str())
+
+    print("bp4")
+    print('bp4_txt == bp4.to_str()', bp4_txt == bp4.to_str())
+    print()
