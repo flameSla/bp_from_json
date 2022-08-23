@@ -514,6 +514,7 @@ class blueprint:
         if self.is_blueprint() and bp.is_blueprint():
             return self.__compare_bp_bp(bp, debug)
         elif self.is_blueprint_book() and bp.is_blueprint_book():
+            # TODO
             return {}
         else:
             if self.is_blueprint():
