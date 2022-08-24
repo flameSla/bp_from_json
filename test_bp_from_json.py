@@ -212,11 +212,11 @@ if __name__ == "__main__":
     a = e.read('items')
     print_id("e.read('items')", a)
 
-    a = e.read('skdfklsfkls')
-    print_id("e.read('skdfklsfkls')", a)
+    # a = e.read('skdfklsfkls')
+    # print_id("e.read('skdfklsfkls')", a)
 
-    a = e.read(0.0015)
-    print_id("e.read(0.0015)", a)
+    # a = e.read(0.0015)
+    # print_id("e.read(0.0015)", a)
 
     print()
     print()
@@ -227,6 +227,6 @@ if __name__ == "__main__":
 
     print(e.data)
 
-    e.set('entity_number', 'erwerw')
-    e.set('name', -10)
-    e.set('position', None)
+    # e.set('entity_number', 'erwerw')
+    # e.set('name', -10)
+    # e.set('position', None)
