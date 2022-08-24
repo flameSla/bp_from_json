@@ -234,3 +234,14 @@ if __name__ == "__main__":
     book1 = blueprint.new_blueprint_book()
     print(" book ===================")
     print(book1.to_str())
+
+    book1.append_bp(bp4)
+    book1.append_bp(bp4)
+    book1.append_bp(bp4)
+    book1.append_bp(bp2)
+    book1.append_bp(bp2)
+    book1.append_bp(bp2)
+
+    print(" book ===================")
+    print(book1.to_str())
+
