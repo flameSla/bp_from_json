@@ -90,6 +90,68 @@ class entity():
             entity['orientation'] = orientation
         return cls(entity)
 
+    def __eq__(self, other):
+        a = self.data.copy()
+        b = other.data.copy()
+        a['entity_number'] = 0
+        b['entity_number'] = 0
+        return a == b
+
+# -------------------------------------
+#   get_
+
+    def get_pos(self):
+        return position(self.data['position'])
+
+# -------------------------------------
+#   set_
+
+    def set_inventory_filter(self, filtr):
+        if 'inventory' not in self.data:
+            self.data['inventory'] = dict()
+
+        if 'filters' not in self.data['inventory']:
+            self.data['inventory']['filters'] = list()
+
+        self.data['inventory']['filters'].append(filtr)
+
+    def set_request_filters(self, filtr):
+        if 'request_filters' not in self.data:
+            self.data['request_filters'] = list()
+        self.data['request_filters'].append(filtr)
+
+    def set_request_from_buffers(self, val):
+        self.data['request_from_buffers'] = val
+
+    def set_inventory_bar(self, val):
+        if 'inventory' not in self.data:
+            self.data['inventory'] = dict()
+        self.data['inventory']['bar'] = val
+
+    def set_entity_number(self, val):
+        self.data['entity_number'] = val
+
+    def set_station(self, val):
+        self.data['station'] = val
+
+# -------------------------------------
+#   read_
+
+    def read_name(self):
+        return self.data['name']
+
+    def read_entity_number(self):
+        return self.data['entity_number']
+
+    def read_items(self):
+        return self.data.get('items', dict())
+
+    def read_recipe(self):
+        return self.data.get('recipe', None)
+
+# -------------------------------------
+#   update
+
     def update_items(self, item, name_verification=True):
         entity_may_contain_items = (
             'artillery-turret',
@@ -128,56 +190,6 @@ class entity():
                 self.data['items'] = item
         else:
             print(f"Warning! '{self.data['name']}' cannot contain items")
-
-    def set_inventory_filter(self, filtr):
-        if 'inventory' not in self.data:
-            self.data['inventory'] = dict()
-
-        if 'filters' not in self.data['inventory']:
-            self.data['inventory']['filters'] = list()
-
-        self.data['inventory']['filters'].append(filtr)
-
-    def set_request_filters(self, filtr):
-        if 'request_filters' not in self.data:
-            self.data['request_filters'] = list()
-        self.data['request_filters'].append(filtr)
-
-    def set_request_from_buffers(self, val):
-        self.data['request_from_buffers'] = val
-
-    def set_inventory_bar(self, val):
-        if 'inventory' not in self.data:
-            self.data['inventory'] = dict()
-        self.data['inventory']['bar'] = val
-
-    def read_name(self):
-        return self.data['name']
-
-    def read_entity_number(self):
-        return self.data['entity_number']
-
-    def set_entity_number(self, val):
-        self.data['entity_number'] = val
-
-    def set_station(self, val):
-        self.data['station'] = val
-
-    def read_items(self):
-        return self.data.get('items', dict())
-
-    def read_recipe(self):
-        return self.data.get('recipe', None)
-
-    def __eq__(self, other):
-        a = self.data.copy()
-        b = other.data.copy()
-        a['entity_number'] = 0
-        b['entity_number'] = 0
-        return a == b
-
-    def get_pos(self):
-        return position(self.data['position'])
 
 
 #############################################
