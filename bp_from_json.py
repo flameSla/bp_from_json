@@ -73,6 +73,67 @@ class position():
 
 
 #############################################
+entity_required_parameters = {'entity_number': int,
+                              'name': str,
+                              'position': dict}
+
+entity_optional_parameters = {'direction': int,
+                              'orientation': float,
+                              # 'connections': ?,
+                              # 'neighbours': ?,
+                              # 'control_behaviour': ?,
+                              'items': dict,
+                              'recipe': str,
+                              'bar': int,
+                              # 'inventory': ?,
+                              # 'infinity_settings': ?,
+                              # 'type': ?,
+                              # 'input_priority': ?,
+                              # 'output_priority': ?,
+                              # 'filter': ?,
+                              # 'filters': ?,
+                              # 'filter_mode': ?,
+                              # 'override_stack_size': ?,
+                              # 'drop_position': ?,
+                              # 'pickup_position': ?,
+                              'request_filters': list,
+                              'request_from_buffers': str,
+                              # 'parameters': ?,
+                              # 'alert_parameters': ?,
+                              # 'auto_launch': ?,
+                              # 'variation': ?,
+                              'color': dict,
+                              'station': str}
+
+entity_may_contain_items = ('artillery-turret',
+                            'artillery-wagon',
+                            'assembling-machine-1',
+                            'assembling-machine-2',
+                            'assembling-machine-3',
+                            'beacon',
+                            'boiler',
+                            'burner-inserter',
+                            'burner-mining-drill',
+                            'cargo-wagon',
+                            'centrifuge',
+                            'chemical-plant',
+                            'electric-furnace',
+                            'electric-mining-drill',
+                            'gun-turret',
+                            'iron-chest',
+                            'lab',
+                            'locomotive',
+                            'nuclear-reactor',
+                            'oil-refinery',
+                            'pumpjack',
+                            'roboport',
+                            'rocket-silo',
+                            'steel-chest',
+                            'steel-furnace',
+                            'stone-furnace',
+                            'wooden-chest')
+
+
 class entity():
     def __init__(self, obj):
         self.data = obj
@@ -98,6 +159,14 @@ class entity():
         return a == b
 
 # -------------------------------------
+#   append_
+
+    def append_request_filters(self, filtr):
+        if 'request_filters' not in self.data:
+            self.data['request_filters'] = list()
+        self.data['request_filters'].append(filtr)
+
+# -------------------------------------
 #   get_
 
     def get_pos(self):
@@ -105,6 +174,44 @@ class entity():
 
 # -------------------------------------
 #   set_
+
+    def set(self, param, val):
+        if not isinstance(param, str):
+            print(f'{type(param)} - instead of a string')
+        else:
+            if param in entity_required_parameters:
+                if not isinstance(val, entity_required_parameters[param]):
+                    print(f'{type(val)} - instead of a' +\
+                          ' "{entity_required_parameters[param]}"')
+                else:
+                    self.data[param] = val
+
+            # optional parameters
+            elif param in entity_optional_parameters:
+                if not isinstance(val, entity_optional_parameters[param]):
+                    print(f'{type(val)} - instead of a "{entity_optional_parameters[param]}"')
+                else:
+                    if param not in self.data:
+                        self.data[param] = entity_optional_parameters[param]()
+                    self.data[param] = val
+
+            else:
+                print(f'Warning! "{param}" - there is no such parameter')
+
+    def set_entity_number(self, val):
+        self.set('entity_number', val)
+
+    def set_name(self, val):
+        self.set('name', val)
+
+    def set_position(self, val):
+        self.set('position', val)
+
+    def set_request_from_buffers(self, val):
+        self.set('request_from_buffers', val)
+
+    def set_station(self, val):
+        self.set('station', val)
 
     def set_inventory_filter(self, filtr):
         if 'inventory' not in self.data:
@@ -115,73 +222,45 @@ class entity():
 
         self.data['inventory']['filters'].append(filtr)
 
-    def set_request_filters(self, filtr):
-        if 'request_filters' not in self.data:
-            self.data['request_filters'] = list()
-        self.data['request_filters'].append(filtr)
-
-    def set_request_from_buffers(self, val):
-        self.data['request_from_buffers'] = val
-
     def set_inventory_bar(self, val):
         if 'inventory' not in self.data:
             self.data['inventory'] = dict()
         self.data['inventory']['bar'] = val
 
-    def set_entity_number(self, val):
-        self.data['entity_number'] = val
-
-    def set_station(self, val):
-        self.data['station'] = val
-
 # -------------------------------------
 #   read_
 
+    def read(self, param):
+        if not isinstance(param, str):
+            print(f'{type(param)} - instead of a string')
+        else:
+            if param in entity_required_parameters:
+                return self.data[param]
+
+            # optional parameters
+            elif param in entity_optional_parameters:
+                return self.data.get(param,
+                                     entity_optional_parameters[param]())
+
+            else:
+                print(f'Warning! "{param}" - there is no such parameter')
+
     def read_name(self):
-        return self.data['name']
+        return self.read('name')
 
     def read_entity_number(self):
-        return self.data['entity_number']
+        return self.read('entity_number')
 
     def read_items(self):
-        return self.data.get('items', dict())
+        return self.read('items')
 
     def read_recipe(self):
-        return self.data.get('recipe', None)
+        return self.read('recipe')
 
 # -------------------------------------
 #   update
 
     def update_items(self, item, name_verification=True):
-        entity_may_contain_items = (
-            'artillery-turret',
-            'artillery-wagon',
-            'assembling-machine-1',
-            'assembling-machine-2',
-            'assembling-machine-3',
-            'beacon',
-            'boiler',
-            'burner-inserter',
-            'burner-mining-drill',
-            'cargo-wagon',
-            'centrifuge',
-            'chemical-plant',
-            'electric-furnace',
-            'electric-mining-drill',
-            'gun-turret',
-            'iron-chest',
-            'lab',
-            'locomotive',
-            'nuclear-reactor',
-            'oil-refinery',
-            'pumpjack',
-            'roboport',
-            'rocket-silo',
-            'steel-chest',
-            'steel-furnace',
-            'stone-furnace',
-            'wooden-chest')
-
         if self.data['name'] in entity_may_contain_items or\
            name_verification is False:
             if 'items' in self.data:
@@ -194,7 +273,7 @@ class entity():
 
 #############################################
 def print_id(s, a):
-    print(s, '\t', id(a), '\t', a, '\t', type(a))
+    print('{0:32} {1:20} {2:20} {3}'.format(s, hex(id(a)), str(a), type(a)))
 
 
 #############################################
