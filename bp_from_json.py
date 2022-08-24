@@ -348,7 +348,7 @@ class blueprint:
         # bp_json['blueprint']['label_color']
         bp_json['blueprint']['version'] = 281479275937792
 
-        return cls(bp_json)            
+        return cls(bp_json)
 
     @classmethod
     def new_blueprint_book(cls):
@@ -394,7 +394,24 @@ class blueprint:
         self.obj['entities'].append(e.data)
 
     def append_bp(self, bp):
-        pass
+        if not self.is_blueprint_book():
+            print('the blueprint cannot contain other blueprints"')
+            raise AttributeError
+        else:
+            if 'blueprints' not in self.obj:
+                self.obj['blueprints'] = list()
+
+            max_item = -1
+            for x in self.obj['blueprints']:
+                max_item = max(max_item, x.get('index', -1))
+
+            d = collections.OrderedDict()
+            d['index'] = max_item + 1
+            if self.is_blueprint():
+                d['blueprint'] = bp.obj.copy()
+            else:
+                d['blueprint_book'] = bp.obj.copy()
+            self.obj['blueprints'].append(d)
 
 # -------------------------------------
 #   compare
@@ -611,7 +628,7 @@ class blueprint:
         return self.obj.get('icons', None)
 
     def read_index(self):
-        return self.obj.get('index', None)
+        return self.data.get('index', None)
 
     def read_item(self):
         return self.obj['item']
@@ -653,7 +670,7 @@ class blueprint:
                 self.obj['icons'] = [new_icon]
 
     def set_index(self, val):
-        self.obj['index'] = val
+        self.data['index'] = val
 
     def set_label(self, str):
         self.obj['label'] = str
