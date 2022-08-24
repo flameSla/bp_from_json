@@ -193,3 +193,5 @@ if __name__ == "__main__":
     get_method_names(blueprint)
 
     # help(position)
+    print('****************************')
+    get_method_names(position)
