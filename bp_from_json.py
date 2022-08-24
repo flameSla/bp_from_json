@@ -85,7 +85,7 @@ entity_optional_parameters = {'direction': int,
                               'items': dict,
                               'recipe': str,
                               'bar': int,
-                              # 'inventory': ?,
+                              'inventory': dict,
                               # 'infinity_settings': ?,
                               # 'type': ?,
                               # 'input_priority': ?,
@@ -178,25 +178,28 @@ class entity():
     def set(self, param, val):
         if not isinstance(param, str):
             print(f'{type(param)} - instead of a string')
+            raise AttributeError
         else:
             if param in entity_required_parameters:
                 if not isinstance(val, entity_required_parameters[param]):
-                    print(f'{type(val)} - instead of a' +\
-                          ' "{entity_required_parameters[param]}"')
+                    print(f'{type(val)} - instead of a'
+                          f' "{entity_required_parameters[param]}"')
+                    raise AttributeError
                 else:
                     self.data[param] = val
 
             # optional parameters
             elif param in entity_optional_parameters:
                 if not isinstance(val, entity_optional_parameters[param]):
-                    print(f'{type(val)} - instead of a "{entity_optional_parameters[param]}"')
+                    print(f'{type(val)} - instead of a'
+                          f'"{entity_optional_parameters[param]}"')
+                    raise AttributeError
                 else:
-                    if param not in self.data:
-                        self.data[param] = entity_optional_parameters[param]()
                     self.data[param] = val
 
             else:
                 print(f'Warning! "{param}" - there is no such parameter')
+                raise AttributeError
 
     def set_entity_number(self, val):
         self.set('entity_number', val)
@@ -233,6 +236,7 @@ class entity():
     def read(self, param):
         if not isinstance(param, str):
             print(f'{type(param)} - instead of a string')
+            raise AttributeError
         else:
             if param in entity_required_parameters:
                 return self.data[param]
@@ -244,6 +248,7 @@ class entity():
 
             else:
                 print(f'Warning! "{param}" - there is no such parameter')
+                raise AttributeError
 
     def read_name(self):
         return self.read('name')
