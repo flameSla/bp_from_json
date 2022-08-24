@@ -1,4 +1,15 @@
-from bp_from_json import blueprint, print_id, entity
+from bp_from_json import blueprint
+from bp_from_json import print_id
+from bp_from_json import entity
+from bp_from_json import position
+
+
+def get_method_names(class_name):
+    print('****************************')
+    print(f'{class_name}')
+    for name in dir(class_name):
+        if name[-1] != '_':
+            print(name)
 
 
 #############################################
@@ -174,3 +185,12 @@ if __name__ == "__main__":
     print("bp4")
     print('bp4_txt == bp4.to_str()', bp4_txt == bp4.to_str())
     print()
+
+    print('****************************')
+    print('****************************')
+    get_method_names(position)
+    get_method_names(entity)
+    get_method_names(blueprint)
+
+    help(position)
+    
