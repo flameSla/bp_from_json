@@ -90,9 +90,9 @@ def append_chests(bp, filtrs, train_car_position, train_number, items):
                                       7 * train_car_position + 1.5 + pos,
                                       train_number*4 - 1.5)
 
-        requester.set_request_filters({"index": 1,
-                                       "name": key,
-                                       "count": items[key]})
+        requester.append_request_filters({"index": 1,
+                                          "name": key,
+                                          "count": items[key]})
 
         requester.set_request_from_buffers('true')
         bp.append_entity(requester)
