@@ -336,14 +336,25 @@ class blueprint:
     @classmethod
     def new_blueprint(cls):
         bp_json = collections.OrderedDict()
+        bp_json['blueprint_book'] = collections.OrderedDict()
+        # bp_json['blueprint_book']['description'] = str()
+        # bp_json['blueprint_book']['icons'] = list()
+        bp_json['blueprint_book']['item'] = 'blueprint-book'
+        bp_json['blueprint_book']['label'] = "new book"
+        # bp_json['blueprint_book']['label_color']
+        bp_json['blueprint_book']['version'] = 281479275937792
+
+        return cls(bp_json)
+
+    @classmethod
+    def new_blueprint_book(cls):
+        bp_json = collections.OrderedDict()
         bp_json['blueprint'] = collections.OrderedDict()
         # bp_json['blueprint']['description'] = str()
         # bp_json['blueprint']['icons'] = list()
         # [{'signal': {'type': 'virtual', 'name': 'signal-a'}, 'index': 1}]
-        bp_json['blueprint']['entities'] = list()
-        # bp_json['blueprint']['tiles'] = list()
-        # bp_json['blueprint']['schedules'] = list()
-        bp_json['blueprint']['item'] = 'blueprint'
+        bp_json['blueprint']['item'] = 'blueprint-book'
+        bp_json['blueprint']['active_index'] = 0
         # bp_json['blueprint']['label'] = str()
         # bp_json['blueprint']['label_color']
         bp_json['blueprint']['version'] = 281479275937792
@@ -379,6 +390,9 @@ class blueprint:
     def append_entity(self, e):
         e.set_entity_number(len(self.obj['entities']) + 1)
         self.obj['entities'].append(e.data)
+
+    def append_bp(self, bp):
+        pass
 
 # -------------------------------------
 #   compare
@@ -582,13 +596,20 @@ class blueprint:
 #   read_
 
     def read_blueprints(self):
-        return self.obj.get('blueprints', list())
+        if self.is_blueprint_book():
+            return self.obj.get('blueprints', list())
+        else:
+            print('the blueprint does not contain parameter "blueprints"')
+            raise AttributeError
 
     def read_description(self):
         return self.obj.get('description', 'description is missing')
 
     def read_icons(self):
         return self.obj.get('icons', None)
+
+    def read_index(self):
+        return self.obj.get('index', None)
 
     def read_item(self):
         return self.obj['item']
@@ -628,6 +649,9 @@ class blueprint:
                     self.obj['icons'].append(new_icon)
             else:
                 self.obj['icons'] = [new_icon]
+
+    def set_index(self, val):
+        self.obj['index'] = val
 
     def set_label(self, str):
         self.obj['label'] = str
