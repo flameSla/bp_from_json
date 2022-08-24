@@ -16,6 +16,13 @@ def get_method_names(class_name):
 #
 # main
 if __name__ == "__main__":
+
+    print('****************************')
+    print('****************************')
+    get_method_names(position)
+    get_method_names(entity)
+    get_method_names(blueprint)
+
     bp_txt = '0eNqd2tFumzAYxfF34TpUNcb2IU8yaaommritNUIiIO2qKu8+SLYma1HXfy/j' +\
              'cj6w++PmiJfsttnHXZfaIVu+ZGm1bfts+f0l69N9WzfT2vC8i9kyS0PcZIusr' +\
              'TfTr65OTXZYZKldx1/Z0hwW/43UfR83t01q7/NNvXpIbcztxYhidsRj6ob9uP' +\
@@ -193,5 +200,3 @@ if __name__ == "__main__":
     get_method_names(blueprint)
 
     # help(position)
-    print('****************************')
-    get_method_names(position)
