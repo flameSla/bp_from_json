@@ -336,6 +336,23 @@ class blueprint:
     @classmethod
     def new_blueprint(cls):
         bp_json = collections.OrderedDict()
+        bp_json['blueprint'] = collections.OrderedDict()
+        # bp_json['blueprint']['description'] = str()
+        # bp_json['blueprint']['icons'] = list()
+        # [{'signal': {'type': 'virtual', 'name': 'signal-a'}, 'index': 1}]
+        bp_json['blueprint']['entities'] = list()
+        # bp_json['blueprint']['tiles'] = list()
+        # bp_json['blueprint']['schedules'] = list()
+        bp_json['blueprint']['item'] = 'blueprint'
+        # bp_json['blueprint']['label'] = str()
+        # bp_json['blueprint']['label_color']
+        bp_json['blueprint']['version'] = 281479275937792
+
+        return cls(bp_json)            
+
+    @classmethod
+    def new_blueprint_book(cls):
+        bp_json = collections.OrderedDict()
         bp_json['blueprint_book'] = collections.OrderedDict()
         # bp_json['blueprint_book']['description'] = str()
         # bp_json['blueprint_book']['icons'] = list()
@@ -343,21 +360,6 @@ class blueprint:
         bp_json['blueprint_book']['label'] = "new book"
         # bp_json['blueprint_book']['label_color']
         bp_json['blueprint_book']['version'] = 281479275937792
-
-        return cls(bp_json)
-
-    @classmethod
-    def new_blueprint_book(cls):
-        bp_json = collections.OrderedDict()
-        bp_json['blueprint'] = collections.OrderedDict()
-        # bp_json['blueprint']['description'] = str()
-        # bp_json['blueprint']['icons'] = list()
-        # [{'signal': {'type': 'virtual', 'name': 'signal-a'}, 'index': 1}]
-        bp_json['blueprint']['item'] = 'blueprint-book'
-        bp_json['blueprint']['active_index'] = 0
-        # bp_json['blueprint']['label'] = str()
-        # bp_json['blueprint']['label_color']
-        bp_json['blueprint']['version'] = 281479275937792
 
         return cls(bp_json)
 
