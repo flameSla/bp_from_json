@@ -192,5 +192,4 @@ if __name__ == "__main__":
     get_method_names(entity)
     get_method_names(blueprint)
 
-    help(position)
-    
+    # help(position)
