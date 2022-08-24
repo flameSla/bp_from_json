@@ -230,3 +230,7 @@ if __name__ == "__main__":
     # e.set('entity_number', 'erwerw')
     # e.set('name', -10)
     # e.set('position', None)
+
+    book1 = blueprint.new_blueprint_book()
+    print(" book ===================")
+    print(book1.to_str())
