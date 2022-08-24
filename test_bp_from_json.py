@@ -200,3 +200,33 @@ if __name__ == "__main__":
     get_method_names(blueprint)
 
     # help(position)
+
+    e = entity.new_entity('test', 0, 0)
+
+    a = e.read('name')
+    print_id("e.read('name')", a)
+
+    a = e.read('direction')
+    print_id("e.read('direction')", a)
+
+    a = e.read('items')
+    print_id("e.read('items')", a)
+
+    a = e.read('skdfklsfkls')
+    print_id("e.read('skdfklsfkls')", a)
+
+    a = e.read(0.0015)
+    print_id("e.read(0.0015)", a)
+
+    print()
+    print()
+    print()
+    e.set('entity_number', 10)
+    e.set('name', 'asdf')
+    e.set('position', {'1': 2})
+
+    print(e.data)
+
+    e.set('entity_number', 'erwerw')
+    e.set('name', -10)
+    e.set('position', None)
