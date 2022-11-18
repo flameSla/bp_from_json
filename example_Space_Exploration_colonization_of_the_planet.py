@@ -61,8 +61,8 @@ if __name__ == "__main__":
     # "item name": amount
     additional_items = dict_bp()
     # additional_items = dict_bp({
-    #     "construction-robot": 1350,
-    #     "logistic-robot": 350,
+    #     "construction-robot": 200,
+    #     "logistic-robot": 50,
     #     "radar": 50,
     #     "repair-pack": 100,
     #     "cliff-explosives": 100,
