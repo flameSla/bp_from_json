@@ -12,6 +12,9 @@ from bp_from_json import blueprint
 from bp_from_json import dict_bp
 from fractions import Fraction
 # from urllib.parse import quote, unquote
+#import networkx as nx
+#import matplotlib.pyplot as plt
+#from netgraph import Graph
 
 
 productivity = {'iron-gear-wheel': Fraction(1.4),
@@ -152,6 +155,34 @@ def get_recipes():
 
 
 #############################################
+def get_ingredients_graph(G, ingredient, amount, final_ingredients, ingredient_name=None):
+    debug('recurcive')
+    debug('\t', ingredient, amount)
+
+    if ingredient_name:
+        if 'consumption' in G.edges[ingredient['name'], ingredient_name]:
+            G.edges[ingredient['name'], ingredient_name]['consumption'] += float(amount * ingredient['amount'])
+        else:
+            G.edges[ingredient['name'], ingredient_name]['consumption'] = float(amount * ingredient['amount'])
+
+    #res += dict_bp({ingredient['name']: amount * ingredient['amount']})
+    if not ingredient['name'] in final_ingredients\
+       and ingredient['name'] in recipes:
+        
+        if ingredient['name'] in productivity:
+            k = productivity[ingredient['name']]
+        else:
+            k = Fraction(1)
+            print("'{}': Fraction(1.0),".format(ingredient['name']))
+        for i in recipes[ingredient['name']]:
+            G.add_edge(i['name'], ingredient['name'])
+            get_ingredients_graph(G, i,
+                                  ingredient['amount'] * amount / k,
+                                  final_ingredients,
+                                  ingredient['name'])
+
+
+#############################################
 def get_all_ingredients(ingredient, amount, final_ingredients):
     res = dict_bp()
     debug('recurcive')
@@ -266,3 +297,21 @@ if __name__ == "__main__":
         zip = js_bytes_to_string(js_btoa(pako_deflate_raw(settings)))
         link = 'kirkmcdonald.github.io/calc.html#zip={}'.format(zip)
         print(link)
+
+        """
+        G = nx.DiGraph()
+        for ingredient, amount in necessary_items_for_construction1.items():
+            get_ingredients_graph(G, {'name': ingredient, 'amount': 1}, float(amount), ())
+
+
+        fig, ax1 = plt.subplots(1, 1, figsize=(4*297/25.4, 4*210/25.4), dpi = 300)
+        edge_labels = {(u, v): f'{d["consumption"]:.2f}' for u, v, d in G.edges(data=True)}
+        #Graph(G, node_layout='dot', arrows=True, node_labels=True, node_label_fontdict=dict(size=14), node_label_offset=0.05, node_size=3, edge_width=1, edge_labels=edge_labels, ax=ax1)
+        Graph(G, node_layout='dot', arrows=True, node_labels=True, ax=ax1, scale=(2, 2))
+        plt.show()
+        #fig.savefig('мой график dpi 600.png', dpi = 300)
+        """
+        
+
+
+        
