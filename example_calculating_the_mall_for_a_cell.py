@@ -12,9 +12,9 @@ from bp_from_json import blueprint
 from bp_from_json import dict_bp
 from fractions import Fraction
 # from urllib.parse import quote, unquote
-#import networkx as nx
-#import matplotlib.pyplot as plt
-#from netgraph import Graph
+# import networkx as nx
+# import matplotlib.pyplot as plt
+# from netgraph import Graph
 
 
 productivity = {'iron-gear-wheel': Fraction(1.4),
@@ -54,7 +54,79 @@ productivity = {'iron-gear-wheel': Fraction(1.4),
                 'engine-unit': Fraction(1.4),
                 'electric-engine-unit': Fraction(1.4),
 
-                'concrete': Fraction(1.0)}
+                'battery': Fraction(1.3),
+                'concrete': Fraction(1.0),
+
+                'battery-equipment': Fraction(1.0),
+                'effectivity-module': Fraction(1.0),
+                'effectivity-module-2': Fraction(1.0),
+                'effectivity-module-3': Fraction(1.0),
+                'exoskeleton-equipment': Fraction(1.0),
+                'explosive-cannon-shell': Fraction(1.0),
+                'explosives': Fraction(1.3),
+                'firearm-magazine': Fraction(1.0),
+                'flying-robot-frame': Fraction(1.4),
+                'fusion-reactor-equipment': Fraction(1.0),
+                'laser-turret': Fraction(1.0),
+                'low-density-structure': Fraction(1.4),
+                'personal-roboport-equipment': Fraction(1.0),
+                'piercing-rounds-magazine': Fraction(1.0),
+                'radar': Fraction(1.0),
+                'rocket-control-unit': Fraction(1.4),
+                'rocket-fuel': Fraction(1.4),
+                'rocket-launcher': Fraction(1.0),
+                'speed-module-2': Fraction(1.0),
+                'accumulator': Fraction(1.0),
+
+                'artillery-shell': Fraction(1.0),
+                'assembling-machine-3': Fraction(1.0),
+                'atomic-bomb': Fraction(1.0),
+                'battery-mk2-equipment': Fraction(1.0),
+                'beacon': Fraction(1.0),
+                'big-electric-pole': Fraction(1.0),
+                'chemical-plant': Fraction(1.0),
+                'constant-combinator': Fraction(1.0),
+                'construction-robot': Fraction(1.0),
+                'electric-furnace': Fraction(1.0),
+                'express-splitter': Fraction(1.0),
+                'express-transport-belt': Fraction(1.0),
+                'express-underground-belt': Fraction(1.0),
+                'flamethrower-turret': Fraction(1.0),
+                'gun-turret': Fraction(1.0),
+                'heat-exchanger': Fraction(1.0),
+                'heat-pipe': Fraction(1.0),
+                'lab': Fraction(1.0),
+                'landfill': Fraction(1.0),
+                'logistic-chest-active-provider': Fraction(1.0),
+                'logistic-chest-passive-provider': Fraction(1.0),
+                'logistic-chest-requester': Fraction(1.0),
+                'logistic-chest-storage': Fraction(1.0),
+                'logistic-robot': Fraction(1.0),
+                'long-handed-inserter': Fraction(1.0),
+                'medium-electric-pole': Fraction(1.0),
+                'nuclear-fuel': Fraction(1.2),
+                'nuclear-reactor': Fraction(1.0),
+                'offshore-pump': Fraction(1.0),
+                'oil-refinery': Fraction(1.0),
+                'personal-laser-defense-equipment': Fraction(1.0),
+                'personal-roboport-mk2-equipment': Fraction(1.0),
+                'pipe-to-ground': Fraction(1.0),
+                'power-armor-mk2': Fraction(1.0),
+                'pump': Fraction(1.0),
+                'rail': Fraction(1.0),
+                'rail-chain-signal': Fraction(1.0),
+                'rail-signal': Fraction(1.0),
+                'roboport': Fraction(1.0),
+                'rocket-silo': Fraction(1.0),
+                'solar-panel': Fraction(1.0),
+                'spidertron': Fraction(1.0),
+                'stack-filter-inserter': Fraction(1.0),
+                'steam-turbine': Fraction(1.0),
+                'storage-tank': Fraction(1.0),
+                'substation': Fraction(1.0),
+                'train-stop': Fraction(1.0),
+                'uranium-fuel-cell': Fraction(1.4),
+                'uranium-rounds-magazine': Fraction(1.0)}
 
 
 nuclear_power_plant_1120MW = {'accumulator': 4,
@@ -165,10 +237,9 @@ def get_ingredients_graph(G, ingredient, amount, final_ingredients, ingredient_n
         else:
             G.edges[ingredient['name'], ingredient_name]['consumption'] = float(amount * ingredient['amount'])
 
-    #res += dict_bp({ingredient['name']: amount * ingredient['amount']})
     if not ingredient['name'] in final_ingredients\
        and ingredient['name'] in recipes:
-        
+
         if ingredient['name'] in productivity:
             k = productivity[ingredient['name']]
         else:
@@ -183,26 +254,39 @@ def get_ingredients_graph(G, ingredient, amount, final_ingredients, ingredient_n
 
 
 #############################################
-def get_all_ingredients(ingredient, amount, final_ingredients):
+def get_all_ingredients(item_name, amount, final_ingredients):
+    res = dict_bp()
+    if item_name in productivity:
+        k = productivity[item_name]
+    else:
+        k = Fraction(1)
+        print("'{}': Fraction(1.0),".format(item_name))
+    for ingredient in recipes[item_name]:
+        # print(ingredient['name'], amount)
+        res += recursion_get_all_ingredients(ingredient, amount / k, final_ingredients)
+    # print('-------------------\n', item_name)
+    # print_dict(res)
+    return res
+
+
+#############################################
+def recursion_get_all_ingredients(ingredient, amount, final_ingredients):
     res = dict_bp()
     debug('recurcive')
     debug('\t', ingredient, amount)
     if isinstance(ingredient, dict):
+        res += dict_bp({ingredient['name']: amount * ingredient['amount']})
         if not ingredient['name'] in final_ingredients\
            and ingredient['name'] in recipes:
-            res += dict_bp({ingredient['name']: amount * ingredient['amount']})
             if ingredient['name'] in productivity:
                 k = productivity[ingredient['name']]
             else:
                 k = Fraction(1)
                 print("'{}': Fraction(1.0),".format(ingredient['name']))
             for i in recipes[ingredient['name']]:
-                res += get_all_ingredients(i,
-                                           ingredient['amount'] * amount / k,
-                                           final_ingredients)
-        else:
-            res = dict_bp({ingredient['name']: amount * ingredient['amount']})
-
+                res += recursion_get_all_ingredients(i,
+                                                     ingredient['amount'] * amount / k,
+                                                     final_ingredients)
     return res
 
 
@@ -271,30 +355,32 @@ if __name__ == "__main__":
         print_dict(necessary_items_for_construction1, '/minute')
         print()
 
-        """
-        final_ingredients = ('iron-plate', 'copper-plate', 'steel-plate', 'plastic-bar', 'stone-brick', 'lubricant')
-        ingredients = dict_bp()
-        for item_name, amount in necessary_items_for_construction1.items():
-            if item_name in recipes:
-                #print(recipes[item_name])
-                #print(item_name)
-                for i in recipes[item_name]:
-                    #print(i)
-                    #ingredients += get_all_ingredients(i, 1, final_ingredients)
-                    ingredients += get_all_ingredients(i, amount, final_ingredients)
-        print_dict(ingredients)
-        """
-
         # creating a link
+        additional_parameters = dict_bp({'construction-robot': Fraction(65.0),
+                                         'logistic-robot': Fraction(65.0),
+                                         'artillery-shell': Fraction(60.0),
+                                         'laser-turret': Fraction(45,4),
+                                         'gun-turret': Fraction(225,8),
+                                         'flamethrower-turret': Fraction(45,4),
+                                         'power-armor-mk2': Fraction(1,2),
+                                         'battery-mk2-equipment': Fraction(1.0),
+                                         'fusion-reactor-equipment': Fraction(1,2),
+                                         'personal-laser-defense-equipment': Fraction(1.0),
+                                         'personal-roboport-mk2-equipment': Fraction(1,2),
+                                         'spidertron': Fraction(1.0),
+                                         'exoskeleton-equipment': Fraction(1,2),
+                                         'atomic-bomb': Fraction(21,10),
+                                         'uranium-fuel-cell': Fraction(240.0),
+                                         'uranium-rounds-magazine': Fraction(135.0),
+                                         'nuclear-fuel': Fraction(804,25)})
         settings = r'data=1-1-19&min=3&belt=express-transport-belt&dm=p3&db=s3&dbc=24&items='
-        additional_parameters = r'construction-robot:r:65,logistic-robot:r:65,artillery-shell:r:60,laser-turret:r:45/4,gun-turret:r:225/8,flamethrower-turret:r:45/4,power-armor-mk2:r:1/2,battery-mk2-equipment:r:1,fusion-reactor-equipment:r:1/2,personal-laser-defense-equipment:r:1,personal-roboport-mk2-equipment:r:1/2,spidertron:r:1,exoskeleton-equipment:r:1/2,atomic-bomb:r:21/10,uranium-fuel-cell:r:240,uranium-rounds-magazine:r:135,nuclear-fuel:r:804/25'
+        necessary_items_for_construction1 += additional_parameters
         for item_name, performance in necessary_items_for_construction1.items():
             par = '{}:r:{},'.format(item_name, performance)
             settings += par
-        settings += additional_parameters
 
-        # print(settings)
-        zip = js_bytes_to_string(js_btoa(pako_deflate_raw(settings)))
+        # print(settings[:-1])
+        zip = js_bytes_to_string(js_btoa(pako_deflate_raw(settings[1:-1])))
         link = 'kirkmcdonald.github.io/calc.html#zip={}'.format(zip)
         print(link)
 
@@ -311,7 +397,14 @@ if __name__ == "__main__":
         plt.show()
         #fig.savefig('мой график dpi 600.png', dpi = 300)
         """
-        
 
-
-        
+        # final_ingredients = ('iron-plate', 'copper-plate', 'steel-plate', 'plastic-bar', 'stone-brick', 'lubricant')
+        final_ingredients = ()
+        ingredients = dict_bp()
+        for item_name, amount in necessary_items_for_construction1.items():
+            if item_name in recipes:
+                ingredients += get_all_ingredients(item_name, amount, final_ingredients)
+                # print_dict(ingredients)
+        ingredients += necessary_items_for_construction1
+        print()
+        print_dict(ingredients, '/minute')
