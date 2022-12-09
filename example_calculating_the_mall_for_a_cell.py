@@ -141,12 +141,12 @@ def get_recipes():
 
     # json -> dist()
     recipes = dict()
-    for r in json_all['recipes']:
-        if len(r['products']) == 1:
-            for ingredient in r['ingredients']:
+    for recipe in json_all['recipes']:
+        if len(recipe['products']) == 1:
+            for ingredient in recipe['ingredients']:
                 ingredient['amount'] = Fraction(ingredient['amount'],
-                                                r['products'][0]['amount'])
-            recipes[r['name']] = r['ingredients']
+                                                recipe['products'][0]['amount'])
+            recipes[recipe['name']] = recipe['ingredients']
 
     return recipes
 
