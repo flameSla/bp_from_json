@@ -17,136 +17,136 @@ from fractions import Fraction
 # from netgraph import Graph
 
 
-productivity = {'iron-gear-wheel': Fraction(1.4),
-                'iron-stick': Fraction(1.4),
-                'processing-unit': Fraction(1.4),
-                'advanced-circuit': Fraction(1.4),
-                'electronic-circuit': Fraction(1.4),
-                'sulfuric-acid': Fraction(1.3),
-                'sulfur': Fraction(1.3),
-                'lubricant': Fraction(1.3),
-                'copper-cable': Fraction(1.4),
-                'plastic-bar': Fraction(1.3),
-                'steel-plate': Fraction(1.2),
-                'iron-plate': Fraction(1.2),
-                'copper-plate': Fraction(1.2),
-                'stone-brick': Fraction(1.2),
 
-                'stack-inserter': Fraction(1.0),
-                'fast-inserter': Fraction(1.0),
-                'inserter': Fraction(1.0),
+#############################################
+def print_productivity():
+    for k, v in sorted(productivity.items(), key=lambda x: x[0]):
+        print("'{}': Fraction({}),".format(k, float(v)))
 
-                'fast-transport-belt': Fraction(1.0),
-                'transport-belt': Fraction(1.0),
-                'fast-underground-belt': Fraction(1.0),
-                'underground-belt': Fraction(1.0),
-                'fast-splitter': Fraction(1.0),
-                'splitter': Fraction(1.0),
-
-                'steel-chest': Fraction(1.0),
-
-                'assembling-machine-2': Fraction(1.0),
-                'assembling-machine-1': Fraction(1.0),
-
-                'speed-module': Fraction(1.0),
-                'pipe': Fraction(1.0),
-
-                'engine-unit': Fraction(1.4),
-                'electric-engine-unit': Fraction(1.4),
-
-                'battery': Fraction(1.3),
-                'concrete': Fraction(1.0),
-
-                'battery-equipment': Fraction(1.0),
-                'effectivity-module': Fraction(1.0),
-                'effectivity-module-2': Fraction(1.0),
-                'effectivity-module-3': Fraction(1.0),
-                'exoskeleton-equipment': Fraction(1.0),
-                'explosive-cannon-shell': Fraction(1.0),
-                'explosives': Fraction(1.3),
-                'firearm-magazine': Fraction(1.0),
-                'flying-robot-frame': Fraction(1.4),
-                'fusion-reactor-equipment': Fraction(1.0),
-                'laser-turret': Fraction(1.0),
-                'low-density-structure': Fraction(1.4),
-                'personal-roboport-equipment': Fraction(1.0),
-                'piercing-rounds-magazine': Fraction(1.0),
-                'radar': Fraction(1.0),
-                'rocket-control-unit': Fraction(1.4),
-                'rocket-fuel': Fraction(1.4),
-                'rocket-launcher': Fraction(1.0),
-                'speed-module-2': Fraction(1.0),
-                'accumulator': Fraction(1.0),
-
-                'artillery-shell': Fraction(1.0),
-                'assembling-machine-3': Fraction(1.0),
-                'atomic-bomb': Fraction(1.0),
-                'battery-mk2-equipment': Fraction(1.0),
-                'beacon': Fraction(1.0),
-                'big-electric-pole': Fraction(1.0),
-                'chemical-plant': Fraction(1.0),
-                'constant-combinator': Fraction(1.0),
-                'construction-robot': Fraction(1.0),
-                'electric-furnace': Fraction(1.0),
-                'express-splitter': Fraction(1.0),
-                'express-transport-belt': Fraction(1.0),
-                'express-underground-belt': Fraction(1.0),
-                'flamethrower-turret': Fraction(1.0),
-                'gun-turret': Fraction(1.0),
-                'heat-exchanger': Fraction(1.0),
-                'heat-pipe': Fraction(1.0),
-                'lab': Fraction(1.0),
-                'landfill': Fraction(1.0),
-                'logistic-chest-active-provider': Fraction(1.0),
-                'logistic-chest-passive-provider': Fraction(1.0),
-                'logistic-chest-requester': Fraction(1.0),
-                'logistic-chest-storage': Fraction(1.0),
-                'logistic-robot': Fraction(1.0),
-                'long-handed-inserter': Fraction(1.0),
-                'medium-electric-pole': Fraction(1.0),
-                'nuclear-fuel': Fraction(1.2),
-                'nuclear-reactor': Fraction(1.0),
-                'offshore-pump': Fraction(1.0),
-                'oil-refinery': Fraction(1.0),
-                'personal-laser-defense-equipment': Fraction(1.0),
-                'personal-roboport-mk2-equipment': Fraction(1.0),
-                'pipe-to-ground': Fraction(1.0),
-                'power-armor-mk2': Fraction(1.0),
-                'pump': Fraction(1.0),
-                'rail': Fraction(1.0),
-                'rail-chain-signal': Fraction(1.0),
-                'rail-signal': Fraction(1.0),
-                'roboport': Fraction(1.0),
-                'rocket-silo': Fraction(1.0),
-                'solar-panel': Fraction(1.0),
-                'spidertron': Fraction(1.0),
-                'stack-filter-inserter': Fraction(1.0),
-                'steam-turbine': Fraction(1.0),
-                'storage-tank': Fraction(1.0),
-                'substation': Fraction(1.0),
-                'train-stop': Fraction(1.0),
-                'uranium-fuel-cell': Fraction(1.4),
-                'uranium-rounds-magazine': Fraction(1.0)}
+productivity = {
+    'accumulator': Fraction(1.0),
+    'advanced-circuit': Fraction(1.4),
+    'artillery-shell': Fraction(1.0),
+    'assembling-machine-1': Fraction(1.0),
+    'assembling-machine-2': Fraction(1.0),
+    'assembling-machine-3': Fraction(1.0),
+    'atomic-bomb': Fraction(1.0),
+    'battery': Fraction(1.3),
+    'battery-equipment': Fraction(1.0),
+    'battery-mk2-equipment': Fraction(1.0),
+    'beacon': Fraction(1.0),
+    'big-electric-pole': Fraction(1.0),
+    'chemical-plant': Fraction(1.0),
+    'concrete': Fraction(1.0),
+    'constant-combinator': Fraction(1.0),
+    'construction-robot': Fraction(1.0),
+    'copper-cable': Fraction(1.4),
+    'copper-plate': Fraction(1.2),
+    'effectivity-module': Fraction(1.0),
+    'effectivity-module-2': Fraction(1.0),
+    'effectivity-module-3': Fraction(1.0),
+    'electric-engine-unit': Fraction(1.4),
+    'electric-furnace': Fraction(1.0),
+    'electronic-circuit': Fraction(1.4),
+    'engine-unit': Fraction(1.4),
+    'exoskeleton-equipment': Fraction(1.0),
+    'explosive-cannon-shell': Fraction(1.0),
+    'explosives': Fraction(1.3),
+    'express-splitter': Fraction(1.0),
+    'express-transport-belt': Fraction(1.0),
+    'express-underground-belt': Fraction(1.0),
+    'fast-inserter': Fraction(1.0),
+    'fast-splitter': Fraction(1.0),
+    'fast-transport-belt': Fraction(1.0),
+    'fast-underground-belt': Fraction(1.0),
+    'firearm-magazine': Fraction(1.0),
+    'flamethrower-turret': Fraction(1.0),
+    'flying-robot-frame': Fraction(1.4),
+    'fusion-reactor-equipment': Fraction(1.0),
+    'gun-turret': Fraction(1.0),
+    'heat-exchanger': Fraction(1.0),
+    'heat-pipe': Fraction(1.0),
+    'inserter': Fraction(1.0),
+    'iron-gear-wheel': Fraction(1.4),
+    'iron-plate': Fraction(1.2),
+    'iron-stick': Fraction(1.4),
+    'lab': Fraction(1.0),
+    'landfill': Fraction(1.0),
+    'laser-turret': Fraction(1.0),
+    'logistic-chest-active-provider': Fraction(1.0),
+    'logistic-chest-passive-provider': Fraction(1.0),
+    'logistic-chest-requester': Fraction(1.0),
+    'logistic-chest-storage': Fraction(1.0),
+    'logistic-robot': Fraction(1.0),
+    'long-handed-inserter': Fraction(1.0),
+    'low-density-structure': Fraction(1.4),
+    'lubricant': Fraction(1.3),
+    'medium-electric-pole': Fraction(1.0),
+    'nuclear-fuel': Fraction(1.2),
+    'nuclear-reactor': Fraction(1.0),
+    'offshore-pump': Fraction(1.0),
+    'oil-refinery': Fraction(1.0),
+    'personal-laser-defense-equipment': Fraction(1.0),
+    'personal-roboport-equipment': Fraction(1.0),
+    'personal-roboport-mk2-equipment': Fraction(1.0),
+    'piercing-rounds-magazine': Fraction(1.0),
+    'pipe': Fraction(1.0),
+    'pipe-to-ground': Fraction(1.0),
+    'plastic-bar': Fraction(1.3),
+    'power-armor-mk2': Fraction(1.0),
+    'processing-unit': Fraction(1.4),
+    'pump': Fraction(1.0),
+    'radar': Fraction(1.0),
+    'rail': Fraction(1.0),
+    'rail-chain-signal': Fraction(1.0),
+    'rail-signal': Fraction(1.0),
+    'roboport': Fraction(1.0),
+    'rocket-control-unit': Fraction(1.4),
+    'rocket-fuel': Fraction(1.4),
+    'rocket-launcher': Fraction(1.0),
+    'rocket-silo': Fraction(1.0),
+    'solar-panel': Fraction(1.0),
+    'speed-module': Fraction(1.0),
+    'speed-module-2': Fraction(1.0),
+    'spidertron': Fraction(1.0),
+    'splitter': Fraction(1.0),
+    'stack-filter-inserter': Fraction(1.0),
+    'stack-inserter': Fraction(1.0),
+    'steam-turbine': Fraction(1.0),
+    'steel-chest': Fraction(1.0),
+    'steel-plate': Fraction(1.2),
+    'stone-brick': Fraction(1.2),
+    'storage-tank': Fraction(1.0),
+    'substation': Fraction(1.0),
+    'sulfur': Fraction(1.3),
+    'sulfuric-acid': Fraction(1.3),
+    'train-stop': Fraction(1.0),
+    'transport-belt': Fraction(1.0),
+    'underground-belt': Fraction(1.0),
+    'uranium-fuel-cell': Fraction(1.4),
+    'uranium-rounds-magazine': Fraction(1.0)}
 
 
-nuclear_power_plant_1120MW = {'accumulator': 4,
-                              'heat-exchanger': 112,
-                              'heat-pipe': 200,
-                              'landfill': 4701,
-                              'logistic-chest-active-provider': 8,
-                              'logistic-chest-requester': 8,
-                              'medium-electric-pole': 8,
-                              'nuclear-reactor': 8,
-                              'offshore-pump': 12,
-                              'pipe': 12,
-                              'pipe-to-ground': 4,
-                              'pump': 10,
-                              'radar': 1,
-                              'roboport': 2,
-                              'solar-panel': 4,
-                              'stack-inserter': 16,
-                              'steam-turbine': 224,
-                              'substation': 22}
+#############################################
+nuclear_power_plant_1120MW = {
+    'accumulator': 4,
+    'heat-exchanger': 112,
+    'heat-pipe': 200,
+    'landfill': 4701,
+    'logistic-chest-active-provider': 8,
+    'logistic-chest-requester': 8,
+    'medium-electric-pole': 8,
+    'nuclear-reactor': 8,
+    'offshore-pump': 12,
+    'pipe': 12,
+    'pipe-to-ground': 4,
+    'pump': 10,
+    'radar': 1,
+    'roboport': 2,
+    'solar-panel': 4,
+    'stack-inserter': 16,
+    'steam-turbine': 224,
+    'substation': 22}
 
 
 #############################################
@@ -202,10 +202,7 @@ def js_atob(data):
 ########################################
 def input_def(text, default):
     str = input(text + '[' + default + ']:')
-    if str:
-        return str
-    else:
-        return default
+    return str if str else default
 
 
 #############################################
@@ -263,7 +260,7 @@ def get_all_ingredients(item_name, amount, final_ingredients):
         print("'{}': Fraction(1.0),".format(item_name))
     for ingredient in recipes[item_name]:
         # print(ingredient['name'], amount)
-        res += recursion_get_all_ingredients(ingredient, amount / k, final_ingredients)
+        res += recursion_get_all_ingredients(ingredient, amount/k, final_ingredients)
     # print('-------------------\n', item_name)
     # print_dict(res)
     return res
@@ -276,8 +273,8 @@ def recursion_get_all_ingredients(ingredient, amount, final_ingredients):
     debug('\t', ingredient, amount)
     if isinstance(ingredient, dict):
         res += dict_bp({ingredient['name']: amount * ingredient['amount']})
-        if not ingredient['name'] in final_ingredients\
-           and ingredient['name'] in recipes:
+        if (not ingredient['name'] in final_ingredients
+            and ingredient['name'] in recipes):
             if ingredient['name'] in productivity:
                 k = productivity[ingredient['name']]
             else:
@@ -302,6 +299,8 @@ def print_dict(d, dimension=None):
 #
 # main
 if __name__ == "__main__":
+
+    #print_productivity()
 
     # kirkmcdonald.github.io
     # zip -> settings
