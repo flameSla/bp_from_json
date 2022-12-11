@@ -248,7 +248,8 @@ if __name__ == "__main__":
     recipes = get_recipes()
     items = get_items()
 
-    book = blueprint.new_blueprint_book()
+    book1 = blueprint.new_blueprint_book()
+    book2 = blueprint.new_blueprint_book()
     for request, amount in requests.items():
         ingredients = [(i['name'], i['amount']*amount) for i in recipes[request] if i['name'] in items]
         debug(ingredients)
@@ -257,19 +258,37 @@ if __name__ == "__main__":
             stack_size = items[item]
             slots += math.ceil(amount/stack_size)
         debug('slots = ', slots)
-        bp = blueprint.new_blueprint()
+        bp1 = blueprint.new_blueprint()
+        bp2 = blueprint.new_blueprint()
         chest = entity.new_entity(select_chest(slots, request), 0, 0)
+        requester = entity.new_entity('logistic-chest-requester', 0, 0)
+        index = 0
         for item, amount in ingredients:
-            debug(item, math.ceil(amount))
-            chest.update_items({item: math.ceil(amount)}, name_verification=False)
-        bp.append_entity(chest)
-        bp.set_label(str(requests[request]))
-        bp.set_icons(2, 'item', request)
+            index += 1
+            debug(index, item, math.ceil(amount))
+            chest.update_items({item: math.ceil(amount)},
+                               name_verification=False)
+            requester.append_request_filters({"index": index,
+                                              "name": item,
+                                              "count": math.ceil(amount)})
+        bp1.append_entity(chest)
+        bp1.set_label(str(requests[request]))
+        bp1.set_icons(1, 'item', request)
+        bp2.append_entity(requester)
+        bp2.set_label(str(requests[request]))
+        bp2.set_icons(1, 'item', request)
+        debug('=== chest ========================')
+        debug(bp1.to_str())
         debug('==================================')
-        debug(bp.to_str())
+        debug('=== requester ========================')
+        debug(bp2.to_str())
         debug('==================================')
-        book.append_bp(bp)
+        book1.append_bp(bp1)
+        book2.append_bp(bp2)
 
+    print('=== chest ========================')
+    print(book1.to_str())
     print('==================================')
-    print(book.to_str())
+    print('=== requester ========================')
+    print(book2.to_str())
     print('==================================')
