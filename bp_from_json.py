@@ -407,7 +407,7 @@ class blueprint:
 
             d = collections.OrderedDict()
             d['index'] = max_item + 1
-            if self.is_blueprint():
+            if bp.is_blueprint():
                 d['blueprint'] = bp.obj.copy()
             else:
                 d['blueprint_book'] = bp.obj.copy()
