@@ -10,7 +10,6 @@ import sys
 import os
 import argparse
 import math
-import uuid
 
 
 #############################################
@@ -27,30 +26,6 @@ def create_chest(chest_position, row_number):
 
 
 #############################################
-def append_chests(bp, filtrs, train_car_position, train_number, items):
-    pos = 0
-    for key, val in filtrs.items():
-        inserter = entity.new_entity(
-            "stack-inserter", 7 * train_car_position + 1.5 + pos, train_number * 4 - 0.5
-        )
-        bp.append_entity(inserter)
-
-        requester = entity.new_entity(
-            "logistic-chest-requester",
-            7 * train_car_position + 1.5 + pos,
-            train_number * 4 - 1.5,
-        )
-
-        requester.append_request_filters({"index": 1, "name": key, "count": items[key]})
-
-        requester.set_request_from_buffers("true")
-        bp.append_entity(requester)
-
-        pos += 1
-    filtrs.clear()
-
-
-#############################################
 def requester_chests(bp, contents, row_number, chests):
     chest_position = 0
     chest = create_chest(chest_position, row_number)
@@ -58,7 +33,10 @@ def requester_chests(bp, contents, row_number, chests):
     slot_count = 0
     items = get_items()
     for item, amount in contents.items():
-        stack_size = items[item]
+        if item in items:
+            stack_size = items[item]
+        else:
+            stack_size = 0
 
         if item == "landfill":
             # for landfill, we start a new train,
@@ -69,9 +47,13 @@ def requester_chests(bp, contents, row_number, chests):
             chest = create_chest(chest_position, row_number)
 
         while amount > 0:
-            slots = math.ceil(amount / stack_size)
-            if slot_count + slots > 40:
-                add_items = (40 - slot_count) * stack_size
+            try:
+                slots = math.ceil(amount / stack_size)
+            except ZeroDivisionError:
+                slots = 0
+
+            if slot_count + slots > 48:
+                add_items = (48 - slot_count) * stack_size
                 amount -= add_items
                 chest.update_items({item: add_items}, name_verification=False)
                 # Add a new wagon
@@ -155,5 +137,4 @@ if __name__ == "__main__":
     debug("\ncontents:")
     debug(contents)
 
-    station_name = str(uuid.uuid4())
     get_bp(int(chests), contents)
