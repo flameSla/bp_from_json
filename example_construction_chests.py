@@ -36,6 +36,7 @@ def requester_chests(bp, contents, row_number, chests):
     # read json file
     # items = get_items()
     # Bob-Mod
+    print("Bob Mod")
     with open('BobMod.json', 'r', encoding='utf8') as read_file:
         json_items = json.load(read_file)
 
@@ -45,6 +46,7 @@ def requester_chests(bp, contents, row_number, chests):
         items[i['name']] = float(i['stack'])  # items["wooden-chest"] = 50.0
 
     for item, amount in contents.items():
+        # bob mod
         if item == 'red-inserter':
             item = 'long-handed-inserter'
 
