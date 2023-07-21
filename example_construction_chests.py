@@ -11,6 +11,8 @@ import os
 import argparse
 import math
 
+import json
+
 
 #############################################
 def debug(*args):
@@ -31,12 +33,26 @@ def requester_chests(bp, contents, row_number, chests):
     chest = create_chest(chest_position, row_number)
 
     slot_count = 0
-    items = get_items()
+    # read json file
+    # items = get_items()
+    # Bob-Mod
+    with open('BobMod.json', 'r', encoding='utf8') as read_file:
+        json_items = json.load(read_file)
+
+    # json -> dist()
+    items = dict_bp()
+    for i in json_items['items']:
+        items[i['name']] = float(i['stack'])  # items["wooden-chest"] = 50.0
+
     for item, amount in contents.items():
+        if item == 'red-inserter':
+            item = 'long-handed-inserter'
+
         if item in items:
             stack_size = items[item]
         else:
-            stack_size = 0
+            raise Exception("Unknown item ({})".format(item))
+            # stack_size = 0
 
         if item == "landfill":
             # for landfill, we start a new train,
@@ -104,7 +120,7 @@ if __name__ == "__main__":
     )
     opt = parser.parse_args()
 
-    chests = input("chests:")
+    chests = input("how many chests are there in a row? (4):")
     exchange_str = input("bp to be built:(string or filename.txt)")
     if os.path.exists(exchange_str):
         bp = blueprint.from_file(exchange_str)
