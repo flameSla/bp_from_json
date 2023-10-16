@@ -1,7 +1,3 @@
-#
-# calculating the mall for a cell
-#
-
 import argparse
 import base64
 import json
@@ -335,32 +331,61 @@ def print_dict(d, dimension=None):
 class Build:
     def __init__(self, name, text_message, default_value, recipes, final_ingredients):
         self.name = name
+        self.recipes = recipes
+        self.final_ingredients = final_ingredients
+
         exchange_str = input_def(text_message, default_value)
         if os.path.exists(exchange_str):
             bp = blueprint.from_file(exchange_str)
         else:
             bp = blueprint.from_string(exchange_str)
 
-        necessary_items_for_construction = bp.get_all_items()
+        self.necessary_items_for_construction = bp.get_all_items()
         debug()
         debug("==================")
-        debug(json.dumps(necessary_items_for_construction, indent=4, sort_keys=True))
+        debug(
+            json.dumps(self.necessary_items_for_construction, indent=4, sort_keys=True)
+        )
         debug()
 
-        self.recipes = recipes
-
         ingredients = dict_bp()
-        for item_name, amount in necessary_items_for_construction.items():
+        for item_name, amount in self.necessary_items_for_construction.items():
             if item_name in self.recipes:
                 ingredients += get_all_ingredients(item_name, amount, ())
+        ingredients += self.necessary_items_for_construction
 
-        ingredients += necessary_items_for_construction
         self.ingredients_compact = dict_bp()
-        for ingredient in final_ingredients:
+        for ingredient in self.final_ingredients:
             self.ingredients_compact[ingredient] = ingredients.get(ingredient, 0)
 
     def get_ingredients_compact(self):
         return self.ingredients_compact
+
+    def compare(self, B):
+        i1 = self.ingredients_compact
+        i2 = B.get_ingredients_compact()
+
+        print()
+        print(
+            "{:10}   {:>15}   {:>15}".format(
+                "",
+                self.name,
+                B.name,
+            )
+        )
+        for ingredient in self.final_ingredients:
+            times_more = i1[ingredient] / i2[ingredient]
+            if i2[ingredient] > i1[ingredient]:
+                times_more = 1 / times_more
+
+            print(
+                "{:10}   {:15.3f} / {:15.3f} times_more = {:15.3f}".format(
+                    ingredient,
+                    float(i1[ingredient]),
+                    float(i2[ingredient]),
+                    float(times_more),
+                )
+            )
 
 
 ######################################
@@ -371,7 +396,7 @@ if __name__ == "__main__":
 
     exchange_str = ""
     parser = argparse.ArgumentParser(
-        description="example: python construction_train.py"
+        description="example: example_mining_comparison.py"
     )
     parser.add_argument(
         "-d", "--debug", action="store_true", dest="d", help="debug output on STDERR"
@@ -404,44 +429,8 @@ if __name__ == "__main__":
         final_ingredients,
     )
 
-    ingredients1_compact = mining_1.get_ingredients_compact()
-    ingredients2_compact = mining_2.get_ingredients_compact()
-
-    print()
-    print(
-        "{:10}   {:>15}   {:>15}".format(
-            "",
-            "mining 1",
-            "mining 2",
-        )
-    )
-    for ingredient in final_ingredients:
-        if ingredients2_compact[ingredient] > ingredients1_compact[ingredient]:
-            times_more = (
-                ingredients2_compact[ingredient] / ingredients1_compact[ingredient]
-            )
-        else:
-            times_more = (
-                ingredients1_compact[ingredient] / ingredients2_compact[ingredient]
-            )
-
-        print(
-            "{:10}   {:15.3f} / {:15.3f} times_more = {:15.3f}".format(
-                ingredient,
-                float(ingredients1_compact[ingredient]),
-                float(ingredients2_compact[ingredient]),
-                float(times_more),
-            )
-        )
-
-    print()
-    print("{:10}   {:>15}".format("", cell500spm.name))
-    for ingredient in final_ingredients:
-        print(
-            "{:10}   {:15.3f}".format(
-                ingredient, float(cell500spm.get_ingredients_compact()[ingredient])
-            )
-        )
+    mining_1.compare(mining_2)
+    mining_2.compare(cell500spm)
 
     # print()
     # print('|{:<30}|'.format('left aligned'))
