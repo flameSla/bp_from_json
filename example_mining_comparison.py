@@ -142,6 +142,9 @@ productivity = {
     "arithmetic-combinator": Fraction(1.0),
     "logistic-chest-buffer": Fraction(1.0),
     "filter-inserter": Fraction(1.0),
+    "productivity-module-3": Fraction(1.0),
+    "productivity-module-2": Fraction(1.0),
+    "productivity-module": Fraction(1.0),
 }
 
 
@@ -328,6 +331,38 @@ def print_dict(d, dimension=None):
         print("{:34} = {:10.3f} {}".format(k, float(v), dimension))
 
 
+#############################################
+class Build:
+    def __init__(self, name, text_message, default_value, recipes, final_ingredients):
+        self.name = name
+        exchange_str = input_def(text_message, default_value)
+        if os.path.exists(exchange_str):
+            bp = blueprint.from_file(exchange_str)
+        else:
+            bp = blueprint.from_string(exchange_str)
+
+        necessary_items_for_construction = bp.get_all_items()
+        debug()
+        debug("==================")
+        debug(json.dumps(necessary_items_for_construction, indent=4, sort_keys=True))
+        debug()
+
+        self.recipes = recipes
+
+        ingredients = dict_bp()
+        for item_name, amount in necessary_items_for_construction.items():
+            if item_name in self.recipes:
+                ingredients += get_all_ingredients(item_name, amount, ())
+
+        ingredients += necessary_items_for_construction
+        self.ingredients_compact = dict_bp()
+        for ingredient in final_ingredients:
+            self.ingredients_compact[ingredient] = ingredients.get(ingredient, 0)
+
+    def get_ingredients_compact(self):
+        return self.ingredients_compact
+
+
 ######################################
 #
 # main
@@ -344,66 +379,43 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     # opt.d = True
 
-    exchange_str = input_def("mining-1 BP (string or filename.txt)", "mining_1.txt")
-    if os.path.exists(exchange_str):
-        bp1 = blueprint.from_file(exchange_str)
-    else:
-        bp1 = blueprint.from_string(exchange_str)
-
-    necessary_items_for_construction1 = bp1.get_all_items()
-
-    exchange_str = input_def("mining-2 BP (string or filename.txt)", "mining_2.txt")
-    if os.path.exists(exchange_str):
-        bp2 = blueprint.from_file(exchange_str)
-    else:
-        bp2 = blueprint.from_string(exchange_str)
-
-    necessary_items_for_construction2 = bp2.get_all_items()
-    debug()
-    debug("==================")
-    debug("mining 1")
-    debug(json.dumps(necessary_items_for_construction1, indent=4, sort_keys=True))
-    debug()
-    debug()
-    debug("==================")
-    debug("mining 2")
-    debug(json.dumps(necessary_items_for_construction2, indent=4, sort_keys=True))
-    debug()
-
     recipes = get_recipes()
-    # final_ingredients = ('iron-plate', 'copper-plate', 'steel-plate', 'plastic-bar', 'stone-brick', 'lubricant')
-    final_ingredients = ()
-    ingredients = ("copper-ore", "iron-ore", "coal", "stone")
+    final_ingredients = ("copper-ore", "iron-ore", "coal", "stone")
 
-    ingredients1 = dict_bp()
-    for item_name, amount in necessary_items_for_construction1.items():
-        if item_name in recipes:
-            ingredients1 += get_all_ingredients(item_name, amount, final_ingredients)
-            # print_dict(ingredients)
-    ingredients1 += necessary_items_for_construction1
-    ingredients1_compact = dict_bp()
-    for ingredient in ingredients:
-        ingredients1_compact[ingredient] = ingredients1.get(ingredient, 0)
+    mining_1 = Build(
+        "mining-1",
+        "mining-1 BP (string or filename.txt)",
+        "mining_1.txt",
+        recipes,
+        final_ingredients,
+    )
+    mining_2 = Build(
+        "mining-2",
+        "mining-2 BP (string or filename.txt)",
+        "mining_2.txt",
+        recipes,
+        final_ingredients,
+    )
+    cell500spm = Build(
+        "cell500spm",
+        "cell500spm BP (string or filename.txt)",
+        "cell500spm.txt",
+        recipes,
+        final_ingredients,
+    )
 
-    ingredients2 = dict_bp()
-    for item_name, amount in necessary_items_for_construction2.items():
-        if item_name in recipes:
-            ingredients2 += get_all_ingredients(item_name, amount, final_ingredients)
-            # print_dict(ingredients)
-    ingredients2 += necessary_items_for_construction2
-    ingredients2_compact = dict_bp()
-    for ingredient in ingredients:
-        ingredients2_compact[ingredient] = ingredients2.get(ingredient, 0)
+    ingredients1_compact = mining_1.get_ingredients_compact()
+    ingredients2_compact = mining_2.get_ingredients_compact()
 
     print()
     print(
-        "{:10}   {:10}   {:10}".format(
+        "{:10}   {:>15}   {:>15}".format(
             "",
             "mining 1",
             "mining 2",
         )
     )
-    for ingredient in ingredients:
+    for ingredient in final_ingredients:
         if ingredients2_compact[ingredient] > ingredients1_compact[ingredient]:
             times_more = (
                 ingredients2_compact[ingredient] / ingredients1_compact[ingredient]
@@ -414,10 +426,25 @@ if __name__ == "__main__":
             )
 
         print(
-            "{:10}   {:10.3f} / {:10.3f} times_more = {:10.3f}".format(
+            "{:10}   {:15.3f} / {:15.3f} times_more = {:15.3f}".format(
                 ingredient,
                 float(ingredients1_compact[ingredient]),
                 float(ingredients2_compact[ingredient]),
                 float(times_more),
             )
         )
+
+    print()
+    print("{:10}   {:>15}".format("", cell500spm.name))
+    for ingredient in final_ingredients:
+        print(
+            "{:10}   {:15.3f}".format(
+                ingredient, float(cell500spm.get_ingredients_compact()[ingredient])
+            )
+        )
+
+    # print()
+    # print('|{:<30}|'.format('left aligned'))
+    # print('|{:>30}|'.format('right aligned'))
+    # print('|{:^30}|'.format('centered'))
+    # print('|{:*^30}|'.format('centered'))
