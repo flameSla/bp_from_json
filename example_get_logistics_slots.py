@@ -3,7 +3,6 @@ example_get_logistics_slots
 """
 
 from bp_from_json import blueprint
-from bp_from_json import dict_bp
 import sys
 import os
 import argparse
