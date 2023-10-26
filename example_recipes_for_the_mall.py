@@ -387,19 +387,39 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
 
     if len(ingredients1) > 5:
         ingredients1 = sorted(ingredients1, key=lambda tup: tup[1], reverse=True)
+        reset = True
+        while reset:
+            reset = False
+            debug("Warning")
+            for j in range(5, len(ingredients1)):
+                i, a = ingredients1[j]
+                debug("i = ", type(i), i)
+                if i in items_that_may_be_damaged:
+                    t = ingredients1.pop(j)
+                    debug("ingredients1 = ", type(ingredients1), ingredients1)
+                    ingredients1.insert(0, t)
+                    debug("ingredients1 = ", type(ingredients1), ingredients1)
+                    reset = True
         temp = ingredients1[0:4]
-        for i, a in ingredients1[5:]:
-            if i in items_that_may_be_damaged:
-                print("WARNING !!!!")
         temp.append(list(ingredients1[5:]))
         ingredients1 = temp
 
     if len(ingredients2) > 5:
         ingredients2 = sorted(ingredients2, key=lambda tup: tup[1], reverse=True)
+        reset = True
+        while reset:
+            reset = False
+            debug("Warning")
+            for j in range(5, len(ingredients2)):
+                i, a = ingredients2[j]
+                debug("i = ", type(i), i)
+                if i in items_that_may_be_damaged:
+                    t = ingredients2.pop(j)
+                    debug("ingredients2 = ", type(ingredients2), ingredients2)
+                    ingredients2.insert(0, t)
+                    debug("ingredients2 = ", type(ingredients2), ingredients2)
+                    reset = True
         temp = ingredients2[0:4]
-        for i, a in ingredients2[5:]:
-            if i in items_that_may_be_damaged:
-                print("WARNING !!!!")
         temp.append(list(ingredients2[5:]))
         ingredients2 = temp
 
