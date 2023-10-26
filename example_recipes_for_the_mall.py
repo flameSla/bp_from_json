@@ -8,6 +8,9 @@ from bp_from_json import get_items
 from fractions import Fraction
 
 
+full_stack = True
+
+
 recipes_for_mall_2 = {
     "wooden-chest": 10,
     "radar": 10,
@@ -295,14 +298,20 @@ def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
         requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
         if isinstance(ingredient, tuple):
             name, amount = ingredient
-            amount = math.ceil(amount / 4) * 4
+            if full_stack:
+                amount = math.ceil(items[name] / 4) * 4 * 2
+            else:
+                amount = math.ceil(amount / 4) * 4
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
         elif isinstance(ingredient, list):
             for index, ing in enumerate(ingredient, start=1):
                 name, amount = ing
-                amount = math.ceil(amount / 4) * 4
+                if full_stack:
+                    amount = math.ceil(items[name] / 4) * 4 * 2
+                else:
+                    amount = math.ceil(amount / 4) * 4
                 requester.append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
@@ -434,14 +443,20 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
         requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
         if isinstance(ingredient, tuple):
             name, amount = ingredient
-            amount = math.ceil(amount / 4) * 4
+            if full_stack:
+                amount = math.ceil(items[name] / 4) * 4 * 2
+            else:
+                amount = math.ceil(amount / 4) * 4
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
         elif isinstance(ingredient, list):
             for index, ing in enumerate(ingredient, start=1):
                 name, amount = ing
-                amount = math.ceil(amount / 4) * 4
+                if full_stack:
+                    amount = math.ceil(items[name] / 4) * 4 * 2
+                else:
+                    amount = math.ceil(amount / 4) * 4
                 requester.append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
@@ -464,14 +479,20 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
             requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
             if isinstance(ingredient, tuple):
                 name, amount = ingredient
-                amount = math.ceil(amount / 4) * 4
+                if full_stack:
+                    amount = math.ceil(items[name] / 4) * 4 * 2
+                else:
+                    amount = math.ceil(amount / 4) * 4
                 requester.append_request_filters(
                     {"index": 1, "name": name, "count": amount}
                 )
             elif isinstance(ingredient, list):
                 for index, ing in enumerate(ingredient, start=1):
                     name, amount = ing
-                    amount = math.ceil(amount / 4) * 4
+                    if full_stack:
+                        amount = math.ceil(items[name] / 4) * 4 * 2
+                    else:
+                        amount = math.ceil(amount / 4) * 4
                     requester.append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
@@ -483,7 +504,10 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
             f = e[i].read("request_filters")
             index = len(f) + 1
             name, amount = ingredient
-            amount = math.ceil(amount / 4) * 4
+            if full_stack:
+                amount = math.ceil(items[name] / 4) * 4 * 2
+            else:
+                amount = math.ceil(amount / 4) * 4
             e[i].append_request_filters({"index": index, "name": name, "count": amount})
 
         i += 1
@@ -629,7 +653,10 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
             requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
 
             name, amount = ingredient
-            amount = math.ceil(amount / 4) * 4
+            if full_stack:
+                amount = math.ceil(items[name] / 4) * 4 * 2
+            else:
+                amount = math.ceil(amount / 4) * 4
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
@@ -648,7 +675,10 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
 
                 for index, ing in enumerate(ingredient, start=1):
                     name, amount = ing
-                    amount = math.ceil(amount / 4) * 4
+                    if full_stack:
+                        amount = math.ceil(items[name] / 4) * 4 * 2
+                    else:
+                        amount = math.ceil(amount / 4) * 4
                     requester.append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
@@ -672,7 +702,10 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
                 )
 
                 name, amount = ingredient
-                amount = math.ceil(amount / 4) * 4
+                if full_stack:
+                    amount = math.ceil(items[name] / 4) * 4 * 2
+                else:
+                    amount = math.ceil(amount / 4) * 4
                 requester.append_request_filters(
                     {"index": 1, "name": name, "count": amount}
                 )
@@ -688,7 +721,10 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
 
                     for index, ing in enumerate(ingredient, start=1):
                         name, amount = ing
-                        amount = math.ceil(amount / 4) * 4
+                        if full_stack:
+                            amount = math.ceil(items[name] / 4) * 4 * 2
+                        else:
+                            amount = math.ceil(amount / 4) * 4
                         requester.append_request_filters(
                             {"index": index, "name": name, "count": amount}
                         )
@@ -701,14 +737,20 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
             index = len(f) + 1
             if isinstance(ingredient, tuple):
                 name, amount = ingredient
-                amount = math.ceil(amount / 4) * 4
+                if full_stack:
+                    amount = math.ceil(items[name] / 4) * 4 * 2
+                else:
+                    amount = math.ceil(amount / 4) * 4
                 e[i].append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
             elif isinstance(ingredient, list):
                 for ing in ingredient:
                     name, amount = ing
-                    amount = math.ceil(amount / 4) * 4
+                    if full_stack:
+                        amount = math.ceil(items[name] / 4) * 4 * 2
+                    else:
+                        amount = math.ceil(amount / 4) * 4
                     e[i].append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
@@ -936,6 +978,96 @@ if __name__ == "__main__":
     bp.set_label("mall ver2")
     print()
     print("mall ver2")
+    print("==================================")
+    print(bp.to_str())
+    print("==================================")
+
+    all_ingredients = set()
+    for request, amount in recipes_for_mall_2.items():
+        ingredients = [
+            (i["name"], i["amount"] * amount)
+            for i in recipes[request]
+            if i["name"] in items
+        ]
+        for item, amount in ingredients:
+            all_ingredients.add(item)
+    for request, amount in recipes_for_mall_b12.items():
+        ingredients = [
+            (i["name"], i["amount"] * amount)
+            for i in recipes[request]
+            if i["name"] in items
+        ]
+        for item, amount in ingredients:
+            all_ingredients.add(item)
+
+    bp = blueprint.new_blueprint()
+    x0 = y0 = 0
+    for i in all_ingredients:
+        passive_provider = entity.new_entity(
+            "logistic-chest-passive-provider", x0 + 0.5, y0 + 0.5
+        )
+        bp.append_entity(passive_provider)
+        passive_provider = entity.new_entity(
+            "logistic-chest-passive-provider", x0 + 0.5, y0 + 4.5
+        )
+        bp.append_entity(passive_provider)
+        passive_provider = entity.new_entity(
+            "logistic-chest-passive-provider", x0 + 1.5, y0 + 0.5
+        )
+        bp.append_entity(passive_provider)
+        passive_provider = entity.new_entity(
+            "logistic-chest-passive-provider", x0 + 1.5, y0 + 4.5
+        )
+        bp.append_entity(passive_provider)
+
+        inserter = entity.new_entity("stack-inserter", x0 + 0.5, y0 + 1.5)
+        inserter.set("direction", 4)
+        bp.append_entity(inserter)
+        inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 + 1.5)
+        inserter.set("direction", 4)
+        bp.append_entity(inserter)
+        inserter = entity.new_entity("stack-inserter", x0 + 0.5, y0 + 3.5)
+        # inserter.set("direction", d)
+        bp.append_entity(inserter)
+        inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 + 3.5)
+        # inserter.set("direction", d)
+        bp.append_entity(inserter)
+
+        infinity_chest = entity.new_entity("infinity-chest", x0 + 0.5, y0 + 2.5)
+        s = {
+            "remove_unfiltered_items": False,
+            "filters": [
+                {
+                    "name": i,
+                    "count": 24,
+                    "mode": "at-least",
+                    "index": 1,
+                }
+            ],
+        }
+        infinity_chest.set("infinity_settings", s)
+        bp.append_entity(infinity_chest)
+        infinity_chest = entity.new_entity("infinity-chest", x0 + 1.5, y0 + 2.5)
+        s = {
+            "remove_unfiltered_items": False,
+            "filters": [
+                {
+                    "name": i,
+                    "count": 24,
+                    "mode": "at-least",
+                    "index": 1,
+                }
+            ],
+        }
+        infinity_chest.set("infinity_settings", s)
+        bp.append_entity(infinity_chest)
+
+        x0 += 2
+
+    bp.set_label_color(1, 0, 1)
+    bp.set_label("inf")
+    print()
+    print("inf")
     print("==================================")
     print(bp.to_str())
     print("==================================")
