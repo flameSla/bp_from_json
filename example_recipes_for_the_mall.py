@@ -260,8 +260,11 @@ def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
     if speed:
         assembly.update_items({"speed-module-3": 4}, name_verification=False)
     bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-inserter", x0 + 0.5, y0 - 0.5)
+    inserter = entity.new_entity("stack-filter-inserter", x0 + 0.5, y0 - 0.5)
     inserter.set("direction", 4)
+    f = list()
+    f.append({"index": 1, "name": recipe})
+    inserter.set("filters", f)
     bp.append_entity(inserter)
     passive_provider = entity.new_entity(
         "logistic-chest-passive-provider", x0 + 0.5, y0 - 1.5
@@ -354,8 +357,11 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
     if speed:
         assembly.update_items({"speed-module-3": 4}, name_verification=False)
     bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 - 0.5)
+    inserter = entity.new_entity("stack-filter-inserter", x0 + 1.5, y0 - 0.5)
     inserter.set("direction", 4)
+    f = list()
+    f.append({"index": 1, "name": recipe1})
+    inserter.set("filters", f)
     bp.append_entity(inserter)
     passive_provider = entity.new_entity(
         "logistic-chest-passive-provider", x0 + 1.5, y0 - 1.5
@@ -367,8 +373,11 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
     if speed:
         assembly.update_items({"speed-module-3": 4}, name_verification=False)
     bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 + 9.5)
+    inserter = entity.new_entity("stack-filter-inserter", x0 + 1.5, y0 + 9.5)
     # inserter.set("direction", )
+    f = list()
+    f.append({"index": 1, "name": recipe2})
+    inserter.set("filters", f)
     bp.append_entity(inserter)
     passive_provider = entity.new_entity(
         "logistic-chest-passive-provider", x0 + 1.5, y0 + 10.5
