@@ -221,6 +221,14 @@ def debug(*args, end="\n"):
 
 
 # ====================================
+def get_amount(amount, name):
+    if full_stack:
+        return math.ceil(items[name] / 4) * 4 * 2
+    else:
+        return math.ceil(amount / 4) * 4
+
+
+# ====================================
 def get_recipes():
     # read json file
     with open("Factorio 1.1 Vanilla.json", "r") as read_file:
@@ -298,20 +306,14 @@ def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
         requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
         if isinstance(ingredient, tuple):
             name, amount = ingredient
-            if full_stack:
-                amount = math.ceil(items[name] / 4) * 4 * 2
-            else:
-                amount = math.ceil(amount / 4) * 4
+            amount = get_amount(amount, name)
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
         elif isinstance(ingredient, list):
             for index, ing in enumerate(ingredient, start=1):
                 name, amount = ing
-                if full_stack:
-                    amount = math.ceil(items[name] / 4) * 4 * 2
-                else:
-                    amount = math.ceil(amount / 4) * 4
+                amount = get_amount(amount, name)
                 requester.append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
@@ -443,20 +445,14 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
         requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
         if isinstance(ingredient, tuple):
             name, amount = ingredient
-            if full_stack:
-                amount = math.ceil(items[name] / 4) * 4 * 2
-            else:
-                amount = math.ceil(amount / 4) * 4
+            amount = get_amount(amount, name)
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
         elif isinstance(ingredient, list):
             for index, ing in enumerate(ingredient, start=1):
                 name, amount = ing
-                if full_stack:
-                    amount = math.ceil(items[name] / 4) * 4 * 2
-                else:
-                    amount = math.ceil(amount / 4) * 4
+                amount = get_amount(amount, name)
                 requester.append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
@@ -479,20 +475,14 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
             requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
             if isinstance(ingredient, tuple):
                 name, amount = ingredient
-                if full_stack:
-                    amount = math.ceil(items[name] / 4) * 4 * 2
-                else:
-                    amount = math.ceil(amount / 4) * 4
+                amount = get_amount(amount, name)
                 requester.append_request_filters(
                     {"index": 1, "name": name, "count": amount}
                 )
             elif isinstance(ingredient, list):
                 for index, ing in enumerate(ingredient, start=1):
                     name, amount = ing
-                    if full_stack:
-                        amount = math.ceil(items[name] / 4) * 4 * 2
-                    else:
-                        amount = math.ceil(amount / 4) * 4
+                    amount = get_amount(amount, name)
                     requester.append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
@@ -504,10 +494,7 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
             f = e[i].read("request_filters")
             index = len(f) + 1
             name, amount = ingredient
-            if full_stack:
-                amount = math.ceil(items[name] / 4) * 4 * 2
-            else:
-                amount = math.ceil(amount / 4) * 4
+            amount = get_amount(amount, name)
             e[i].append_request_filters({"index": index, "name": name, "count": amount})
 
         i += 1
@@ -653,10 +640,7 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
             requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
 
             name, amount = ingredient
-            if full_stack:
-                amount = math.ceil(items[name] / 4) * 4 * 2
-            else:
-                amount = math.ceil(amount / 4) * 4
+            amount = get_amount(amount, name)
             requester.append_request_filters(
                 {"index": 1, "name": name, "count": amount}
             )
@@ -675,10 +659,7 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
 
                 for index, ing in enumerate(ingredient, start=1):
                     name, amount = ing
-                    if full_stack:
-                        amount = math.ceil(items[name] / 4) * 4 * 2
-                    else:
-                        amount = math.ceil(amount / 4) * 4
+                    amount = get_amount(amount, name)
                     requester.append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
@@ -702,10 +683,7 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
                 )
 
                 name, amount = ingredient
-                if full_stack:
-                    amount = math.ceil(items[name] / 4) * 4 * 2
-                else:
-                    amount = math.ceil(amount / 4) * 4
+                amount = get_amount(amount, name)
                 requester.append_request_filters(
                     {"index": 1, "name": name, "count": amount}
                 )
@@ -721,10 +699,7 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
 
                     for index, ing in enumerate(ingredient, start=1):
                         name, amount = ing
-                        if full_stack:
-                            amount = math.ceil(items[name] / 4) * 4 * 2
-                        else:
-                            amount = math.ceil(amount / 4) * 4
+                        amount = get_amount(amount, name)
                         requester.append_request_filters(
                             {"index": index, "name": name, "count": amount}
                         )
@@ -737,20 +712,14 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
             index = len(f) + 1
             if isinstance(ingredient, tuple):
                 name, amount = ingredient
-                if full_stack:
-                    amount = math.ceil(items[name] / 4) * 4 * 2
-                else:
-                    amount = math.ceil(amount / 4) * 4
+                amount = get_amount(amount, name)
                 e[i].append_request_filters(
                     {"index": index, "name": name, "count": amount}
                 )
             elif isinstance(ingredient, list):
                 for ing in ingredient:
                     name, amount = ing
-                    if full_stack:
-                        amount = math.ceil(items[name] / 4) * 4 * 2
-                    else:
-                        amount = math.ceil(amount / 4) * 4
+                    amount = get_amount(amount, name)
                     e[i].append_request_filters(
                         {"index": index, "name": name, "count": amount}
                     )
