@@ -246,7 +246,6 @@ def print_dict(d, dimension=None):
 
 # ====================================
 def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
-    # bp_str = r"0eNqllN2OgjAQhd9lrtsNtCjIq2zMhp+JThYKtsWsIbz7tpDsGoOCegWlnS9n5pzSQ1512GpSFtIeqGiUgfSzB0MHlVX+m720CCmQxRoYqKz2q8wYrPOK1IHXWXEkhVzCwIBUiT+QhgNbRFTNgYylghdHNJZrPHXuifoKI4Y9A1SWLOEka1xcvlRX5+5kGi7TGLSNcYBGeSVe28eGwQVS7l4Gr/OGKf6YxmbFNydlUD8mBfMkeU9d68ZHZ+Stbs5UzqGDBZHRapHBtUgGJWkspu1ohrtZzRULzW9fsEYsdB0/zt9dg8Kxddc4jTk0LWLJ66bsqqnMB9P4mpsdN6IZFcnTAZFrRr972tJV2DB42tJ13HfuXjTvbyheYAYLTPlGEEfmfgqIA/z/KxmcUZuxQCRhFO9EHCcykXI7DL+BFsRq"
     coordinates = (
         (1.5, -0.5, 1, 1.5, -1.5),
         (2.5, -0.5, 1, 2.5, -1.5),
@@ -311,7 +310,6 @@ def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
 
 # ====================================
 def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed):
-    # bp_str = r"0eNqllN2OgjAQhd9lrtsNtCjIq2zMhp+JThYKtsWsIbz7tpDsGoOCegWlnS9n5pzSQ1512GpSFtIeqGiUgfSzB0MHlVX+m720CCmQxRoYqKz2q8wYrPOK1IHXWXEkhVzCwIBUiT+QhgNbRFTNgYylghdHNJZrPHXuifoKI4Y9A1SWLOEka1xcvlRX5+5kGi7TGLSNcYBGeSVe28eGwQVS7l4Gr/OGKf6YxmbFNydlUD8mBfMkeU9d68ZHZ+Stbs5UzqGDBZHRapHBtUgGJWkspu1ohrtZzRULzW9fsEYsdB0/zt9dg8Kxddc4jTk0LWLJ66bsqqnMB9P4mpsdN6IZFcnTAZFrRr972tJV2DB42tJ13HfuXjTvbyheYAYLTPlGEEfmfgqIA/z/KxmcUZuxQCRhFO9EHCcykXI7DL+BFsRq"
     if recipe1:
         ingredients1 = [
             (i["name"], i["amount"] * amount1)
