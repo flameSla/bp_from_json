@@ -377,6 +377,8 @@ def if_quantity_is_more_than_5_sort_and_compress(ingredients):
 
 # ====================================
 def sort_and_compress(ingredients):
+    global par_debugging
+    # par_debugging = True
     if ingredients:
         there_are_items_that_can_be_damaged = False
         for j in range(len(ingredients)):
@@ -390,7 +392,10 @@ def sort_and_compress(ingredients):
             temp = []
             temp.append(ingredients[0])
             if ingredients[1:]:
-                temp.append(list(ingredients[1:]))
+                if len(ingredients) == 2:
+                    temp.append(ingredients[1])
+                else:
+                    temp.append(list(ingredients[1:]))
             return temp
         else:
             temp = []
@@ -555,24 +560,30 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
     debug("ingredient1 = ", type(ingredients1), ingredients1)
     debug("ingredient2 = ", type(ingredients2), ingredients2)
 
+    # only one request chest
+    compact_version = (
+        True if len(ingredients1) <= 1 and len(ingredients2) <= 1 else False
+    )
     # logistic-chest-requester
     i = 0
     e = [None, None]
     for ingredient in ingredients1:
+        if not compact_version and isinstance(ingredient, list) and i == 0:
+            i += 1
         x1, y1, d, x2, y2 = coordinates[i]
         if isinstance(ingredient, tuple):
             name, amount = ingredient
             add_stack_filter_inserter(bp, x0 + x1, y0 + y1, d, name)
         else:
             add_stack_inserter(bp, x0 + x1, y0 + y1, d)
-        requester = add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         # 2 chests shared by two machine
-        if i < 2:
-            e[i] = requester
+        e[i] = add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         i += 1
 
     i = 0
     for ingredient in ingredients2:
+        if not compact_version and isinstance(ingredient, list) and i == 0:
+            i += 1
         x1, y1, d, x2, y2 = coordinates2[i]
         if isinstance(ingredient, tuple):
             name, amount = ingredient
