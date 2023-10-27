@@ -1,4 +1,3 @@
-import argparse
 import math
 import json
 import sys
@@ -256,6 +255,152 @@ def print_dict(d, dimension=None):
 
 
 # ====================================
+def add_assembling_machine_3(bp, x, y, recipe, speed):
+    assembly = entity.new_entity("assembling-machine-3", x, y)
+    if recipe:
+        assembly.set("recipe", recipe)
+    if speed:
+        assembly.update_items({"speed-module-3": 4}, name_verification=False)
+    bp.append_entity(assembly)
+    return assembly
+
+
+# ====================================
+def new_connection(entity_number):
+    return {"1": {"red": [{"entity_id": entity_number}]}}
+
+
+# ====================================
+def new_circuit_condition(recipe):
+    return {
+        "circuit_condition": {
+            "first_signal": {"type": "item", "name": recipe},
+            "constant": items[recipe],
+            "comparator": "<",
+        }
+    }
+
+
+# ====================================
+def add_stack_filter_inserter(
+    bp, x, y, direction, recipe, circuit_condition=None, connection=None
+):
+    inserter = entity.new_entity("stack-filter-inserter", x, y)
+    inserter.set("direction", direction)
+    if recipe:
+        f = list()
+        f.append({"index": 1, "name": recipe})
+        inserter.set("filters", f)
+    if circuit_condition is not None:
+        inserter.set("control_behavior", circuit_condition)
+    if connection is not None:
+        inserter.set("connections", connection)
+    bp.append_entity(inserter)
+    return inserter
+
+
+# ====================================
+def add_passive_provider(bp, x, y, bar=None):
+    passive_provider = entity.new_entity("logistic-chest-passive-provider", x, y)
+    if bar is not None:
+        passive_provider.set("bar", bar)
+    bp.append_entity(passive_provider)
+    return passive_provider
+
+
+# ====================================
+def add_stack_inserter(bp, x, y, direction):
+    inserter = entity.new_entity("stack-inserter", x, y)
+    inserter.set("direction", direction)
+    bp.append_entity(inserter)
+    return inserter
+
+
+# ====================================
+def add_logistic_chest_requester(bp, x, y, ingredient):
+    requester = entity.new_entity("logistic-chest-requester", x, y)
+    if isinstance(ingredient, tuple):
+        name, amount = ingredient
+        amount = get_amount(amount, name)
+        requester.append_request_filters({"index": 1, "name": name, "count": amount})
+    elif isinstance(ingredient, list):
+        for index, ing in enumerate(ingredient, start=1):
+            name, amount = ing
+            amount = get_amount(amount, name)
+            requester.append_request_filters(
+                {"index": index, "name": name, "count": amount}
+            )
+    bp.append_entity(requester)
+    return requester
+
+
+# ====================================
+def update_request_filters(entity, ingredient):
+    index = len(entity.read("request_filters")) + 1
+    if isinstance(ingredient, tuple):
+        name, amount = ingredient
+        amount = get_amount(amount, name)
+        entity.append_request_filters({"index": index, "name": name, "count": amount})
+    elif isinstance(ingredient, list):
+        for ing in ingredient:
+            name, amount = ing
+            amount = get_amount(amount, name)
+            entity.append_request_filters(
+                {"index": index, "name": name, "count": amount}
+            )
+            index += 1
+
+
+# ====================================
+def if_quantity_is_more_than_5_sort_and_compress(ingredients):
+    if len(ingredients) > 5:
+        ingredients = sorted(ingredients, key=lambda tup: tup[1], reverse=True)
+        reset = True
+        while reset:
+            reset = False
+            debug("Warning")
+            for j in range(5, len(ingredients)):
+                i, a = ingredients[j]
+                debug("i = ", type(i), i)
+                if i in items_that_may_be_damaged:
+                    t = ingredients.pop(j)
+                    debug("ingredients = ", type(ingredients), ingredients)
+                    ingredients.insert(0, t)
+                    debug("ingredients = ", type(ingredients), ingredients)
+                    reset = True
+        temp = ingredients[0:4]
+        temp.append(list(ingredients[5:]))
+        return temp
+    else:
+        return ingredients
+
+
+# ====================================
+def sort_and_compress(ingredients):
+    if ingredients:
+        there_are_items_that_can_be_damaged = False
+        for j in range(len(ingredients)):
+            i, a = ingredients[j]
+            if i in items_that_may_be_damaged:
+                t = ingredients.pop(j)
+                ingredients.insert(0, t)
+                there_are_items_that_can_be_damaged = True
+                break
+        if there_are_items_that_can_be_damaged:
+            temp = []
+            temp.append(ingredients[0])
+            if ingredients[1:]:
+                temp.append(list(ingredients[1:]))
+            return temp
+        else:
+            temp = []
+            temp.append(list(ingredients))
+            return temp
+    else:
+        return ingredients
+
+
+# ====================================
 def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
     coordinates = (
         (1.5, -0.5, 1, 1.5, -1.5),
@@ -266,59 +411,21 @@ def add_assembly_machine(bp, x0, y0, recipe, amount, speed):
     )
 
     # assembly + passive_provider
-    assembly = entity.new_entity("assembling-machine-3", x0 + 1.5, y0 + 1.5)
-    assembly.set("recipe", recipe)
-    if speed:
-        assembly.update_items({"speed-module-3": 4}, name_verification=False)
-    bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-filter-inserter", x0 + 0.5, y0 - 0.5)
-    inserter.set("direction", 4)
-    f = list()
-    f.append({"index": 1, "name": recipe})
-    inserter.set("filters", f)
-    bp.append_entity(inserter)
-    passive_provider = entity.new_entity(
-        "logistic-chest-passive-provider", x0 + 0.5, y0 - 1.5
-    )
-    passive_provider.set("bar", 1)
-    bp.append_entity(passive_provider)
+    add_assembling_machine_3(bp, x0 + 1.5, y0 + 1.5, recipe, speed)
+    add_stack_filter_inserter(bp, x0 + 0.5, y0 - 0.5, 4, recipe)
+    add_passive_provider(bp, x0 + 0.5, y0 - 1.5, bar=1)
 
     ingredients = [
         (i["name"], i["amount"] * amount) for i in recipes[recipe] if i["name"] in items
     ]
 
-    if len(ingredients) > 5:
-        ingredients = sorted(ingredients, key=lambda tup: tup[1], reverse=True)
-        temp = ingredients[0:4]
-        for i, a in ingredients[5:]:
-            if i in items_that_may_be_damaged:
-                print("WARNING !!!!")
-        temp.append(list(ingredients[5:]))
-        ingredients = temp
-
+    ingredients = if_quantity_is_more_than_5_sort_and_compress(ingredients)
     # logistic-chest-requester
     i = 0
     for ingredient in ingredients:
         x1, y1, d, x2, y2 = coordinates[i]
-        inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-        inserter.set("direction", d)
-        bp.append_entity(inserter)
-        requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
-        if isinstance(ingredient, tuple):
-            name, amount = ingredient
-            amount = get_amount(amount, name)
-            requester.append_request_filters(
-                {"index": 1, "name": name, "count": amount}
-            )
-        elif isinstance(ingredient, list):
-            for index, ing in enumerate(ingredient, start=1):
-                name, amount = ing
-                amount = get_amount(amount, name)
-                requester.append_request_filters(
-                    {"index": index, "name": name, "count": amount}
-                )
-        bp.append_entity(requester)
-
+        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
+        add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         i += 1
 
 
@@ -363,140 +470,34 @@ def add_assembly_machine_2(bp, x0, y0, recipe1, amount1, recipe2, amount2, speed
     )
 
     # assembly + passive_provider
-    assembly = entity.new_entity("assembling-machine-3", x0 + 1.5, y0 + 1.5)
-    assembly.set("recipe", recipe1)
-    if speed:
-        assembly.update_items({"speed-module-3": 4}, name_verification=False)
-    bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-filter-inserter", x0 + 1.5, y0 - 0.5)
-    inserter.set("direction", 4)
-    f = list()
-    f.append({"index": 1, "name": recipe1})
-    inserter.set("filters", f)
-    bp.append_entity(inserter)
-    passive_provider = entity.new_entity(
-        "logistic-chest-passive-provider", x0 + 1.5, y0 - 1.5
-    )
-    passive_provider.set("bar", 1)
-    bp.append_entity(passive_provider)
-    assembly = entity.new_entity("assembling-machine-3", x0 + 1.5, y0 + 7.5)
-    assembly.set("recipe", recipe2)
-    if speed:
-        assembly.update_items({"speed-module-3": 4}, name_verification=False)
-    bp.append_entity(assembly)
-    inserter = entity.new_entity("stack-filter-inserter", x0 + 1.5, y0 + 9.5)
-    # inserter.set("direction", )
-    f = list()
-    f.append({"index": 1, "name": recipe2})
-    inserter.set("filters", f)
-    bp.append_entity(inserter)
-    passive_provider = entity.new_entity(
-        "logistic-chest-passive-provider", x0 + 1.5, y0 + 10.5
-    )
-    passive_provider.set("bar", 1)
-    bp.append_entity(passive_provider)
+    add_assembling_machine_3(bp, x0 + 1.5, y0 + 1.5, recipe1, speed)
+    add_stack_filter_inserter(bp, x0 + 1.5, y0 - 0.5, 4, recipe1)
+    add_passive_provider(bp, x0 + 1.5, y0 - 1.5, bar=1)
+    add_assembling_machine_3(bp, x0 + 1.5, y0 + 7.5, recipe2, speed)
+    add_stack_filter_inserter(bp, x0 + 1.5, y0 + 9.5, 1, recipe2)
+    add_passive_provider(bp, x0 + 1.5, y0 + 10.5, bar=1)
 
-    if len(ingredients1) > 5:
-        ingredients1 = sorted(ingredients1, key=lambda tup: tup[1], reverse=True)
-        reset = True
-        while reset:
-            reset = False
-            debug("Warning")
-            for j in range(5, len(ingredients1)):
-                i, a = ingredients1[j]
-                debug("i = ", type(i), i)
-                if i in items_that_may_be_damaged:
-                    t = ingredients1.pop(j)
-                    debug("ingredients1 = ", type(ingredients1), ingredients1)
-                    ingredients1.insert(0, t)
-                    debug("ingredients1 = ", type(ingredients1), ingredients1)
-                    reset = True
-        temp = ingredients1[0:4]
-        temp.append(list(ingredients1[5:]))
-        ingredients1 = temp
-
-    if len(ingredients2) > 5:
-        ingredients2 = sorted(ingredients2, key=lambda tup: tup[1], reverse=True)
-        reset = True
-        while reset:
-            reset = False
-            debug("Warning")
-            for j in range(5, len(ingredients2)):
-                i, a = ingredients2[j]
-                debug("i = ", type(i), i)
-                if i in items_that_may_be_damaged:
-                    t = ingredients2.pop(j)
-                    debug("ingredients2 = ", type(ingredients2), ingredients2)
-                    ingredients2.insert(0, t)
-                    debug("ingredients2 = ", type(ingredients2), ingredients2)
-                    reset = True
-        temp = ingredients2[0:4]
-        temp.append(list(ingredients2[5:]))
-        ingredients2 = temp
-
+    ingredients1 = if_quantity_is_more_than_5_sort_and_compress(ingredients1)
+    ingredients2 = if_quantity_is_more_than_5_sort_and_compress(ingredients2)
     # logistic-chest-requester
     i = 0
     e = [None, None, None, None, None]
     for ingredient in ingredients1:
         x1, y1, d, x2, y2 = coordinates[i]
-        inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-        inserter.set("direction", d)
-        bp.append_entity(inserter)
-        requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
-        if isinstance(ingredient, tuple):
-            name, amount = ingredient
-            amount = get_amount(amount, name)
-            requester.append_request_filters(
-                {"index": 1, "name": name, "count": amount}
-            )
-        elif isinstance(ingredient, list):
-            for index, ing in enumerate(ingredient, start=1):
-                name, amount = ing
-                amount = get_amount(amount, name)
-                requester.append_request_filters(
-                    {"index": index, "name": name, "count": amount}
-                )
+        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
+        requester = add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         if i < 3:
             e[i] = requester
-        bp.append_entity(requester)
-
         i += 1
 
-    if block_type_2:
-        i = 1
-    else:
-        i = 0
+    i = 1 if block_type_2 else 0
     for ingredient in ingredients2:
         x1, y1, d, x2, y2 = coordinates2[i]
+        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
         if e[i] is None:
-            inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-            inserter.set("direction", d)
-            bp.append_entity(inserter)
-            requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
-            if isinstance(ingredient, tuple):
-                name, amount = ingredient
-                amount = get_amount(amount, name)
-                requester.append_request_filters(
-                    {"index": 1, "name": name, "count": amount}
-                )
-            elif isinstance(ingredient, list):
-                for index, ing in enumerate(ingredient, start=1):
-                    name, amount = ing
-                    amount = get_amount(amount, name)
-                    requester.append_request_filters(
-                        {"index": index, "name": name, "count": amount}
-                    )
-            bp.append_entity(requester)
+            add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         else:
-            inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-            inserter.set("direction", d)
-            bp.append_entity(inserter)
-            f = e[i].read("request_filters")
-            index = len(f) + 1
-            name, amount = ingredient
-            amount = get_amount(amount, name)
-            e[i].append_request_filters({"index": index, "name": name, "count": amount})
-
+            update_request_filters(e[i], ingredient)
         i += 1
 
     if block_type_2:
@@ -535,96 +536,21 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
     )
 
     # assembly + passive_provider
-    passive_provider = entity.new_entity(
-        "logistic-chest-passive-provider", x0 + 0.5, y0 + 4.5
-    )
-    bp.append_entity(passive_provider)
+    passive_provider = add_passive_provider(bp, x0 + 0.5, y0 + 4.5)
     if recipe1:
-        inserter = entity.new_entity("stack-filter-inserter", x0 + 0.5, y0 + 3.5)
-        f = list()
-        f.append({"index": 1, "name": recipe1})
-        inserter.set("filters", f)
-        cs = {
-            "circuit_condition": {
-                "first_signal": {"type": "item", "name": recipe1},
-                "constant": items[recipe1],
-                "comparator": "<",
-            }
-        }
-        inserter.set("control_behavior", cs)
-        c = {"1": {"red": [{"entity_id": passive_provider.read_entity_number()}]}}
-        inserter.set("connections", c)
-        bp.append_entity(inserter)
+        cs = new_circuit_condition(recipe1)
+        c = new_connection(passive_provider.read_entity_number())
+        add_stack_filter_inserter(bp, x0 + 0.5, y0 + 3.5, 1, recipe1, cs, c)
     if recipe2:
-        inserter = entity.new_entity("stack-filter-inserter", x0 + 0.5, y0 + 5.5)
-        inserter.set("direction", 4)
-        f = list()
-        f.append({"index": 1, "name": recipe2})
-        inserter.set("filters", f)
-        cs = {
-            "circuit_condition": {
-                "first_signal": {"type": "item", "name": recipe2},
-                "constant": items[recipe2],
-                "comparator": "<",
-            }
-        }
-        inserter.set("control_behavior", cs)
-        c = {"1": {"red": [{"entity_id": passive_provider.read_entity_number()}]}}
-        inserter.set("connections", c)
-        bp.append_entity(inserter)
+        cs = new_circuit_condition(recipe2)
+        c = new_connection(passive_provider.read_entity_number())
+        add_stack_filter_inserter(bp, x0 + 0.5, y0 + 5.5, 4, recipe2, cs, c)
 
-    assembly = entity.new_entity("assembling-machine-3", x0 + 1.5, y0 + 1.5)
-    if recipe1:
-        assembly.set("recipe", recipe1)
-    if speed:
-        assembly.update_items({"speed-module-3": 4}, name_verification=False)
-    bp.append_entity(assembly)
+    add_assembling_machine_3(bp, x0 + 1.5, y0 + 1.5, recipe1, speed)
+    add_assembling_machine_3(bp, x0 + 1.5, y0 + 7.5, recipe2, speed)
 
-    assembly = entity.new_entity("assembling-machine-3", x0 + 1.5, y0 + 7.5)
-    if recipe2:
-        assembly.set("recipe", recipe2)
-    if speed:
-        assembly.update_items({"speed-module-3": 4}, name_verification=False)
-    bp.append_entity(assembly)
-
-    if ingredients1:
-        there_are_items_that_can_be_damaged = False
-        for j in range(len(ingredients1)):
-            i, a = ingredients1[j]
-            if i in items_that_may_be_damaged:
-                t = ingredients1.pop(j)
-                ingredients1.insert(0, t)
-                there_are_items_that_can_be_damaged = True
-                break
-        if there_are_items_that_can_be_damaged:
-            temp = []
-            temp.append(ingredients1[0])
-            temp.append(list(ingredients1[1:]))
-            ingredients1 = temp
-        else:
-            temp = []
-            temp.append(list(ingredients1))
-            ingredients1 = temp
-
-    if ingredients2:
-        there_are_items_that_can_be_damaged = False
-        for j in range(len(ingredients2)):
-            i, a = ingredients2[j]
-            if i in items_that_may_be_damaged:
-                t = ingredients2.pop(j)
-                ingredients2.insert(0, t)
-                there_are_items_that_can_be_damaged = True
-                break
-        if there_are_items_that_can_be_damaged:
-            temp = []
-            temp.append(ingredients2[0])
-            temp.append(list(ingredients2[1:]))
-            ingredients2 = temp
-        else:
-            temp = []
-            temp.append(list(ingredients2))
-            ingredients2 = temp
-
+    ingredients1 = sort_and_compress(ingredients1)
+    ingredients2 = sort_and_compress(ingredients2)
     debug("ingredient1 = ", type(ingredients1), ingredients1)
     debug("ingredient2 = ", type(ingredients2), ingredients2)
 
@@ -633,98 +559,20 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
     e = [None, None]
     for ingredient in ingredients1:
         x1, y1, d, x2, y2 = coordinates[i]
-        if isinstance(ingredient, tuple):
-            inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-            inserter.set("direction", d)
-            bp.append_entity(inserter)
-            requester = entity.new_entity("logistic-chest-requester", x0 + x2, y0 + y2)
-
-            name, amount = ingredient
-            amount = get_amount(amount, name)
-            requester.append_request_filters(
-                {"index": 1, "name": name, "count": amount}
-            )
-
-            if i < 2:
-                e[i] = requester
-            bp.append_entity(requester)
-        elif isinstance(ingredient, list):
-            if len(ingredient):
-                inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-                inserter.set("direction", d)
-                bp.append_entity(inserter)
-                requester = entity.new_entity(
-                    "logistic-chest-requester", x0 + x2, y0 + y2
-                )
-
-                for index, ing in enumerate(ingredient, start=1):
-                    name, amount = ing
-                    amount = get_amount(amount, name)
-                    requester.append_request_filters(
-                        {"index": index, "name": name, "count": amount}
-                    )
-
-                if i < 2:
-                    e[i] = requester
-                bp.append_entity(requester)
-
+        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
+        requester = add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
+        if i < 2:
+            e[i] = requester
         i += 1
 
     i = 0
     for ingredient in ingredients2:
         x1, y1, d, x2, y2 = coordinates2[i]
+        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
         if e[i] is None:
-            if isinstance(ingredient, tuple):
-                inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-                inserter.set("direction", d)
-                bp.append_entity(inserter)
-                requester = entity.new_entity(
-                    "logistic-chest-requester", x0 + x2, y0 + y2
-                )
-
-                name, amount = ingredient
-                amount = get_amount(amount, name)
-                requester.append_request_filters(
-                    {"index": 1, "name": name, "count": amount}
-                )
-                bp.append_entity(requester)
-            elif isinstance(ingredient, list):
-                if len(ingredient):
-                    inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-                    inserter.set("direction", d)
-                    bp.append_entity(inserter)
-                    requester = entity.new_entity(
-                        "logistic-chest-requester", x0 + x2, y0 + y2
-                    )
-
-                    for index, ing in enumerate(ingredient, start=1):
-                        name, amount = ing
-                        amount = get_amount(amount, name)
-                        requester.append_request_filters(
-                            {"index": index, "name": name, "count": amount}
-                        )
-                    bp.append_entity(requester)
+            add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         else:
-            inserter = entity.new_entity("stack-inserter", x0 + x1, y0 + y1)
-            inserter.set("direction", d)
-            bp.append_entity(inserter)
-            f = e[i].read("request_filters")
-            index = len(f) + 1
-            if isinstance(ingredient, tuple):
-                name, amount = ingredient
-                amount = get_amount(amount, name)
-                e[i].append_request_filters(
-                    {"index": index, "name": name, "count": amount}
-                )
-            elif isinstance(ingredient, list):
-                for ing in ingredient:
-                    name, amount = ing
-                    amount = get_amount(amount, name)
-                    e[i].append_request_filters(
-                        {"index": index, "name": name, "count": amount}
-                    )
-                    index += 1
-
+            update_request_filters(e[i], ingredient)
         i += 1
 
 
@@ -939,9 +787,7 @@ if __name__ == "__main__":
         x += 4
 
     for r in recipes_items_more_than_1:
-        assembly = entity.new_entity("assembling-machine-3", x + 1.5, y + 1.5)
-        assembly.set("recipe", r)
-        bp.append_entity(assembly)
+        add_assembling_machine_3(bp, x + 1.5, y + 1.5, r, True)
 
     bp.set_label_color(1, 0, 1)
     bp.set_label("mall ver2")
@@ -972,35 +818,15 @@ if __name__ == "__main__":
     bp = blueprint.new_blueprint()
     x0 = y0 = 0
     for i in all_ingredients:
-        passive_provider = entity.new_entity(
-            "logistic-chest-passive-provider", x0 + 0.5, y0 + 0.5
-        )
-        bp.append_entity(passive_provider)
-        passive_provider = entity.new_entity(
-            "logistic-chest-passive-provider", x0 + 0.5, y0 + 4.5
-        )
-        bp.append_entity(passive_provider)
-        passive_provider = entity.new_entity(
-            "logistic-chest-passive-provider", x0 + 1.5, y0 + 0.5
-        )
-        bp.append_entity(passive_provider)
-        passive_provider = entity.new_entity(
-            "logistic-chest-passive-provider", x0 + 1.5, y0 + 4.5
-        )
-        bp.append_entity(passive_provider)
+        add_passive_provider(bp, x0 + 0.5, y0 + 0.5)
+        add_passive_provider(bp, x0 + 0.5, y0 + 4.5)
+        add_passive_provider(bp, x0 + 1.5, y0 + 0.5)
+        add_passive_provider(bp, x0 + 1.5, y0 + 4.5)
 
-        inserter = entity.new_entity("stack-inserter", x0 + 0.5, y0 + 1.5)
-        inserter.set("direction", 4)
-        bp.append_entity(inserter)
-        inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 + 1.5)
-        inserter.set("direction", 4)
-        bp.append_entity(inserter)
-        inserter = entity.new_entity("stack-inserter", x0 + 0.5, y0 + 3.5)
-        # inserter.set("direction", d)
-        bp.append_entity(inserter)
-        inserter = entity.new_entity("stack-inserter", x0 + 1.5, y0 + 3.5)
-        # inserter.set("direction", d)
-        bp.append_entity(inserter)
+        add_stack_inserter(bp, x0 + 0.5, y0 + 1.5, 4)
+        add_stack_inserter(bp, x0 + 1.5, y0 + 1.5, 4)
+        add_stack_inserter(bp, x0 + 0.5, y0 + 3.5, 1)
+        add_stack_inserter(bp, x0 + 1.5, y0 + 3.5, 1)
 
         infinity_chest = entity.new_entity("infinity-chest", x0 + 0.5, y0 + 2.5)
         s = {
