@@ -560,7 +560,11 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
     e = [None, None]
     for ingredient in ingredients1:
         x1, y1, d, x2, y2 = coordinates[i]
-        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
+        if isinstance(ingredient, tuple):
+            name, amount = ingredient
+            add_stack_filter_inserter(bp, x0 + x1, y0 + y1, d, name)
+        else:
+            add_stack_inserter(bp, x0 + x1, y0 + y1, d)
         requester = add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         # 2 chests shared by two machine
         if i < 2:
@@ -570,7 +574,11 @@ def add_assembly_machine_2_ver2(bp, x0, y0, recipe1, amount1, recipe2, amount2, 
     i = 0
     for ingredient in ingredients2:
         x1, y1, d, x2, y2 = coordinates2[i]
-        add_stack_inserter(bp, x0 + x1, y0 + y1, d)
+        if isinstance(ingredient, tuple):
+            name, amount = ingredient
+            add_stack_filter_inserter(bp, x0 + x1, y0 + y1, d, name)
+        else:
+            add_stack_inserter(bp, x0 + x1, y0 + y1, d)
         if e[i] is None:
             add_logistic_chest_requester(bp, x0 + x2, y0 + y2, ingredient)
         else:
