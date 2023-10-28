@@ -689,3 +689,7 @@ class blueprint:
         exchange_str = '0' + base64.b64encode(zlib.compress(json_str,
                                                             9)).decode('utf-8')
         return exchange_str
+
+    def to_file(self, filename):
+        with open(filename, "w") as f:
+            print(self.to_str(), file=f, flush=True)
