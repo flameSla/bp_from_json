@@ -588,7 +588,10 @@ def get_recipes():
                 ingredient["amount"] = Fraction(
                     ingredient["amount"], recipe["products"][0]["amount"]
                 )
-            recipes[recipe["name"]] = recipe["ingredients"]
+            recipes[recipe["name"]] = {
+                "ingredients": recipe["ingredients"],
+                "product": recipe["products"][0]["name"],
+            }
 
     debug("len(names) = {} - len(recipes) = {}".format(len(names), len(recipes)))
     print("ATTENTION: these recipes are ignored")
@@ -597,7 +600,7 @@ def get_recipes():
     print("len(diff) = {}".format(len(diff)))
     print()
 
-    return recipes, json_all["recipes"]
+    return recipes
 
 
 # ====================================
@@ -631,7 +634,7 @@ def get_iningredients(recipe):
     if recipe:
         ingredients = [
             (i["name"], i["amount"] * amount)
-            for i in recipes[recipe]
+            for i in recipes[recipe]["ingredients"]
             if i["name"] in items
         ]
     else:
@@ -656,7 +659,7 @@ def add_red_filter_inserter(
     inserter = entity.new_entity("red-filter-inserter", x, y)
     inserter.set("direction", direction)
     if recipe:
-        r = get_recipe_from_all_recipes(recipe)
+        r = recipes[recipe]["product"]
         f = list()
         f.append({"index": 1, "name": r})
         inserter.set("filters", f)
@@ -682,16 +685,9 @@ def new_connection(entity_number):
 
 
 # ====================================
-def get_recipe_from_all_recipes(recipe):
-    return tuple(r for r in all_recipes if r["name"] == recipe)[0]["products"][0][
-        "name"
-    ]
-
-
-# ====================================
 def new_circuit_condition(recipe):
     if recipe:
-        r = get_recipe_from_all_recipes(recipe)
+        r = recipes[recipe]["product"]
         if r != recipe:
             debug(r, recipe)
         return {
@@ -817,7 +813,7 @@ def add_assembly_machine(bp, x0, y0, recipe1, recipe2, recipe3, recipe4):
 #
 # main
 if __name__ == "__main__":
-    recipes, all_recipes = get_recipes()
+    recipes = get_recipes()
     items = get_items()
 
     # print(len(recipes))
@@ -909,7 +905,5 @@ if __name__ == "__main__":
     print(label)
     print("==================================")
     print(f"to file: {filename}")
-    with open(filename, "w") as f:
-        print(bp.to_str(), file=f, flush=True)
-
+    bp.to_file(filename)
     print("==================================")
