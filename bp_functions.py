@@ -88,7 +88,13 @@ def new_circuit_condition(recipe, recipes, constant, comparator="<"):
 
 # ====================================
 def get_stack_size(recipe, recipes, items):
-    return items[recipes[recipe]["product"]]
+    if recipe:
+        if recipe in recipes:
+            return items[recipes[recipe]["product"]]
+        else:
+            return items[recipe]
+    else:
+        return None
 
 
 # ====================================
@@ -142,3 +148,32 @@ def get_amount(amount, name, items, full_stack=True):
         return math.ceil(items[name] / 4 / 2) * 4
     else:
         return math.ceil(amount / 4) * 4
+
+
+######################################
+#
+# main
+if __name__ == "__main__":
+    func_list = [
+        name
+        for (name, obj) in vars().items()
+        if hasattr(obj, "__class__") and obj.__class__.__name__ == "function"
+    ]
+
+    for line in func_list:
+        print(f"from bp_functions import {line}")
+
+"""
+from bp_functions import get_iningredients
+from bp_functions import add_machine
+from bp_functions import add_passive_provider
+from bp_functions import add_filter_inserter
+from bp_functions import add_inserter
+from bp_functions import new_connection
+from bp_functions import new_circuit_condition
+from bp_functions import get_stack_size
+from bp_functions import add_logistic_chest_requester
+from bp_functions import update_request_filters
+from bp_functions import add_entity
+from bp_functions import get_amount
+"""
