@@ -284,7 +284,49 @@ def print_id(s, a):
 
 
 #############################################
-def get_machine_recipes(name_of_the_json_file, machine_name="assembling-machine-2"):
+def get_recipes_with_one_product(name_of_the_json_file):
+    # read json file
+    with open(name_of_the_json_file, "r", encoding="utf8") as read_file:
+        json_all = json.load(read_file)
+
+    # json -> dist()
+    recipes = dict()
+    names = []
+    for recipe in json_all["recipes"]:
+        names.append(recipe["name"])
+        if len(recipe["products"]) == 1:
+            for ingredient in recipe["ingredients"]:
+                ingredient["amount"] = Fraction(
+                    ingredient["amount"], recipe["products"][0]["amount"]
+                )
+            recipes[recipe["name"]] = {
+                "ingredients": recipe["ingredients"],
+                "product": recipe["products"][0]["name"],
+            }
+            n1 = recipe["name"]
+            n2 = recipe["products"][0]["name"]
+            if n1 != n2:
+                print()
+                print("ATTENTION")
+                print(f"recipe '{n1}' -> product '{n2}'")
+        # else:
+        #     print("****************")
+        #     print(recipe["products"])
+        #     print("****************")
+
+    print()
+    print("len(names) = {} - len(recipes) = {}".format(len(names), len(recipes)))
+    print("ATTENTION: these recipes are ignored")
+    diff = set(names) - set(recipes.keys())
+    print(diff)
+    print("len(diff) = {}".format(len(diff)))
+    print()
+
+    return recipes
+
+
+#############################################
+def get_machine_recipes_with_one_product(name_of_the_json_file, machine_name="assembling-machine-2"):
     # read json file
     with open(name_of_the_json_file, "r", encoding="utf8") as read_file:
         json_all = json.load(read_file)
@@ -329,7 +371,7 @@ def get_machine_recipes(name_of_the_json_file, machine_name="assembling-machine-
 #############################################
 def get_items():
     # read json file
-    with open('items.json', 'r') as read_file:
+    with open('items.json', 'r', encoding="utf8") as read_file:
         json_items = json.load(read_file)
 
     # json -> dist()
