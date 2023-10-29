@@ -809,6 +809,35 @@ def add_assembly_machine(bp, x0, y0, recipe1, recipe2, recipe3, recipe4):
     update_request_filters(requesters[1], ingredients)
 
 
+# ====================================
+def get_bp(bp, recipes_for_bp):
+    all_recipe = list(recipes_for_bp)
+    x = y = count = 0
+    while True:
+
+        def get_recipe():
+            if all_recipe:
+                r = all_recipe.pop()
+                return r
+            else:
+                return ""
+
+        r1 = get_recipe()
+        r2 = get_recipe()
+        r3 = get_recipe()
+        r4 = get_recipe()
+
+        if r1 == "" and r2 == "" and r3 == "" and r4 == "":
+            break
+
+        add_assembly_machine(bp, x, y, r1, r2, r3, r4)
+        count += 1
+        x += 7
+        if count % 10 == 0:
+            x = 0
+            y += 10
+
+
 ######################################
 #
 # main
@@ -870,33 +899,7 @@ if __name__ == "__main__":
     # print("==================================")
 
     bp = blueprint.new_blueprint()
-
-    all_recipe = list(recipes_for_mall)
-    x = y = count = 0
-    while True:
-
-        def get_recipe():
-            if all_recipe:
-                r = all_recipe.pop()
-                return r
-            else:
-                return ""
-
-        r1 = get_recipe()
-        r2 = get_recipe()
-        r3 = get_recipe()
-        r4 = get_recipe()
-
-        if r1 == "" and r2 == "" and r3 == "" and r4 == "":
-            break
-
-        add_assembly_machine(bp, x, y, r1, r2, r3, r4)
-        count += 1
-        x += 7
-        if count % 10 == 0:
-            x = 0
-            y += 10
-
+    get_bp(bp, recipes_for_mall)
     label = "mall"
     filename = "bp-out-BobMod.ignore"
     bp.set_label_color(1, 0, 1)
@@ -906,4 +909,43 @@ if __name__ == "__main__":
     print("==================================")
     print(f"to file: {filename}")
     bp.to_file(filename)
+    print("==================================")
+
+    modules = (
+        "speed-module",
+        "speed-module-2",
+        "speed-module-3",
+        "speed-module-4",
+        "speed-module-5",
+        "speed-module-6",
+        "speed-module-7",
+        "speed-module-8",
+        "effectivity-module",
+        "effectivity-module-2",
+        "effectivity-module-3",
+        "effectivity-module-4",
+        "effectivity-module-5",
+        "effectivity-module-6",
+        "effectivity-module-7",
+        "effectivity-module-8",
+        "productivity-module",
+        "productivity-module-2",
+        "productivity-module-3",
+        "productivity-module-4",
+        "productivity-module-5",
+        "productivity-module-6",
+        "productivity-module-7",
+        "productivity-module-8",
+    )
+    bp = blueprint.new_blueprint()
+    get_bp(bp, modules)
+    label = "mall"
+    filename = "bp-out-BobMod.ignore"
+    bp.set_label_color(1, 0, 1)
+    bp.set_label(label)
+    print()
+    print(label)
+    print("==================================")
+    # print(f"to file: {filename}")
+    print(bp.to_str())
     print("==================================")
