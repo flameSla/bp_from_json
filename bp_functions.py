@@ -131,9 +131,9 @@ def update_request_filters(entity, ingredient, func_get_amount):
 
 # ====================================
 def add_entity(bp, name, x, y):
-    pole = entity.new_entity(name, x, y)
-    bp.append_entity(pole)
-    return pole
+    e = entity.new_entity(name, x, y)
+    bp.append_entity(e)
+    return e
 
 
 # ====================================
