@@ -308,6 +308,12 @@ def get_machine_recipes(name_of_the_json_file, machine_name="assembling-machine-
                 "ingredients": recipe["ingredients"],
                 "product": recipe["products"][0]["name"],
             }
+            n1 = recipe["name"]
+            n2 = recipe["products"][0]["name"]
+            if n1 != n2:
+                print()
+                print("ATTENTION")
+                print(f"recipe '{n1}' -> product '{n2}'")
 
     print()
     print("len(names) = {} - len(recipes) = {}".format(len(names), len(recipes)))
