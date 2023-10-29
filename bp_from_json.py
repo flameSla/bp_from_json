@@ -4,6 +4,7 @@ import json
 import zlib
 import hashlib
 import math
+from fractions import Fraction
 
 
 #############################################
@@ -51,10 +52,10 @@ class position():
         self -= cent
 
         angle_radians = angle_degrees * math.pi / 180.0
-        x = self.data['x']*math.cos(angle_radians) - \
-            self.data['y']*math.sin(angle_radians)
-        y = self.data['x']*math.sin(angle_radians) + \
-            self.data['y']*math.cos(angle_radians)
+        x = self.data['x'] * math.cos(angle_radians) - \
+            self.data['y'] * math.sin(angle_radians)
+        y = self.data['x'] * math.sin(angle_radians) + \
+            self.data['y'] * math.cos(angle_radians)
 
         self.data['x'] = x
         self.data['x'] = y
@@ -280,6 +281,43 @@ class entity():
 #############################################
 def print_id(s, a):
     print('{0:32} {1:20} {2:20} {3}'.format(s, hex(id(a)), str(a), type(a)))
+
+
+#############################################
+def get_machine_recipes(name_of_the_json_file, machine_name="assembling-machine-2"):
+    # read json file
+    with open(name_of_the_json_file, "r", encoding="utf8") as read_file:
+        json_all = json.load(read_file)
+
+    # json -> dist()
+    for a in (e for e in json_all["entities"] if machine_name in e["name"]):
+        crafting_categories = a["crafting_categories"]
+
+    recipes = dict()
+    names = []
+    for recipe in (
+        r for r in json_all["recipes"] if r["category"] in crafting_categories
+    ):
+        names.append(recipe["name"])
+        if len(recipe["products"]) == 1:
+            for ingredient in recipe["ingredients"]:
+                ingredient["amount"] = Fraction(
+                    ingredient["amount"], recipe["products"][0]["amount"]
+                )
+            recipes[recipe["name"]] = {
+                "ingredients": recipe["ingredients"],
+                "product": recipe["products"][0]["name"],
+            }
+
+    print()
+    print("len(names) = {} - len(recipes) = {}".format(len(names), len(recipes)))
+    print("ATTENTION: these recipes are ignored")
+    diff = set(names) - set(recipes.keys())
+    print(diff)
+    print("len(diff) = {}".format(len(diff)))
+    print()
+
+    return recipes
 
 
 #############################################
