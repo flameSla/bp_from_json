@@ -18,7 +18,7 @@ options:
 ```
 
 
-* Script "bps_from_folders.py" from the directory "bps_folder" creates a "bp_out.txt".
+* Script **"bps_from_folders.py"** from the directory "bps_folder" creates a "bp_out.txt".
 
 **bps_from_folders.py**:
 ```
