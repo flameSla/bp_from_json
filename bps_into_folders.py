@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 from bp_from_json import blueprint
 import shutil
@@ -31,11 +32,43 @@ def get_filename(bp):
 
 
 # ====================================
+def init_parser():
+    parser = argparse.ArgumentParser(
+        description=(
+            'Script "bps_into_folders.py" creates separate files from the "bp.txt" in the "out_folder" directory.'
+            " The contents of the directory are BEING DELETED! "
+            'For example: bps_into_folders.py -d="out_folder" -b="bp-file"'
+        )
+    )
+    parser.add_argument(
+        "-d",
+        "--directory",
+        type=str,
+        default="",
+        help=(
+            '(OUT) The directory for the result. The contents of the directory will be DESTROYED! Default = "working_directory/bps_folder"'
+        ),
+    )
+    parser.add_argument(
+        "-b",
+        "--blueprint",
+        type=str,
+        default="",
+        help=('(IN) Blueprint file. Default = "bp.txt"'),
+    )
+    return parser
+
+
+# ====================================
 #
 # main
 if __name__ == "__main__":
-    bps_folder = get_current_working_directory().joinpath("bps_folder")
-    # print("bps_folder = ", type(bps_folder), bps_folder)
+    args = init_parser().parse_args()
+
+    if args.directory:
+        bps_folder = Path(args.directory)
+    else:
+        bps_folder = get_current_working_directory().joinpath("bps_folder")
 
     # create folder
     if bps_folder.exists():
@@ -45,7 +78,11 @@ if __name__ == "__main__":
     print()
     print("==================")
     print()
-    book = blueprint.from_file("bp.txt")
+
+    if args.blueprint:
+        book = blueprint.from_file(args.blueprint)
+    else:
+        book = blueprint.from_file("bp.txt")
 
     def get_path(bps):
         path = Path(bps_folder)
