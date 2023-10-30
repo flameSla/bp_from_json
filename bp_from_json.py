@@ -492,7 +492,7 @@ class blueprint:
         e.set_entity_number(len(self.obj["entities"]) + 1)
         self.obj["entities"].append(e.data)
 
-    def append_bp(self, bp):
+    def append_bp(self, bp, index=None):
         if not self.is_blueprint_book():
             print('the blueprint cannot contain other blueprints"')
             raise AttributeError
@@ -500,15 +500,23 @@ class blueprint:
             if "blueprints" not in self.obj:
                 self.obj["blueprints"] = list()
 
-            max_item = -1
-            for x in self.obj["blueprints"]:
-                max_item = max(max_item, x.get("index", -1))
-
             d = collections.OrderedDict()
-            d["index"] = max_item + 1
+            if index is None:
+                max_item = -1
+                for x in self.obj["blueprints"]:
+                    max_item = max(max_item, x.get("index", -1))
+
+                d["index"] = max_item + 1
+            else:
+                d["index"] = index
+
             if bp.is_blueprint():
                 d["blueprint"] = bp.obj.copy()
-            else:
+            elif bp.is_deconstruction_planner():
+                d["deconstruction_planner"] = bp.obj.copy()
+            elif bp.is_upgrade_planner():
+                d["upgrade_planner"] = bp.obj.copy()
+            elif bp.is_blueprint_book():
                 d["blueprint_book"] = bp.obj.copy()
             self.obj["blueprints"].append(d)
 
@@ -677,6 +685,14 @@ class blueprint:
 
     # -------------------------------------
     #   is_
+
+    def is_deconstruction_planner(self):
+        if self.data is not None:
+            return "deconstruction_planner" in self.data
+
+    def is_upgrade_planner(self):
+        if self.data is not None:
+            return "upgrade_planner" in self.data
 
     def is_blueprint_book(self):
         if self.data is not None:
