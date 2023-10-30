@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 from bp_from_json import blueprint
 import json
@@ -79,13 +80,49 @@ def add_bp_from_folder(folder):
         return None
 
 
+# ====================================
+def init_parser():
+    parser = argparse.ArgumentParser(
+        description=(
+            'Script "bps_from_folders.py" from the directory "bps_folder" creates a "bp_out.txt" '
+            'For example: bps_from_folders.py -dir="in_folder" -b="out-bp"'
+        )
+    )
+    parser.add_argument(
+        "-d",
+        "--directory",
+        type=str,
+        default="",
+        help=(
+            '(IN) Directory with blueprints. Default = "working_directory/bps_folder"'
+        ),
+    )
+    parser.add_argument(
+        "-b",
+        "--blueprint",
+        type=str,
+        default="",
+        help=('(OUT) Blueprint file. Default = "bp_out.txt"'),
+    )
+    return parser
+
+
 ######################################
 #
 # main
 if __name__ == "__main__":
-    bps_folder = get_current_working_directory().joinpath("bps_folder")
-    # print("bps_folder = ", type(bps_folder), bps_folder)
+    args = init_parser().parse_args()
+
+    if args.directory:
+        bps_folder = Path(args.directory)
+    else:
+        bps_folder = get_current_working_directory().joinpath("bps_folder")
+
+    if args.blueprint:
+        output_file = args.blueprint
+    else:
+        output_file = "bp_out.txt"
 
     bp = add_bp_from_folder(bps_folder)
     if bp:
-        bp.to_file("bp_out.txt")
+        bp.to_file(output_file)
