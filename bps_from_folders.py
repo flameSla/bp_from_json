@@ -27,9 +27,10 @@ def get_index(filename):
 
 # ====================================
 def add_bp_from_folder_parse(bp, folder):
+    # using recursion, we look through all directories
     for file in folder.iterdir():
         if file.is_file() and file.suffix == ".bin":
-            index, book_name = get_index(file)
+            index, blueprint_name = get_index(file)
             new_bp = blueprint.from_file(file)
             print(f"\tcreate blueprint '{new_bp.read_label()}'\tindex={index}")
             bp.append_bp(new_bp, index)
@@ -55,7 +56,7 @@ def add_bp_from_folder(folder):
     if len(tuple(folder.iterdir())) == 1:
         for file in folder.iterdir():
             if file.is_file() and file.suffix == ".bin":
-                index, book_name = get_index(file)
+                index, blueprint_name = get_index(file)
                 bp = blueprint.from_file(file)
                 print(f"\tcreate blueprint '{bp.read_label()}'\tindex={index}")
                 return bp
@@ -85,7 +86,7 @@ def init_parser():
     parser = argparse.ArgumentParser(
         description=(
             'Script "bps_from_folders.py" from the directory "bps_folder" creates a "bp_out.txt" '
-            'For example: bps_from_folders.py -dir="in_folder" -b="out-bp"'
+            'For example: bps_from_folders.py -d="in_folder" -b="out-bp"'
         )
     )
     parser.add_argument(
