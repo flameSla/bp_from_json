@@ -77,7 +77,9 @@ def add_bp_from_folder(folder):
             else:
                 return None
     else:
-        print("ERROR!!! the number of files and directories in root is greater than 1")
+        raise RuntimeError(
+            "ERROR!!! the number of files and directories in root is greater than 1"
+        )
         return None
 
 
