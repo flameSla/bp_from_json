@@ -518,6 +518,10 @@ class blueprint:
                 d["upgrade_planner"] = bp.obj.copy()
             elif bp.is_blueprint_book():
                 d["blueprint_book"] = bp.obj.copy()
+            else:
+                print("bp.keys() = ", bp.data.keys())
+                raise Exception("unknown bp type")
+
             self.obj["blueprints"].append(d)
 
     # -------------------------------------
