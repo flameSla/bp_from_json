@@ -111,7 +111,9 @@ if __name__ == "__main__":
                 filename1 = result[1] + "extended name.bin"
                 filename1 = filename.with_name(filename1)
                 bp.to_file(filename1)
-                with open(filename1.with_suffix(".filename"), "w") as f:
+                with open(
+                    filename1.with_suffix(".filename"), "w", encoding="utf8"
+                ) as f:
                     print(filename, file=f, flush=True)
         else:
             # creating a directory
