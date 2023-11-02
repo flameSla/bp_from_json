@@ -376,6 +376,7 @@ def get_machine_recipes_with_one_product(
 
 #############################################
 def get_items():
+    # vanilla
     # read json file
     with open("items.json", "r", encoding="utf8") as read_file:
         json_items = json.load(read_file)
@@ -424,7 +425,6 @@ class blueprint:
             self.obj = self.data["blueprint"]
         elif "upgrade_planner" in self.data:
             self.obj = self.data["upgrade_planner"]
-            # print("upgrade_planner")
         elif "deconstruction_planner" in self.data:
             self.obj = self.data["deconstruction_planner"]
         else:
@@ -693,18 +693,26 @@ class blueprint:
     def is_deconstruction_planner(self):
         if self.data is not None:
             return "deconstruction_planner" in self.data
+        else:
+            return False
 
     def is_upgrade_planner(self):
         if self.data is not None:
             return "upgrade_planner" in self.data
+        else:
+            return False
 
     def is_blueprint_book(self):
         if self.data is not None:
             return "blueprint_book" in self.data
+        else:
+            return False
 
     def is_blueprint(self):
         if self.data is not None:
             return "blueprint" in self.data
+        else:
+            return False
 
     # -------------------------------------
     #   normalize_
