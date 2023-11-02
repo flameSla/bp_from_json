@@ -419,13 +419,13 @@ class dict_bp(dict):
 class blueprint:
     def __init__(self, data):
         self.data = data
-        if "blueprint_book" in self.data:
+        if self.is_blueprint_book():
             self.obj = self.data["blueprint_book"]
-        elif "blueprint" in self.data:
+        elif self.is_blueprint():
             self.obj = self.data["blueprint"]
-        elif "upgrade_planner" in self.data:
+        elif self.is_upgrade_planner():
             self.obj = self.data["upgrade_planner"]
-        elif "deconstruction_planner" in self.data:
+        elif self.is_deconstruction_planner():
             self.obj = self.data["deconstruction_planner"]
         else:
             self.data = None
