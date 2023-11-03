@@ -375,15 +375,15 @@ def get_machine_recipes_with_one_product(
 
 
 #############################################
-def get_items():
-    # vanilla
+def get_item(name_of_the_json_file="Factorio 1.1 Vanilla.json"):
     # read json file
-    with open("items.json", "r", encoding="utf8") as read_file:
-        json_items = json.load(read_file)
+    with open(name_of_the_json_file, "r", encoding="utf8") as f:
+        json_all = json.load(f)
 
+    print(json_all.keys())
     # json -> dist()
     items = dict_bp()
-    for i in json_items["items"]:
+    for i in json_all["items"]:
         items[i["name"]] = float(i["stack"])  # items["wooden-chest"] = 50.0
 
     return items
