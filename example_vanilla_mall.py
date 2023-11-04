@@ -27,9 +27,10 @@ def get_amount(amount, name):
 
 
 # ====================================
-def merge_and_convert_to_list(ingredients1, ingredients2):
+def merge_and_convert_to_list(ingredients1, ingredients2=None):
     temp = list(ingredients1)
-    temp.extend(ingredients2)
+    if ingredients2 is not None:
+        temp.extend(ingredients2)
     return temp
 
 
@@ -123,6 +124,45 @@ def get_bp(bp, recipes_for_bp, recipes, items):
             y += 10
 
 
+# ====================================
+def add_assembly_machine_ver2(bp, x0, y0, recipe1, recipes, items):
+    ingredients1 = get_iningredients(recipe1, recipes, items)
+
+    # assembly + passive_provider
+    add_machine(bp, "assembling-machine-2", x0 + 1.5, y0 + 1.5, recipe1)
+
+    requesters = []
+    passive_provider = add_passive_provider(bp, x0 + 2.5, y0 + 4.5)
+    constant = get_stack_size(recipe1, recipes, items)
+    cs = new_circuit_condition(recipe1, recipes, constant, "<")
+    c = new_connection(passive_provider.read_entity_number())
+    add_filter_inserter(
+        bp, "filter-inserter", x0 + 2.5, y0 + 3.5, 1, recipe1, recipes, cs, c
+    )
+    add_inserter(bp, "fast-inserter", x0 + 1.5, y0 + 3.5, 4)
+    requesters.append(add_logistic_chest_requester(bp, x0 + 1.5, y0 + 4.5))
+
+    ingredients = merge_and_convert_to_list(ingredients1)
+    update_request_filters(requesters[0], ingredients, get_amount)
+
+
+# ====================================
+def get_bp_one_machine(book, recipes_for_bp, recipes, items):
+    all_recipe = list(recipes_for_bp)
+    x = y = count = 0
+    for r1 in recipes_for_bp:
+        bp = blueprint.new_blueprint()
+        add_assembly_machine_ver2(bp, x, y, r1, recipes, items)
+        icon_name = recipes[r1]["product"]
+        bp.set_icons(1, "item", icon_name)
+        book.append_bp(bp)
+        count += 1
+        x += 4
+        if count % 10 == 0:
+            x = 0
+            y += 7
+
+
 ######################################
 #
 # main
@@ -145,4 +185,18 @@ if __name__ == "__main__":
     print(f"to file: {filename}")
     bp.to_file(filename)
     # print(bp.to_str())
+    print("==================================")
+
+    book = blueprint.new_blueprint_book()
+    get_bp_one_machine(book, recipes_for_mall.keys(), recipes, items)
+    label = "mall-1"
+    filename = "bp-out-vanilla-mall-1.ignore"
+    book.set_label_color(1, 0, 1)
+    book.set_label(label)
+    print()
+    print(label)
+    print("==================================")
+    print(f"to file: {filename}")
+    book.to_file(filename)
+    # print(book.to_str())
     print("==================================")
