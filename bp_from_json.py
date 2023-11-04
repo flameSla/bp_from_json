@@ -375,7 +375,7 @@ def get_machine_recipes_with_one_product(
 
 
 #############################################
-def get_item(name_of_the_json_file="Factorio 1.1 Vanilla.json"):
+def get_items(name_of_the_json_file="Factorio 1.1 Vanilla.json"):
     # read json file
     with open(name_of_the_json_file, "r", encoding="utf8") as f:
         json_all = json.load(f)
