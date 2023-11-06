@@ -1,9 +1,10 @@
 import base64
 import collections
-import json
-import zlib
+import copy
 import hashlib
+import json
 import math
+import zlib
 from fractions import Fraction
 
 
@@ -671,6 +672,27 @@ class blueprint:
             return temp
         else:
             return list()
+
+    def summary_of_book(self):
+        res = copy.deepcopy(self)
+        if self.is_blueprint_book():
+            if "blueprints" in res.obj:
+                del res.obj["blueprints"]
+        elif self.is_blueprint():
+            if "entities" in res.obj:
+                del res.obj["entities"]
+            if "tiles" in res.obj:
+                del res.obj["tiles"]
+        elif self.is_upgrade_planner():
+            if "settings" in res.obj:
+                del res.obj["settings"]
+        elif self.is_deconstruction_planner():
+            if "settings" in res.obj:
+                del res.obj["settings"]
+        else:
+            res = ""
+
+        return res
 
     # -------------------------------------
     #   get_
