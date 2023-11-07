@@ -113,7 +113,10 @@ if __name__ == "__main__":
             with open(
                 get_path(path) / (get_filename(bp) + ".json"), "w", encoding="utf8"
             ) as f:
-                json.dump(bp.summary_of_book().obj, f, indent=4, ensure_ascii=False)
+                json_str = json.dumps(
+                    bp.summary_of_book().obj, indent=4, ensure_ascii=False
+                )
+                print(json_str, file=f)
         else:
             # creating a directory
             # we save all the parameters of the book to a file "book name.json"
@@ -125,4 +128,7 @@ if __name__ == "__main__":
                 mode="w",
                 encoding="utf8",
             ) as f:
-                json.dump(bp.summary_of_book().obj, f, indent=4, ensure_ascii=False)
+                json_str = json.dumps(
+                    bp.summary_of_book().obj, indent=4, ensure_ascii=False
+                )
+                print(json_str, file=f)
