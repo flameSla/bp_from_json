@@ -39,7 +39,7 @@ def add_bp_from_folder_parse(bp, folder):
             index, book_name = get_index(file)
             json_name = folder / file / (file.name + ".json")
             json_data = json.load(
-                json_name.open(), object_pairs_hook=collections.OrderedDict
+                json_name.open(encoding="utf8"), object_pairs_hook=collections.OrderedDict
             )
             if index != 0:
                 book.data["index"] = index
@@ -65,7 +65,7 @@ def add_bp_from_folder(folder):
                 index, book_name = get_index(file)
                 json_name = folder / file / (file.name + ".json")
                 json_data = json.load(
-                    json_name.open(), object_pairs_hook=collections.OrderedDict
+                    json_name.open(encoding="utf8"), object_pairs_hook=collections.OrderedDict
                 )
                 if index != 0:
                     book.data["index"] = index
