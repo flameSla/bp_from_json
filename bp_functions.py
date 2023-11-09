@@ -17,6 +17,27 @@ def get_iningredients(recipe, recipes, items, amount=1):
 
 
 # ====================================
+def add_filtr_constant_combinator(constant_combinator, type, name, count, index=None):
+    if index is None:
+        min_index = 0
+        for f in constant_combinator.data["control_behavior"]["filters"]:
+            min_index = max(min_index, f.get("index", 0))
+        index = min_index + 1
+
+    constant_combinator.data["control_behavior"]["filters"].append(
+        {"signal": {"type": type, "name": name}, "count": count, "index": index}
+    )
+
+
+# ====================================
+def add_constant_combinator(bp, x, y):
+    constant_combinator = entity.new_entity("constant-combinator", x, y)
+    constant_combinator.set("control_behavior", {"filters": []})
+    bp.append_entity(constant_combinator)
+    return constant_combinator
+
+
+# ====================================
 def add_machine(bp, name, x, y, recipe, name_of_modules="", number_of_modules=0):
     # name = "assembling-machine-2"
     assembly = entity.new_entity(name, x, y)
