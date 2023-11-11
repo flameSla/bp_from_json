@@ -141,6 +141,13 @@ productivity = {
     "productivity-module-3": Fraction(1.0),
     "productivity-module-2": Fraction(1.0),
     "productivity-module": Fraction(1.0),
+    ################################
+    "cargo-wagon": Fraction(1.0),
+    "locomotive": Fraction(1.0),
+    "boiler": Fraction(1.0),
+    "stone-furnace": Fraction(1.0),
+    "steel-furnace": Fraction(1.0),
+    "wooden-chest": Fraction(1.0),
 }
 
 
@@ -358,6 +365,10 @@ class Build:
         for ingredient in self.final_ingredients:
             self.ingredients_compact[ingredient] = ingredients.get(ingredient, 0)
 
+    def add(self, b):
+        self.ingredients_compact += b.ingredients_compact
+        self.name += " + " + b.name
+
     def get_ingredients_compact(self):
         return self.ingredients_compact
 
@@ -407,20 +418,20 @@ if __name__ == "__main__":
     recipes = get_recipes()
     final_ingredients = ("copper-ore", "iron-ore", "coal", "stone")
 
-    mining_1 = Build(
-        "mining-1",
-        "mining-1 BP (string or filename.txt)",
-        "mining_1.txt",
-        recipes,
-        final_ingredients,
-    )
-    mining_2 = Build(
-        "mining-2",
-        "mining-2 BP (string or filename.txt)",
-        "mining_2.txt",
-        recipes,
-        final_ingredients,
-    )
+    # mining_1 = Build(
+    #     "mining-1",
+    #     "mining-1 BP (string or filename.txt)",
+    #     "mining_1.txt",
+    #     recipes,
+    #     final_ingredients,
+    # )
+    # mining_2 = Build(
+    #     "mining-2",
+    #     "mining-2 BP (string or filename.txt)",
+    #     "mining_2.txt",
+    #     recipes,
+    #     final_ingredients,
+    # )
     cell500spm = Build(
         "cell500spm",
         "cell500spm BP (string or filename.txt)",
@@ -429,8 +440,53 @@ if __name__ == "__main__":
         final_ingredients,
     )
 
-    mining_1.compare(mining_2)
-    mining_2.compare(cell500spm)
+    # mining_1.compare(mining_2)
+    # mining_2.compare(cell500spm)
+
+    print()
+    print("==================")
+    print("Модули-ремни")
+    print()
+
+    ass_NaOida = Build(
+        "ass_NaOida",
+        "cell500spm BP (string or filename.txt)",
+        "ass-NaOida.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    modules_NaOida = Build(
+        "modules_NaOida",
+        "cell500spm BP (string or filename.txt)",
+        "modules-NaOida.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    modules_Sla = Build(
+        "modules_Sla",
+        "cell500spm BP (string or filename.txt)",
+        "modules-Sla.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    belts_Sla = Build(
+        "belts_Sla",
+        "cell500spm BP (string or filename.txt)",
+        "belts-Sla.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    cell500spm.compare(ass_NaOida)
+    ass_NaOida.compare(modules_NaOida)
+
+    modules_Sla.compare(modules_NaOida)
+    belts_Sla.compare(modules_Sla)
+    belts_Sla.add(modules_Sla)
+    belts_Sla.compare(modules_Sla)
 
     # print()
     # print('|{:<30}|'.format('left aligned'))
