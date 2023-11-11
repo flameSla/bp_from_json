@@ -456,7 +456,7 @@ class blueprint:
         # bp_json['blueprint_book']['description'] = str()
         # bp_json['blueprint_book']['icons'] = list()
         bp_json["blueprint_book"]["item"] = "blueprint-book"
-        bp_json["blueprint_book"]["label"] = "new book"
+        # bp_json["blueprint_book"]["label"] = "new book"
         # bp_json['blueprint_book']['label_color']
         bp_json["blueprint_book"]["version"] = 281479275937792
 
