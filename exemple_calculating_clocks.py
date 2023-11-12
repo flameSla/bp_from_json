@@ -32,8 +32,6 @@ if __name__ == "__main__":
     print()
     print_fraction(Fraction(4) / (Fraction(4) + Fraction("8/25")))
 
-    print_fraction(
-        Fraction(7) * new_fraction("1701/2500") / new_fraction("4 463/1160")
-    )
+    print_fraction(Fraction(7) * new_fraction("1701/2500") / new_fraction("4 463/1160"))
 
     # print_fraction(Fraction(8) * Fraction("2187/2000"))
