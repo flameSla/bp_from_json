@@ -118,6 +118,8 @@ if __name__ == "__main__":
         ("personal-roboport-mk2-equipment", 1, 7),
         ("spidertron", 1, 12),
         ("spidertron-remote", 1, 13),
+        ("battery-equipment", 4, 14),
+        ("productivity-module-3", 4, 18),
     )
 
     book = blueprint.new_blueprint_book()
