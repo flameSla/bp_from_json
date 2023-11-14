@@ -34,4 +34,11 @@ if __name__ == "__main__":
 
     print_fraction(Fraction(7) * new_fraction("1701/2500") / new_fraction("4 463/1160"))
 
+    print()
+    print("==================")
+    print("")
+    print()
+
+    print(Fraction(8, 60) / 1 / 60)
+
     # print_fraction(Fraction(8) * Fraction("2187/2000"))
