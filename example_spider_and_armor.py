@@ -106,6 +106,11 @@ if __name__ == "__main__":
         "electric-engine-unit",
         "radar",
         "battery",
+        "wood",
+        "pipe",
+        "steel-chest",
+        "stone-brick",
+        "engine-unit",
     )
 
     request_for_production = (
@@ -124,6 +129,69 @@ if __name__ == "__main__":
 
     book = blueprint.new_blueprint_book()
     book.set_label("mk2+spider")
+    book.set_description("by flame_Sla")
+    for item, amount, index in request_for_production:
+        print()
+        print("==================")
+        print(item)
+        print()
+        requests = dict_bp({item: amount})
+        get_requests(requests, new_request(item, amount), final_ingredients)
+        print(requests)
+        book.append_bp(get_bp(item, amount, requests), index)
+
+    print()
+    print("==================")
+    print("book")
+    print()
+    print(book.to_str())
+    print("==================")
+
+    print()
+    print("==================")
+    print("MALL-belts")
+    print()
+    bp = blueprint.from_file("rush to bots v4-mall.txt.ignore")
+
+    mall_does_not_produce = (
+        "chemical-plant",
+        "logistic-chest-active-provider",
+        "logistic-chest-passive-provider",
+        "logistic-chest-requester",
+        "logistic-chest-storage",
+        "medium-electric-pole",
+        "oil-refinery",
+        "pipe-to-ground",
+        "pump",
+        "stack-filter-inserter",
+        "stack-inserter",
+        "storage-tank",
+        "substation",
+    )
+
+    # necessary_items_for_construction = bp.get_all_items()
+    # for item, amount in sorted(necessary_items_for_construction.items()):
+    #     if item in mall_does_not_produce:
+    #         print("('{}', {}, None),".format(item, amount))
+
+    request_for_production = (
+        ("chemical-plant", 50, None),
+        ("logistic-chest-active-provider", 50, None),
+        ("logistic-chest-passive-provider", 50, None),
+        ("logistic-chest-requester", 50, None),
+        ("logistic-chest-storage", 50, None),
+        ("medium-electric-pole", 50, None),
+        ("oil-refinery", 20, None),
+        ("pipe-to-ground", 50, None),
+        ("pump", 10, None),
+        ("stack-filter-inserter", 10, None),
+        ("stack-inserter", 10, None),
+        ("storage-tank", 10, None),
+        ("substation", 50, None),
+    )
+
+    book = blueprint.new_blueprint_book()
+    book.set_label("mall-on-construction-bots")
     book.set_description("by flame_Sla")
     for item, amount, index in request_for_production:
         print()
