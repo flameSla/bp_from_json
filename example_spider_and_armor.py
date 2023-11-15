@@ -75,10 +75,15 @@ def get_bp(item, amount, requests):
     bp = blueprint.new_blueprint()
     bp.set_icons(1, "item", item)
     bp.set_label("{}x[item={}]".format(amount, item))
+    count = 0
     x = y = 0
     for item, amount in requests.items():
+        if count == 1:
+            x += 4
+        else:
+            x += 3
         add_assembly_machine_ver2(bp, x, y, item, amount)
-        x += 3
+        count += 1
 
     return bp
 
@@ -111,6 +116,8 @@ if __name__ == "__main__":
         "steel-chest",
         "stone-brick",
         "engine-unit",
+        "inserter",
+        "fast-inserter",
     )
 
     request_for_production = (
@@ -169,38 +176,57 @@ if __name__ == "__main__":
         "substation",
     )
 
-    # necessary_items_for_construction = bp.get_all_items()
-    # for item, amount in sorted(necessary_items_for_construction.items()):
-    #     if item in mall_does_not_produce:
-    #         print("('{}', {}, None),".format(item, amount))
+    print()
+    print("==================")
+    print("necessary_items_for_construction")
+    print("----------------------------------")
+    necessary_items_for_construction = bp.get_all_items()
+    print(necessary_items_for_construction)
+    print("----------------------------------")
+    for item, amount in sorted(necessary_items_for_construction.items()):
+        if item in mall_does_not_produce:
+            print("('{}', {}, None),".format(item, amount))
+    print("==================")
+    print()
 
     request_for_production = (
-        ("chemical-plant", 50, None),
-        ("logistic-chest-active-provider", 50, None),
-        ("logistic-chest-passive-provider", 50, None),
-        ("logistic-chest-requester", 50, None),
-        ("logistic-chest-storage", 50, None),
-        ("medium-electric-pole", 50, None),
-        ("oil-refinery", 20, None),
-        ("pipe-to-ground", 50, None),
-        ("pump", 10, None),
-        ("stack-filter-inserter", 10, None),
-        ("stack-inserter", 10, None),
-        ("storage-tank", 10, None),
-        ("substation", 50, None),
+        # ("chemical-plant", 50, None),
+        # ("logistic-chest-active-provider", 50, None),
+        # ("logistic-chest-passive-provider", 50, None),
+        # ("logistic-chest-requester", 50, None),
+        # ("logistic-chest-storage", 50, None),
+        # ("medium-electric-pole", 50, None),
+        # ("oil-refinery", 20, None),
+        # ("pipe-to-ground", 50, None),
+        # ("pump", 10, None),
+        # ("stack-filter-inserter", 10, None),
+        # ("stack-inserter", 10, None),
+        # ("storage-tank", 10, None),
+        # ("substation", 50, None),
+        ("chemical-plant", 96, None),
+        ("logistic-chest-active-provider", 2, None),
+        ("logistic-chest-passive-provider", 171, None),
+        ("logistic-chest-requester", 61, None),
+        ("logistic-chest-storage", 27, None),
+        ("medium-electric-pole", 240, None),
+        ("oil-refinery", 42, None),
+        ("pipe-to-ground", 1013, None),
+        ("pump", 28, None),
+        ("storage-tank", 26, None),
+        ("substation", 20, None),
     )
 
     book = blueprint.new_blueprint_book()
     book.set_label("mall-on-construction-bots")
     book.set_description("by flame_Sla")
     for item, amount, index in request_for_production:
-        print()
-        print("==================")
-        print(item)
-        print()
+        # print()
+        # print("==================")
+        # print(item)
+        # print()
         requests = dict_bp({item: amount})
         get_requests(requests, new_request(item, amount), final_ingredients)
-        print(requests)
+        # print(requests)
         book.append_bp(get_bp(item, amount, requests), index)
 
     print()
