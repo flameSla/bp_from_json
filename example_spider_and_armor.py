@@ -126,6 +126,7 @@ if __name__ == "__main__":
         ("fusion-reactor-equipment", 1, 2),
         ("exoskeleton-equipment", 3, 3),
         ("battery-mk2-equipment", 10, 4),
+        ("battery-mk2-equipment", 4, 5),
         ("personal-laser-defense-equipment", 13, 6),
         ("personal-roboport-mk2-equipment", 1, 7),
         ("spidertron", 1, 12),
