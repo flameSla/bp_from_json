@@ -449,7 +449,7 @@ if __name__ == "__main__":
     print()
 
     ass_NaOida = Build(
-        "ass_NaOida",
+        "mashinesT3_NaOida",
         "cell500spm BP (string or filename.txt)",
         "ass-NaOida.txt.ignore",
         recipes,
@@ -481,12 +481,12 @@ if __name__ == "__main__":
     )
 
     cell500spm.compare(ass_NaOida)
-    ass_NaOida.compare(modules_NaOida)
+    ass_NaOida.add(modules_NaOida)
 
-    modules_Sla.compare(modules_NaOida)
-    belts_Sla.compare(modules_Sla)
+    # modules_Sla.compare(modules_NaOida)
+    # belts_Sla.compare(modules_Sla)
     belts_Sla.add(modules_Sla)
-    belts_Sla.compare(modules_Sla)
+    belts_Sla.compare(ass_NaOida)
 
     # print()
     # print('|{:<30}|'.format('left aligned'))
