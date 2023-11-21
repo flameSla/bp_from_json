@@ -450,7 +450,7 @@ if __name__ == "__main__":
 
     ass_NaOida = Build(
         "mashinesT3_NaOida",
-        "cell500spm BP (string or filename.txt)",
+        "(string or filename.txt)",
         "ass-NaOida.txt.ignore",
         recipes,
         final_ingredients,
@@ -458,7 +458,7 @@ if __name__ == "__main__":
 
     modules_NaOida = Build(
         "modules_NaOida",
-        "cell500spm BP (string or filename.txt)",
+        "(string or filename.txt)",
         "modules-NaOida.txt.ignore",
         recipes,
         final_ingredients,
@@ -466,7 +466,7 @@ if __name__ == "__main__":
 
     modules_Sla = Build(
         "modules_Sla",
-        "cell500spm BP (string or filename.txt)",
+        "BP (string or filename.txt)",
         "modules-Sla.txt.ignore",
         recipes,
         final_ingredients,
@@ -474,7 +474,7 @@ if __name__ == "__main__":
 
     belts_Sla = Build(
         "belts_Sla",
-        "cell500spm BP (string or filename.txt)",
+        "BP (string or filename.txt)",
         "belts-Sla.txt.ignore",
         recipes,
         final_ingredients,
@@ -493,3 +493,26 @@ if __name__ == "__main__":
     # print('|{:>30}|'.format('right aligned'))
     # print('|{:^30}|'.format('centered'))
     # print('|{:*^30}|'.format('centered'))
+
+    print()
+    print('==================')
+    print('modules_T1 vs modules_Mega')
+    print()
+    
+    modules_T1 = Build(
+        "modules_T1",
+        "(string or filename.txt)",
+        "modules_T1.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    modules_Mega = Build(
+        "modules_Mega",
+        "(string or filename.txt)",
+        "modules_Mega.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
+    modules_T1.compare(modules_Mega)
