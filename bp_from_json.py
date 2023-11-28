@@ -491,6 +491,14 @@ class blueprint:
 
         return cls.from_string(exchange_str)
 
+    @classmethod
+    def from_json_file(cls, filename):
+        bp_json = ""
+        with open(filename, "r", encoding="utf8") as f:
+            bp_json = json.loads(f.read(), object_pairs_hook=collections.OrderedDict)
+
+        return cls(bp_json)
+
     # -------------------------------------
     #   append
 
@@ -837,6 +845,20 @@ class blueprint:
 
     # -------------------------------------
     #   to_
+
+    def to_json_str(self):
+        json_str = json.dumps(
+            self.data,
+            separators=(",", ":"),
+            indent=4,
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+        return json_str
+
+    def to_json_file(self, filename):
+        with open(filename, "w", encoding="utf8") as f:
+            print(self.to_json_str(), file=f, flush=True)
 
     def to_str(self):
         json_str = json.dumps(
