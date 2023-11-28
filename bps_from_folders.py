@@ -29,10 +29,12 @@ def get_index(filename):
 def add_bp_from_folder_parse(bp, folder):
     # using recursion, we look through all directories
     for file in folder.iterdir():
-        if file.is_file() and file.suffix == ".bin":
+        if file.is_file() and (file.suffix == ".txt" or file.suffix == ".bin"):
             index, blueprint_name = get_index(file)
-            # new_bp = blueprint.from_file(file)
-            new_bp = blueprint.from_json_file(file)
+            if file.suffix == ".bin":
+                new_bp = blueprint.from_file(file)
+            else:
+                new_bp = blueprint.from_json_file(file)
             print(f"\tcreate blueprint '{new_bp.read_label()}'\tindex={index}")
             bp.append_bp(new_bp, index)
         elif file.is_dir():
@@ -57,10 +59,12 @@ def add_bp_from_folder(folder):
     # there should be one folder or one file in the root directory
     if len(tuple(folder.iterdir())) == 1:
         for file in folder.iterdir():
-            if file.is_file() and file.suffix == ".bin":
+            if file.is_file() and (file.suffix == ".txt" or file.suffix == ".bin"):
                 index, blueprint_name = get_index(file)
-                # bp = blueprint.from_file(file)
-                bp = blueprint.from_json_file(file)
+                if file.suffix == ".bin":
+                    bp = blueprint.from_file(file)
+                else:
+                    bp = blueprint.from_json_file(file)
                 print(f"\tcreate blueprint '{bp.read_label()}'\tindex={index}")
                 return bp
             elif file.is_dir():
