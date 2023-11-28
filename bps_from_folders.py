@@ -31,7 +31,8 @@ def add_bp_from_folder_parse(bp, folder):
     for file in folder.iterdir():
         if file.is_file() and file.suffix == ".bin":
             index, blueprint_name = get_index(file)
-            new_bp = blueprint.from_file(file)
+            # new_bp = blueprint.from_file(file)
+            new_bp = blueprint.from_json_file(file)
             print(f"\tcreate blueprint '{new_bp.read_label()}'\tindex={index}")
             bp.append_bp(new_bp, index)
         elif file.is_dir():
@@ -39,7 +40,8 @@ def add_bp_from_folder_parse(bp, folder):
             index, book_name = get_index(file)
             json_name = folder / file / (file.name + ".json")
             json_data = json.load(
-                json_name.open(encoding="utf8"), object_pairs_hook=collections.OrderedDict
+                json_name.open(encoding="utf8"),
+                object_pairs_hook=collections.OrderedDict,
             )
             if index != 0:
                 book.data["index"] = index
@@ -57,7 +59,8 @@ def add_bp_from_folder(folder):
         for file in folder.iterdir():
             if file.is_file() and file.suffix == ".bin":
                 index, blueprint_name = get_index(file)
-                bp = blueprint.from_file(file)
+                # bp = blueprint.from_file(file)
+                bp = blueprint.from_json_file(file)
                 print(f"\tcreate blueprint '{bp.read_label()}'\tindex={index}")
                 return bp
             elif file.is_dir():
@@ -65,7 +68,8 @@ def add_bp_from_folder(folder):
                 index, book_name = get_index(file)
                 json_name = folder / file / (file.name + ".json")
                 json_data = json.load(
-                    json_name.open(encoding="utf8"), object_pairs_hook=collections.OrderedDict
+                    json_name.open(encoding="utf8"),
+                    object_pairs_hook=collections.OrderedDict,
                 )
                 if index != 0:
                     book.data["index"] = index
