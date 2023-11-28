@@ -47,7 +47,8 @@ def search_for_broken_bps_from_folder_parse(folder, f):
 
 # ====================================
 def check_the_BP(filename, f):
-    bp = blueprint.from_file(filename)
+    # bp = blueprint.from_file(filename)
+    bp = blueprint.from_json_file(filename)
     # print(filename)
     if "entities" in bp.obj:
         for entity in bp.obj["entities"]:
