@@ -39,7 +39,7 @@ def get_index(filename):
 def search_for_broken_bps_from_folder_parse(folder, f):
     # using recursion, we look through all directories
     for file in folder.iterdir():
-        if file.is_file() and file.suffix == ".bin":
+        if file.is_file() and (file.suffix == ".bin" or file.suffix == ".txt"):
             check_the_BP(file, f)
         elif file.is_dir():
             search_for_broken_bps_from_folder_parse(folder / file, f)
@@ -47,8 +47,10 @@ def search_for_broken_bps_from_folder_parse(folder, f):
 
 # ====================================
 def check_the_BP(filename, f):
-    # bp = blueprint.from_file(filename)
-    bp = blueprint.from_json_file(filename)
+    if filename.suffix == ".bin":
+        bp = blueprint.from_file(filename)
+    else:
+        bp = blueprint.from_json_file(filename)
     # print(filename)
     if "entities" in bp.obj:
         for entity in bp.obj["entities"]:
