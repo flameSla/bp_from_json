@@ -65,6 +65,13 @@ def init_parser():
         type=str,
         default="",
         help=('(IN) Blueprint file. Default = "bp.txt"'),
+    ),
+    parser.add_argument(
+        "-m",
+        "--mode",
+        type=str,
+        default="bin",
+        help=('Format for storing BPs "bin" or "json". Default = "bin"'),
     )
     return parser
 
@@ -109,8 +116,10 @@ if __name__ == "__main__":
             # "upgrade_planner"
             # "deconstruction_planner"
             print("blueprint: {}".format(get_filename(bp)))
-            # bp.to_file(get_path(path) / (get_filename(bp) + ".bin"))
-            bp.to_json_file(get_path(path) / (get_filename(bp) + ".bin"))
+            if args.mode == "bin":
+                bp.to_file(get_path(path) / (get_filename(bp) + ".bin"))
+            else:
+                bp.to_json_file(get_path(path) / (get_filename(bp) + ".txt"))
             with open(
                 get_path(path) / (get_filename(bp) + ".json"), "w", encoding="utf8"
             ) as f:
