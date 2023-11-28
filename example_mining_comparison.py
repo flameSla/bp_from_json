@@ -515,4 +515,13 @@ if __name__ == "__main__":
         final_ingredients,
     )
 
+    modules_ZZZ = Build(
+        "modules_ZZZ",
+        "(string or filename.txt)",
+        "modules_ZZZ.txt.ignore",
+        recipes,
+        final_ingredients,
+    )
+
     modules_T1.compare(modules_Mega)
+    modules_T1.compare(modules_ZZZ)
