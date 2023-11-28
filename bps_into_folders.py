@@ -109,7 +109,8 @@ if __name__ == "__main__":
             # "upgrade_planner"
             # "deconstruction_planner"
             print("blueprint: {}".format(get_filename(bp)))
-            bp.to_file(get_path(path) / (get_filename(bp) + ".bin"))
+            # bp.to_file(get_path(path) / (get_filename(bp) + ".bin"))
+            bp.to_json_file(get_path(path) / (get_filename(bp) + ".bin"))
             with open(
                 get_path(path) / (get_filename(bp) + ".json"), "w", encoding="utf8"
             ) as f:
