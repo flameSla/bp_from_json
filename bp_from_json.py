@@ -6,6 +6,22 @@ import json
 import math
 import zlib
 from fractions import Fraction
+from pathlib import Path
+
+
+#############################################
+def input_def(text, default):
+    str = input(text + "[" + default + "]:")
+    return str if str else default
+
+
+def get_blueprint(text, default):
+    exchange_str = input_def(text, default)
+    if Path(exchange_str).exists():
+        with open(exchange_str, "r") as f:
+            exchange_str = f.read()
+
+    return blueprint.from_string(exchange_str)
 
 
 #############################################
@@ -73,6 +89,9 @@ class position:
 
     def read_y(self):
         return self.data["y"]
+
+    def get_tuple(self):
+        return tuple((self.data["x"], self.data["y"]))
 
 
 #############################################
@@ -711,7 +730,10 @@ class blueprint:
     #   get_
 
     def get_entities(self):
-        return list(map(lambda x: entity(x), self.obj["entities"]))
+        if "entities" in self.obj:
+            return list(map(lambda x: entity(x), self.obj["entities"]))
+        else:
+            return list()
 
     def __md5(self, data):
         return hashlib.md5(json.dumps(data, sort_keys=True).encode("utf-8")).hexdigest()
