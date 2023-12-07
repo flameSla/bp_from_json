@@ -321,10 +321,24 @@ def get_recipes_with_one_product(name_of_the_json_file=None):
     for recipe in json_all["recipes"]:
         names.append(recipe["name"])
         if len(recipe["products"]) == 1:
-            for ingredient in recipe["ingredients"]:
-                ingredient["amount"] = Fraction(
-                    ingredient["amount"], recipe["products"][0]["amount"]
-                )
+            # print()
+            # print("==================")
+            # print()
+            # print(recipe)
+            if recipe["products"][0]["amount"] != 0:
+                for ingredient in recipe["ingredients"]:
+                    if isinstance(ingredient["amount"], int):
+                        ingredient["amount"] = Fraction(
+                            ingredient["amount"], recipe["products"][0]["amount"]
+                        )
+                    elif isinstance(ingredient["amount"], float):
+                        ingredient["amount"] = Fraction(
+                            ingredient["amount"]
+                        ) / Fraction(recipe["products"][0]["amount"], 1)
+                    else:
+                        raise Exception(
+                            "unknown type = " + str(type(ingredient["amount"]))
+                        )
             recipes[recipe["name"]] = {
                 "ingredients": recipe["ingredients"],
                 "product": recipe["products"][0]["name"],
