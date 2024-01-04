@@ -10,5 +10,5 @@
         - "label" - for information only, does not affect the book being created
         - "description" - for information only, does not affect the book being created
 
-1. run the script "bps_decompiler_of_book.py"
-    - **bps_decompiler_of_book.py -m="makefile_bps.json" -b="out_file"**
+1. run the script "bps_compiler_of_book.py"
+    - **bps_compiler_of_book.py -m="makefile_bps.json" -b="out_file"**
