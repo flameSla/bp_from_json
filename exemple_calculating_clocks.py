@@ -42,3 +42,11 @@ if __name__ == "__main__":
     print(Fraction(5 * 15, 1) / new_fraction("12 13/36"))
 
     # print_fraction(Fraction(8) * Fraction("2187/2000"))
+
+    print()
+    print("==================")
+    print("соотношение сторон у монитора")
+    print()
+    print_fraction(new_fraction("3840/2160"))
+    print_fraction(new_fraction("640/360"))
+    print_fraction(new_fraction("640/480"))
