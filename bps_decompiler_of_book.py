@@ -47,6 +47,8 @@ if __name__ == "__main__":
         raise Exception("The script only works with books")
     else:
         makefile = {}
+        makefile["label"] = "name {}"
+        makefile["version"] = "1.38"
         makefile["summary_of_book"] = book.summary_of_book().obj
         makefile["indexes"] = {}
 
