@@ -50,3 +50,14 @@ if __name__ == "__main__":
     print_fraction(new_fraction("3840/2160"))
     print_fraction(new_fraction("640/360"))
     print_fraction(new_fraction("640/480"))
+
+    print()
+    print("==================")
+    print("")
+    print()
+    print_fraction(new_fraction("5 1/40 ") / 12 / 60)
+
+
+
+    print_fraction(2 / new_fraction("2 657802/1014849"))
+
