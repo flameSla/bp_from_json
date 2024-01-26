@@ -19,26 +19,18 @@ def get_current_working_directory():
 # ====================================
 def get_filename(bp):
     # convert the bp label to the file name
+    index = int(bp.data.get("index", 0))
+    # print('index = ', type(index), index)
     if bp.is_blueprint_book():
-        return sanitize_filename(
-            "{:03d}-index {}".format(bp.data.get("index", 0), "book")
-        )
+        return sanitize_filename("{:03d}-index {}".format(index, "book"))
     elif bp.is_blueprint():
-        return sanitize_filename(
-            "{:03d}-index {}".format(bp.data.get("index", 0), "bp")
-        )
+        return sanitize_filename("{:03d}-index {}".format(index, "bp"))
     elif bp.is_upgrade_planner():
-        return sanitize_filename(
-            "{:03d}-index {}".format(bp.data.get("index", 0), "upg_planner")
-        )
+        return sanitize_filename("{:03d}-index {}".format(index, "upg_planner"))
     elif bp.is_deconstruction_planner():
-        return sanitize_filename(
-            "{:03d}-index {}".format(bp.data.get("index", 0), "dec_planner")
-        )
+        return sanitize_filename("{:03d}-index {}".format(index, "dec_planner"))
     else:
-        return sanitize_filename(
-            "{:03d}-index {}".format(bp.data.get("index", 0), "unknown")
-        )
+        return sanitize_filename("{:03d}-index {}".format(index, "unknown"))
 
 
 # ====================================
