@@ -4,14 +4,11 @@ import math
 
 # ====================================
 def get_iningredients(recipe, recipes, items, amount=1):
+    ingredients = {}
     if recipe:
-        ingredients = [
-            (i["name"], i["amount"] * amount)
-            for i in recipes[recipe]["ingredients"]
-            if i["name"] in items
-        ]
-    else:
-        ingredients = []
+        for i in recipes[recipe]["ingredients"]:
+            if i["name"] in items:
+                ingredients[i["name"]] = i["amount"] * amount
 
     return ingredients
 
@@ -154,6 +151,16 @@ def update_request_filters(entity, ingredient, func_get_amount):
                 {"index": index, "name": name, "count": amount}
             )
             index += 1
+    elif isinstance(ingredient, dict):
+        for name, amount in ingredient.items():
+            amount = func_get_amount(amount, name)
+            entity.append_request_filters(
+                {"index": index, "name": name, "count": amount}
+            )
+            index += 1
+    else:
+        print("ingredient = ", type(ingredient), ingredient)
+        raise Exception("unknown type")
 
 
 # ====================================
