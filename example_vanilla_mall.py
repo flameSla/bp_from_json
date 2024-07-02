@@ -27,10 +27,14 @@ def get_amount(amount, name):
 
 
 # ====================================
-def merge_and_convert_to_list(ingredients1, ingredients2=None):
-    temp = list(ingredients1)
+def merge_and_convert_to_dict(ingredients1, ingredients2=None):
+    temp = dict(ingredients1)
     if ingredients2 is not None:
-        temp.extend(ingredients2)
+        for k, v in ingredients2.items():
+            if k in temp:
+                temp[k] += v
+            else:
+                temp[k] = v
     return temp
 
 
@@ -88,10 +92,10 @@ def add_assembly_machine(
     pole1.set("neighbours", [pole2.read_entity_number()])
     pole2.set("neighbours", [pole1.read_entity_number()])
 
-    ingredients = merge_and_convert_to_list(ingredients1, ingredients3)
+    ingredients = merge_and_convert_to_dict(ingredients1, ingredients3)
     update_request_filters(requesters[0], ingredients, get_amount)
 
-    ingredients = merge_and_convert_to_list(ingredients2, ingredients4)
+    ingredients = merge_and_convert_to_dict(ingredients2, ingredients4)
     update_request_filters(requesters[1], ingredients, get_amount)
 
 
@@ -142,7 +146,7 @@ def add_assembly_machine_ver2(bp, x0, y0, recipe1, recipes, items):
     add_inserter(bp, "fast-inserter", x0 + 1.5, y0 + 3.5, 4)
     requesters.append(add_logistic_chest_requester(bp, x0 + 1.5, y0 + 4.5))
 
-    ingredients = merge_and_convert_to_list(ingredients1)
+    ingredients = merge_and_convert_to_dict(ingredients1)
     update_request_filters(requesters[0], ingredients, get_amount)
 
 
