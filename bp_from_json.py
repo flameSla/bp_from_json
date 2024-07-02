@@ -356,7 +356,7 @@ def get_recipes_with_one_product(name_of_the_json_file=None):
                 "ingredients": recipe["ingredients"],
                 "product": recipe["products"][0]["name"],
                 "category": recipe["category"],
-                "energy": recipe["energy"],
+                "energy": recipe["energy"] / recipe["products"][0]["amount"],
             }
             n1 = recipe["name"]
             n2 = recipe["products"][0]["name"]
@@ -407,7 +407,7 @@ def get_machine_recipes_with_one_product(
                 "ingredients": recipe["ingredients"],
                 "product": recipe["products"][0]["name"],
                 "category": recipe["category"],
-                "energy": recipe["energy"],
+                "energy": recipe["energy"] / recipe["products"][0]["amount"],
             }
             n1 = recipe["name"]
             n2 = recipe["products"][0]["name"]
