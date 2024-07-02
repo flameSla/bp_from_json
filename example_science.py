@@ -220,12 +220,12 @@ if __name__ == "__main__":
     entities = get_entities()
 
     science = {
-        # "automation-science-pack": 1,
-        # "logistic-science-pack": 1,
-        # "military-science-pack": 1,
-        # "chemical-science-pack": 1,
-        # "production-science-pack": 1,
-        # "utility-science-pack": 1,
+        "automation-science-pack": 1,
+        "logistic-science-pack": 1,
+        "military-science-pack": 1,
+        "chemical-science-pack": 1,
+        "production-science-pack": 1,
+        "utility-science-pack": 1,
         "space-science-pack": 1,
     }
 
@@ -243,40 +243,58 @@ if __name__ == "__main__":
     print()
     print_dict(ingredients, "/sec")
 
-    # print([x for x in recipes.keys()])
-    # i = []
-    # for name, v in recipes.items():
-    #     i = [x["name"] for x in v["ingredients"]]
-    #     res = False
-    #     for a in i:
-    #         if "rocket" in a:
-    #             res = True
-    #             break
+    # def print_crafting_categories():
+    #     print()
+    #     print('==================')
+    #     print('crafting_categories')
+    #     print()
+    #     a = {}
+    #     for e in entities:
+    #         # print(e["name"])
+    #         for b in e.get("crafting_categories", ""):
+    #             if b in a:
+    #                 a[b].append((e["name"], e["speed"]))
+    #             else:
+    #                 a[b] = [(e["name"], e["speed"])]
+    #     print(a)
+    # print_crafting_categories()
 
-    #     if res:
-    #         print(name, i)
+    crafting_categories = {
+        "smelting": ("electric-furnace", 2),
+        "crafting": ("assembling-machine-2", 0.75),
+        "basic-crafting": ("assembling-machine-2", 0.75),
+        "advanced-crafting": ("assembling-machine-2", 0.75),
+        "crafting-with-fluid": ("assembling-machine-2", 0.75),
+        "oil-processing": ("oil-refinery", 1),
+        "chemistry": ("chemical-plant", 1),
+        "centrifuging": ("centrifuge", 1),
+        "rocket-building": ("rocket-silo", 1),
+    }
 
-    # a = {
-    #     "ingredients": [
-    #         {"name": "rocket-part", "type": "item", "amount": Fraction(100, 1000)},
-    #         {"name": "satellite", "type": "item", "amount": Fraction(1, 1000)},
-    #     ],
-    #     "product": "space-science-pack",
+    # recipes[recipe["name"]] = {
+    #     "ingredients": recipe["ingredients"],
+    #     "product": recipe["products"][0]["name"],
+    #     "category": recipe["category"],
+    #     "energy": recipe["energy"],
     # }
 
-    def print_crafting_categories():
-        print()
-        print('==================')
-        print('crafting_categories')
-        print()
-        a = {}
-        for e in entities:
-            # print(e["name"])
-            for b in e.get("crafting_categories", ""):
-                if b in a:
-                    a[b].append((e["name"], e["speed"]))
-                else:
-                    a[b] = [(e["name"], e["speed"])]
-        print(a)
+    # temp = [(k, v[0], v[1]) for k, v in ingredients.items()]
+    # print("temp = ", type(temp), temp)
+    ingredients1 = [(k, v[0], v[1]) for k, v in ingredients.items()]
+    assembly_machines = []
+    for k, l, v in sorted(ingredients1, key=itemgetter(1, 0)):
+        if k in recipes and "category" in recipes[k] and "energy" in recipes[k]:
+            assembly_machine = crafting_categories[recipes[k]["category"]]
+            number_of_assembly_machines = math.ceil(
+                recipes[k]["energy"] * v / assembly_machine[1]
+            )
+        else:
+            assembly_machine = ("", "")
+            number_of_assembly_machines = 0
+        # print(
+        #     "{} - {} = {}".format(k, assembly_machine[0], number_of_assembly_machines)
+        # )
+        assembly_machines.append((k, assembly_machine[0], number_of_assembly_machines))
 
-    print_crafting_categories()
+    print()
+    print(assembly_machines)
