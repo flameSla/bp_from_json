@@ -1,6 +1,7 @@
 from bp_from_json import blueprint
 from bp_from_json import get_recipes_with_one_product
 from bp_from_json import get_items
+from bp_from_json import get_entities
 from fractions import Fraction
 import math
 from operator import itemgetter
@@ -216,6 +217,8 @@ if __name__ == "__main__":
         "product": "space-science-pack",
     }
 
+    entities = get_entities()
+
     science = {
         # "automation-science-pack": 1,
         # "logistic-science-pack": 1,
@@ -260,3 +263,20 @@ if __name__ == "__main__":
     #     ],
     #     "product": "space-science-pack",
     # }
+
+    def print_crafting_categories():
+        print()
+        print('==================')
+        print('crafting_categories')
+        print()
+        a = {}
+        for e in entities:
+            # print(e["name"])
+            for b in e.get("crafting_categories", ""):
+                if b in a:
+                    a[b].append((e["name"], e["speed"]))
+                else:
+                    a[b] = [(e["name"], e["speed"])]
+        print(a)
+
+    print_crafting_categories()
