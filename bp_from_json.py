@@ -308,6 +308,19 @@ def print_id(s, a):
 
 
 #############################################
+def get_entities(name_of_the_json_file=None):
+    if name_of_the_json_file is None:
+        name_of_the_json_file = "Factorio 1.1 Vanilla.json"
+    # read json file
+    with open(name_of_the_json_file, "r", encoding="utf8") as read_file:
+        json_all = json.load(read_file)
+
+    # json -> list()
+    entities = list(json_all["entities"])
+    return entities
+
+
+#############################################
 def get_recipes_with_one_product(name_of_the_json_file=None):
     if name_of_the_json_file is None:
         name_of_the_json_file = "Factorio 1.1 Vanilla.json"
