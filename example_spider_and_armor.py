@@ -4,16 +4,9 @@ from bp_from_json import get_recipes_with_one_product
 from bp_from_json import get_items
 import math
 from fractions import Fraction
-from bp_functions import get_iningredients
+
 from bp_functions import add_machine
-from bp_functions import add_passive_provider
-from bp_functions import add_filter_inserter
 from bp_functions import add_inserter
-from bp_functions import new_connection
-from bp_functions import new_circuit_condition
-from bp_functions import get_stack_size
-from bp_functions import add_logistic_chest_requester
-from bp_functions import update_request_filters
 from bp_functions import add_entity
 
 
