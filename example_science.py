@@ -1,4 +1,5 @@
 from bp_from_json import blueprint
+from bp_from_json import entity
 from bp_from_json import get_recipes_with_one_product
 from bp_from_json import get_items
 from bp_from_json import get_entities
@@ -218,6 +219,7 @@ if __name__ == "__main__":
     }
 
     entities = get_entities()
+    items = get_items()
 
     science = {
         "automation-science-pack": 1,
@@ -298,3 +300,43 @@ if __name__ == "__main__":
 
     print()
     print(assembly_machines)
+
+    bp = blueprint.new_blueprint()
+    bp.set_label("bp")
+    x = y = 0
+    # recipe, entity,number_of_assembly_machines
+    for r, e, n in assembly_machines:
+        if e and n != 0:
+            count = x = 0
+            # add filter-inserter for see recipe
+            inserter = entity.new_entity("filter-inserter", x, y)
+            inserter.set("direction", 0)
+            if r:
+                i = recipes[r]["product"]
+                if i in items:
+                    inserter.set("filters", [{"index": 1, "name": i}])
+            bp.append_entity(inserter)
+            y += 2
+            for a in range(n):
+                assembly = entity.new_entity(e, x, y)
+                assembly.set("recipe", r)
+                bp.append_entity(assembly)
+                x += 3
+                count += 1
+                if False and count > 10:
+                    y += 1
+                    count = x = 0
+        y += 4
+
+    print()
+    print("==================")
+    print("bp:")
+    print()
+    print(bp.to_str())
+    print("==================")
+
+    filename = "bp-out-science-1.ignore"
+    print("==================================")
+    print("to file: {}".format(filename))
+    bp.to_file(filename)
+    print("==================================")
