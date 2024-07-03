@@ -205,6 +205,69 @@ def recursion_get_all_ingredients(ingredient, amount, final_ingredients, level):
     return res
 
 
+# ====================================
+def get_assembly_machines(final_ingredients, crafting_categories):
+    ingredients = dict_bp()
+    for item_name, amount in science.items():
+        if item_name in recipes:
+            ingredients[item_name] = [0, amount]
+            ingredients += get_all_ingredients(item_name, amount, final_ingredients)
+
+    print()
+    print_dict(ingredients, "/sec")
+
+    ingredients1 = [(k, v[0], v[1]) for k, v in ingredients.items()]
+    assembly_machines = []
+    for k, l, v in sorted(ingredients1, key=itemgetter(1, 0)):
+        if k in recipes and "category" in recipes[k] and "energy" in recipes[k]:
+            assembly_machine = crafting_categories[recipes[k]["category"]]
+            number_of_assembly_machines = math.ceil(
+                recipes[k]["energy"] * v / assembly_machine[1]
+            )
+        else:
+            assembly_machine = ("", "")
+            number_of_assembly_machines = 0
+        assembly_machines.append((k, assembly_machine[0], number_of_assembly_machines))
+
+    print()
+    for t in assembly_machines:
+        print(t)
+
+    return assembly_machines
+
+
+# ====================================
+def get_bp(assembly_machines):
+    bp = blueprint.new_blueprint()
+    bp.set_label("bp")
+    x = y = 0
+    # recipe, entity,number_of_assembly_machines
+    for r, e, n in assembly_machines:
+        if e and n != 0:
+            count = x = 0
+            # add filter-inserter for see recipe
+            inserter = entity.new_entity("filter-inserter", x, y)
+            inserter.set("direction", 0)
+            if r:
+                i = recipes[r]["product"]
+                if i in items:
+                    inserter.set("filters", [{"index": 1, "name": i}])
+            bp.append_entity(inserter)
+            y += size.get(e, 3)
+            for a in range(n):
+                assembly = entity.new_entity(e, x, y)
+                assembly.set("recipe", r)
+                bp.append_entity(assembly)
+                x += size.get(e, 3)
+                count += 1
+                if False and count > 10:
+                    y += 1
+                    count = x = 0
+        y += size.get(e, 3) + 1
+
+    return bp
+
+
 ######################################
 #
 # main
@@ -224,26 +287,17 @@ if __name__ == "__main__":
     science = {
         "automation-science-pack": 1,
         "logistic-science-pack": 1,
-        "military-science-pack": 1,
-        "chemical-science-pack": 1,
-        "production-science-pack": 1,
-        "utility-science-pack": 1,
-        "space-science-pack": 1,
+        # "military-science-pack": 1,
+        # "chemical-science-pack": 1,
+        # "production-science-pack": 1,
+        # "utility-science-pack": 1,
+        # "space-science-pack": 1,
     }
 
-    print(recipes["copper-plate"])
+    # print(recipes["copper-plate"])
 
     # final_ingredients = ('iron-plate', 'copper-plate', 'steel-plate', 'plastic-bar', 'stone-brick', 'lubricant')
     final_ingredients = ("iron-plate", "copper-plate", "stone-brick", "lubricant")
-    ingredients = dict_bp()
-    for item_name, amount in science.items():
-        if item_name in recipes:
-            ingredients[item_name] = [0, amount]
-            ingredients += get_all_ingredients(item_name, amount, final_ingredients)
-            # print_dict(ingredients)
-
-    print()
-    print_dict(ingredients, "/sec")
 
     # def print_crafting_categories():
     #     print()
@@ -261,8 +315,40 @@ if __name__ == "__main__":
     #     print(a)
     # print_crafting_categories()
 
+    # crafting_categories = {
+    #     "smelting": [
+    #         ("stone-furnace", 1),
+    #         ("steel-furnace", 2),
+    #         ("electric-furnace", 2),
+    #     ],
+    #     "crafting": [
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("character", 0.5),
+    #     ],
+    #     "basic-crafting": [
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #     ],
+    #     "advanced-crafting": [
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #     ],
+    #     "crafting-with-fluid": [
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #     ],
+    #     "oil-processing": [("oil-refinery", 1)],
+    #     "chemistry": [("chemical-plant", 1)],
+    #     "centrifuging": [("centrifuge", 1)],
+    #     "rocket-building": [("rocket-silo", 1)],
+    # }
+
     crafting_categories = {
-        "smelting": ("electric-furnace", 2),
+        "smelting": ("stone-furnace", 1),
         "crafting": ("assembling-machine-2", 0.75),
         "basic-crafting": ("assembling-machine-2", 0.75),
         "advanced-crafting": ("assembling-machine-2", 0.75),
@@ -273,60 +359,9 @@ if __name__ == "__main__":
         "rocket-building": ("rocket-silo", 1),
     }
 
-    # recipes[recipe["name"]] = {
-    #     "ingredients": recipe["ingredients"],
-    #     "product": recipe["products"][0]["name"],
-    #     "category": recipe["category"],
-    #     "energy": recipe["energy"],
-    # }
-
-    # temp = [(k, v[0], v[1]) for k, v in ingredients.items()]
-    # print("temp = ", type(temp), temp)
-    ingredients1 = [(k, v[0], v[1]) for k, v in ingredients.items()]
-    assembly_machines = []
-    for k, l, v in sorted(ingredients1, key=itemgetter(1, 0)):
-        if k in recipes and "category" in recipes[k] and "energy" in recipes[k]:
-            assembly_machine = crafting_categories[recipes[k]["category"]]
-            number_of_assembly_machines = math.ceil(
-                recipes[k]["energy"] * v / assembly_machine[1]
-            )
-        else:
-            assembly_machine = ("", "")
-            number_of_assembly_machines = 0
-        # print(
-        #     "{} - {} = {}".format(k, assembly_machine[0], number_of_assembly_machines)
-        # )
-        assembly_machines.append((k, assembly_machine[0], number_of_assembly_machines))
-
-    print()
-    print(assembly_machines)
-
-    bp = blueprint.new_blueprint()
-    bp.set_label("bp")
-    x = y = 0
-    # recipe, entity,number_of_assembly_machines
-    for r, e, n in assembly_machines:
-        if e and n != 0:
-            count = x = 0
-            # add filter-inserter for see recipe
-            inserter = entity.new_entity("filter-inserter", x, y)
-            inserter.set("direction", 0)
-            if r:
-                i = recipes[r]["product"]
-                if i in items:
-                    inserter.set("filters", [{"index": 1, "name": i}])
-            bp.append_entity(inserter)
-            y += 2
-            for a in range(n):
-                assembly = entity.new_entity(e, x, y)
-                assembly.set("recipe", r)
-                bp.append_entity(assembly)
-                x += 3
-                count += 1
-                if False and count > 10:
-                    y += 1
-                    count = x = 0
-        y += 4
+    size = {"rocket-silo": 9, "stone-furnace": 2, "steel-furnace": 2}
+    assembly_machines = get_assembly_machines(final_ingredients, crafting_categories)
+    bp = get_bp(assembly_machines)
 
     print()
     print("==================")
