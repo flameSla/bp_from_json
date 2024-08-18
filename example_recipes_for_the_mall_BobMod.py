@@ -1,6 +1,7 @@
 import math
 import json
 import sys
+import itertools
 from bp_from_json import blueprint
 from bp_from_json import dict_bp
 from bp_from_json import entity
@@ -553,6 +554,158 @@ recipes_for_mall = (
 )
 
 
+groups = (
+    "ammo",
+    "armor",
+    "bob-assembly-machine",
+    "bob-cargo-wagon",
+    "bob-chemical-machine",
+    "bob-electrolyser-machine",
+    "bob-electronic-components",
+    "bob-energy-accumulator",
+    "bob-energy-boiler",
+    "bob-energy-fluid-generator",
+    "bob-energy-heat-exchanger",
+    "bob-energy-oil-boiler",
+    "bob-energy-solar-panel",
+    "bob-energy-steam-engine",
+    "bob-fluid-wagon",
+    "bob-greenhouse",
+    "bob-intermediates",
+    "bob-locomotive",
+    "bob-logistic-roboport",
+    "bob-logistic-roboport-charge",
+    "bob-logistic-roboport-chest",
+    "bob-logistic-roboport-zone",
+    "bob-logistic-tier-0",
+    "bob-logistic-tier-1",
+    "bob-logistic-tier-2",
+    "bob-logistic-tier-3",
+    "bob-logistic-tier-4",
+    "bob-logistic-tier-5",
+    "bob-pump",
+    "bob-refinery-machine",
+    "bob-roboport-parts-antenna",
+    "bob-roboport-parts-charge",
+    "bob-roboport-parts-door",
+    "bob-smelting-machine",
+    "bob-storage-tank",
+    "bodies",
+    "body-parts",
+    "capsule",
+    "circuit-network",
+    "defensive-structure",
+    "energy",
+    "energy-pipe-distribution",
+    "equipment",
+    "extraction-machine",
+    "gun",
+    "intermediate-product",
+    "logistic-chests-2",
+    "logistic-chests-3",
+    "logistic-network",
+    "mech-parts",
+    "military-equipment",
+    "module-beacon",
+    "pipe",
+    "pipe-to-ground",
+    "production-machine",
+    "smelting-machine",
+    "space-related",
+    "storage",
+    "terrain",
+    "tool",
+    "train-transport",
+    "transport",
+    "vehicle-equipment",
+)
+
+
+groups2 = (
+    ("bob-electronic-components",),
+    (
+        "bob-roboport-parts-antenna",
+        "bob-roboport-parts-charge",
+        "bob-roboport-parts-door",
+        "bob-logistic-roboport",
+        "bob-logistic-roboport-zone",
+        "bob-logistic-roboport-charge",
+        "bob-logistic-roboport-chest",
+    ),
+    (
+        "storage",
+        "logistic-network",
+        "logistic-chests-2",
+        "logistic-chests-3",
+        "bob-storage-tank",
+    ),
+    (
+        "production-machine",
+        "bob-greenhouse",
+        "extraction-machine",
+        "smelting-machine",
+        "bob-smelting-machine",
+        "bob-assembly-machine",
+        "bob-electrolyser-machine",
+        "bob-chemical-machine",
+        "bob-refinery-machine",
+        "module-beacon",
+    ),
+    (
+        "pipe",
+        "pipe-to-ground",
+        "energy-pipe-distribution",
+        "bob-pump",
+    ),
+    (
+        "circuit-network",
+        "intermediate-product",
+        "bob-intermediates",
+        "terrain",
+        "tool",
+        "space-related",
+    ),
+    ("defensive-structure",),
+    (
+        "bodies",
+        "body-parts",
+        "armor",
+        "gun",
+        "ammo",
+        "capsule",
+        "equipment",
+        "military-equipment",
+    ),
+    (
+        "transport",
+        "train-transport",
+        "bob-locomotive",
+        "bob-cargo-wagon",
+        "bob-fluid-wagon",
+        "mech-parts",
+        "vehicle-equipment",
+    ),
+    (
+        "bob-logistic-tier-0",
+        "bob-logistic-tier-1",
+        "bob-logistic-tier-2",
+        "bob-logistic-tier-3",
+        "bob-logistic-tier-4",
+        "bob-logistic-tier-5",
+    ),
+    (
+        "energy",
+        "bob-energy-boiler",
+        "bob-energy-oil-boiler",
+        "bob-energy-heat-exchanger",
+        "bob-energy-steam-engine",
+        "bob-energy-solar-panel",
+        "bob-energy-accumulator",
+        "bob-energy-fluid-generator",
+    ),
+)
+
+
 # ====================================
 par_debugging = False
 
@@ -959,21 +1112,27 @@ if __name__ == "__main__":
     # sorting recipes by groups
     subgroups = tuple(r["subgroup"] for r in recipes.values())  # all subgroups
     recipes_for_mall2 = {}  # { subgroup: [ recipes ] }
-    for subgroup in subgroups:
+
+    print(sorted(groups))
+    for subgroup in sorted(groups):
         recipes_for_mall2[subgroup] = [
             r for r in recipes_for_mall if recipes[r]["subgroup"] == subgroup
         ]
 
     book = blueprint.new_blueprint_book()
     index = 0
-    for subgroup, recipes_sub in recipes_for_mall2.items():
-        if recipes_sub:
-            index += 1
-            bp = blueprint.new_blueprint()
-            get_bp(bp, recipes_sub)
-            bp.set_label_color(1, 0, 1)
-            bp.set_label(subgroup)
-            book.append_bp(bp, index)
+    for group in groups2:
+        recipes_sub = list(
+            itertools.chain.from_iterable(
+                [r for s, r in recipes_for_mall2.items() if s in group]
+            )
+        )
+        index += 1
+        bp = blueprint.new_blueprint()
+        get_bp(bp, recipes_sub)
+        bp.set_label_color(1, 0, 1)
+        bp.set_label(subgroup)
+        book.append_bp(bp, index)
 
     label = "mall"
     book.set_label(label)
