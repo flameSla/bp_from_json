@@ -576,6 +576,10 @@ def get_recipes():
     for a in (e for e in json_all["entities"] if "assembling-machine-6" in e["name"]):
         crafting_categories = a["crafting_categories"]
 
+    # for r in json_all["recipes"]:
+    #     print("r = ", type(r), r)
+    #     raise Exception("Stop")
+
     recipes = dict()
     names = []
     for recipe in (
@@ -589,6 +593,8 @@ def get_recipes():
                     ingredient["amount"], recipe["products"][0]["amount"]
                 )
             recipes[recipe["name"]] = {
+                "category": recipe["category"],
+                "subgroup": recipe["subgroup"],
                 "ingredients": recipe["ingredients"],
                 "product": recipe["products"][0]["name"],
             }
@@ -949,3 +955,35 @@ if __name__ == "__main__":
     # print(f"to file: {filename}")
     print(bp.to_str())
     print("==================================")
+
+    # sorting recipes by groups
+    subgroups = tuple(r["subgroup"] for r in recipes.values())  # all subgroups
+    recipes_for_mall2 = {}  # { subgroup: [ recipes ] }
+    for subgroup in subgroups:
+        recipes_for_mall2[subgroup] = [
+            r for r in recipes_for_mall if recipes[r]["subgroup"] == subgroup
+        ]
+
+    book = blueprint.new_blueprint_book()
+    index = 0
+    for subgroup, recipes_sub in recipes_for_mall2.items():
+        if recipes_sub:
+            index += 1
+            bp = blueprint.new_blueprint()
+            get_bp(bp, recipes_sub)
+            bp.set_label_color(1, 0, 1)
+            bp.set_label(subgroup)
+            book.append_bp(bp, index)
+
+    label = "mall"
+    book.set_label(label)
+    filename = "bp-out-BobMod.ignore"
+
+    print()
+    print(label)
+    print("==================================")
+    print(f"to file: {filename}")
+    book.to_file(filename)
+    print("==================================")
+
+    print("len(recipes_for_mall) = ", len(recipes_for_mall))
