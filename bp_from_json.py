@@ -188,13 +188,27 @@ class entity:
     def append_request_filters(self, filtr):
         if "request_filters" not in self.data:
             self.data["request_filters"] = list()
-        self.data["request_filters"].append(filtr)
+        if not isinstance(filtr, dict_bp):
+            self.data["request_filters"].append(filtr)
+        else:
+            self.data["request_filters"] = list()
+            for index, (name, count) in enumerate(filtr.items(), start=1):
+                self.data["request_filters"].append(
+                    {"index": index, "name": name, "count": count}
+                )
 
     # -------------------------------------
     #   get_
 
     def get_pos(self):
         return position(self.data["position"])
+
+    def get_request_filters(self):
+        result = dict_bp()
+        if "request_filters" in self.data:
+            for req in self.data["request_filters"]:
+                result[req["name"]] = req["count"]
+        return result
 
     # -------------------------------------
     #   set_
@@ -288,6 +302,10 @@ class entity:
 
     def read_recipe(self):
         return self.read("recipe")
+
+    def read_request_filters(self):
+        if "request_filters" in self.data:
+            return self.data["request_filters"]
 
     # -------------------------------------
     #   update
