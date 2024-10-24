@@ -272,7 +272,9 @@ def get_bp(assembly_machines):
 #
 # main
 if __name__ == "__main__":
-    recipes = get_recipes_with_one_product()
+    json_filename = "Factorio 2.0 Vanilla.json"
+
+    recipes = get_recipes_with_one_product(json_filename)
     recipes["space-science-pack"] = {
         "ingredients": [
             {"name": "rocket-part", "type": "item", "amount": Fraction(100, 1000)},
@@ -281,14 +283,14 @@ if __name__ == "__main__":
         "product": "space-science-pack",
     }
 
-    entities = get_entities()
-    items = get_items()
+    entities = get_entities(json_filename)
+    items = get_items(json_filename)
 
     science = {
         "automation-science-pack": 1,
         "logistic-science-pack": 1,
-        # "military-science-pack": 1,
-        # "chemical-science-pack": 1,
+        "military-science-pack": 1,
+        "chemical-science-pack": 1,
         # "production-science-pack": 1,
         # "utility-science-pack": 1,
         # "space-science-pack": 1,
@@ -301,8 +303,8 @@ if __name__ == "__main__":
 
     # def print_crafting_categories():
     #     print()
-    #     print('==================')
-    #     print('crafting_categories')
+    #     print("==================")
+    #     print("crafting_categories")
     #     print()
     #     a = {}
     #     for e in entities:
