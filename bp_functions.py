@@ -108,9 +108,14 @@ def new_circuit_condition(recipe, recipes, constant, comparator="<"):
 def get_stack_size(recipe, recipes, items):
     if recipe:
         if recipe in recipes:
-            return items[recipes[recipe]["product"]]
+            item_name = recipes[recipe]["product"]
         else:
-            return items[recipe]
+            item_name = recipe
+
+        if item_name in items:
+            return items[item_name]
+        else:
+            return 0
     else:
         return None
 
