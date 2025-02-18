@@ -4,6 +4,7 @@ from bp_from_json import blueprint
 import json
 import collections
 import re
+from bp_from_json import v1_1_110
 
 
 # ====================================
@@ -38,7 +39,7 @@ def add_bp_from_folder_parse(bp, folder):
             print(f"\tcreate blueprint '{new_bp.read_label()}'\tindex={index}")
             bp.append_bp(new_bp, index)
         elif file.is_dir():
-            book = blueprint.new_blueprint_book()
+            book = blueprint.new_blueprint_book(version=v1_1_110)
             index, book_name = get_index(file)
             json_name = folder / file / (file.name + ".json")
             json_data = json.load(
@@ -68,7 +69,7 @@ def add_bp_from_folder(folder):
                 print(f"\tcreate blueprint '{bp.read_label()}'\tindex={index}")
                 return bp
             elif file.is_dir():
-                book = blueprint.new_blueprint_book()
+                book = blueprint.new_blueprint_book(version=v1_1_110)
                 index, book_name = get_index(file)
                 json_name = folder / file / (file.name + ".json")
                 json_data = json.load(
