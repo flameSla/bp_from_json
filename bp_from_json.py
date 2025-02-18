@@ -7,6 +7,10 @@ import math
 import zlib
 from fractions import Fraction
 from pathlib import Path
+from enum import Enum
+
+v1_1_110 = 281479278886912
+v2_0_34 = 562949955649542
 
 
 #############################################
@@ -500,7 +504,7 @@ class blueprint:
             self.obj = None
 
     @classmethod
-    def new_blueprint(cls):
+    def new_blueprint(cls, version):
         bp_json = collections.OrderedDict()
         bp_json["blueprint"] = collections.OrderedDict()
         # bp_json['blueprint']['description'] = str()
@@ -512,12 +516,12 @@ class blueprint:
         bp_json["blueprint"]["item"] = "blueprint"
         # bp_json['blueprint']['label'] = str()
         # bp_json['blueprint']['label_color']
-        bp_json["blueprint"]["version"] = 281479275937792
+        bp_json["blueprint"]["version"] = version
 
         return cls(bp_json)
 
     @classmethod
-    def new_blueprint_book(cls):
+    def new_blueprint_book(cls, version):
         bp_json = collections.OrderedDict()
         bp_json["blueprint_book"] = collections.OrderedDict()
         # bp_json['blueprint_book']['description'] = str()
@@ -525,7 +529,7 @@ class blueprint:
         bp_json["blueprint_book"]["item"] = "blueprint-book"
         # bp_json["blueprint_book"]["label"] = "new book"
         # bp_json['blueprint_book']['label_color']
-        bp_json["blueprint_book"]["version"] = 281479275937792
+        bp_json["blueprint_book"]["version"] = version
 
         return cls(bp_json)
 
