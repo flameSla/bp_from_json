@@ -278,7 +278,13 @@ if __name__ == "__main__":
     entities = get_entities(json_filename)
     items = get_items(json_filename)
 
+    # print("recipes = ", type(recipes), recipes)
+    # for r in recipes.keys():
+    #     if "rocket" in r:
+    #         print(r)
+
     science = {
+        "rocket-part": 50.0 / 60.0,
         # "automation-science-pack": 1,
         # "logistic-science-pack": 1,
         # "military-science-pack": 1,
@@ -290,7 +296,7 @@ if __name__ == "__main__":
         # "electromagnetic-science-pack": 1,
         # "agricultural-science-pack": 1, -- косяк
         # "cryogenic-science-pack": 1, -- все на жидкостях??? или производство двух предметов
-        "promethium-science-pack": 1,
+        # "promethium-science-pack": 1,
     }
 
     # print(recipes["copper-plate"])
@@ -298,22 +304,22 @@ if __name__ == "__main__":
     # final_ingredients = ('iron-plate', 'copper-plate', 'steel-plate', 'plastic-bar', 'stone-brick', 'lubricant')
     final_ingredients = ("iron-plate", "copper-plate", "stone-brick", "lubricant")
 
-    def print_crafting_categories():
-        print()
-        print("==================")
-        print("crafting_categories")
-        print()
-        a = {}
-        for e in entities:
-            # print(e["name"])
-            for b in e.get("crafting_categories", ""):
-                if b in a:
-                    a[b].append((e["name"], e["speed"]))
-                else:
-                    a[b] = [(e["name"], e["speed"])]
-        print(a)
+    # def print_crafting_categories():
+    #     print()
+    #     print("==================")
+    #     print("crafting_categories")
+    #     print()
+    #     a = {}
+    #     for e in entities:
+    #         # print(e["name"])
+    #         for b in e.get("crafting_categories", ""):
+    #             if b in a:
+    #                 a[b].append((e["name"], e["speed"]))
+    #             else:
+    #                 a[b] = [(e["name"], e["speed"])]
+    #     print(a)
 
-    print_crafting_categories()
+    # print_crafting_categories()
 
     # crafting_categories = {
     #     "smelting": [
@@ -321,6 +327,56 @@ if __name__ == "__main__":
     #         ("steel-furnace", 2),
     #         ("electric-furnace", 2),
     #     ],
+    #     "metallurgy": [("foundry", 4)],
+    #     "pressing": [
+    #         ("foundry", 4),
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("character", 0.5),
+    #     ],
+    #     "crafting-with-fluid-or-metallurgy": [
+    #         ("foundry", 4),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #     ],
+    #     "metallurgy-or-assembling": [
+    #         ("foundry", 4),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #     ],
+    #     "parameters": [
+    #         ("foundry", 4),
+    #         ("biochamber", 2),
+    #         ("captive-biter-spawner", 1),
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("oil-refinery", 1),
+    #         ("chemical-plant", 1),
+    #         ("centrifuge", 1),
+    #         ("electromagnetic-plant", 2),
+    #         ("cryogenic-plant", 2),
+    #         ("rocket-silo", 1),
+    #         ("crusher", 1),
+    #     ],
+    #     "recycling": [("recycler", 0.5)],
+    #     "recycling-or-hand-crafting": [("recycler", 0.5), ("character", 0.5)],
+    #     "organic": [("biochamber", 2)],
+    #     "organic-or-hand-crafting": [
+    #         ("biochamber", 2),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("character", 0.5),
+    #     ],
+    #     "organic-or-assembling": [
+    #         ("biochamber", 2),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("character", 0.5),
+    #     ],
+    #     "organic-or-chemistry": [("biochamber", 2), ("chemical-plant", 1)],
+    #     "captive-spawner-process": [("captive-biter-spawner", 1)],
     #     "crafting": [
     #         ("assembling-machine-1", 0.5),
     #         ("assembling-machine-2", 0.75),
@@ -337,14 +393,40 @@ if __name__ == "__main__":
     #         ("assembling-machine-2", 0.75),
     #         ("assembling-machine-3", 1.25),
     #     ],
+    #     "electronics": [
+    #         ("assembling-machine-1", 0.5),
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("electromagnetic-plant", 2),
+    #         ("character", 0.5),
+    #     ],
     #     "crafting-with-fluid": [
     #         ("assembling-machine-2", 0.75),
     #         ("assembling-machine-3", 1.25),
     #     ],
+    #     "electronics-with-fluid": [
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("electromagnetic-plant", 2),
+    #     ],
+    #     "electronics-or-assembling": [
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("electromagnetic-plant", 2),
+    #     ],
+    #     "cryogenics-or-assembling": [
+    #         ("assembling-machine-2", 0.75),
+    #         ("assembling-machine-3", 1.25),
+    #         ("cryogenic-plant", 2),
+    #     ],
     #     "oil-processing": [("oil-refinery", 1)],
     #     "chemistry": [("chemical-plant", 1)],
+    #     "chemistry-or-cryogenics": [("chemical-plant", 1), ("cryogenic-plant", 2)],
     #     "centrifuging": [("centrifuge", 1)],
+    #     "electromagnetics": [("electromagnetic-plant", 2)],
+    #     "cryogenics": [("cryogenic-plant", 2)],
     #     "rocket-building": [("rocket-silo", 1)],
+    #     "crushing": [("crusher", 1)],
     # }
 
     crafting_categories = {
@@ -366,6 +448,7 @@ if __name__ == "__main__":
         "crafting-with-fluid-or-metallurgy": ("foundry", 4),
         "cryogenics": ("cryogenic-plant", 2),
         "captive-spawner-process": ("captive-biter-spawner", 1),
+        "organic-or-assembling": ("assembling-machine-2", 0.75),
     }
 
     size = {
