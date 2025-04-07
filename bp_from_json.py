@@ -699,7 +699,11 @@ class blueprint:
                     items += {"rail": 1}
                 else:
                     items += {entity.read_name(): 1}
-                items += entity.read_items()
+                entity_read_items = entity.read_items()
+                if isinstance(
+                    entity_read_items, dict
+                ):  # the format has changed in version 2
+                    items += entity_read_items
 
     def get_all_items(self):
         items = dict_bp()
