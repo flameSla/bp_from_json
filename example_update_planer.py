@@ -123,7 +123,9 @@ all_items_2 = [
     ],
     [
         [("stone-furnace", "entity")],
+        [("steel-furnace", "stone-furnace", "entity"), ("stone-furnace", "entity")],
         [("steel-furnace", "entity")],
+        [("stone-furnace", "steel-furnace", "entity"), ("steel-furnace", "entity")],
         [("electric-furnace", "entity")],
         [("foundry", "entity")],
         [("recycler", "entity")],
@@ -131,8 +133,23 @@ all_items_2 = [
         [("biochamber", "entity")],
         [("captive-biter-spawner", "entity")],
         [("assembling-machine-1", "entity")],
+        [
+            ("assembling-machine-1", "entity"),
+            ("assembling-machine-2", "assembling-machine-1", "entity"),
+            ("assembling-machine-3", "assembling-machine-1", "entity"),
+        ],
         [("assembling-machine-2", "entity")],
+        [
+            ("assembling-machine-1", "assembling-machine-2", "entity"),
+            ("assembling-machine-2", "entity"),
+            ("assembling-machine-3", "assembling-machine-2", "entity"),
+        ],
         [("assembling-machine-3", "entity")],
+        [
+            ("assembling-machine-1", "assembling-machine-3", "entity"),
+            ("assembling-machine-2", "assembling-machine-3", "entity"),
+            ("assembling-machine-3", "entity"),
+        ],
         [("oil-refinery", "entity")],
         [("chemical-plant", "entity")],
         [("centrifuge", "entity")],
@@ -145,17 +162,119 @@ all_items_2 = [
     [[("beacon", "entity")]],
     [
         [("speed-module", "item")],
+        [
+            ("speed-module", "item"),
+            ("speed-module-2", "speed-module", "item"),
+            ("speed-module-3", "speed-module", "item"),
+        ],
         [("speed-module-2", "item")],
+        [
+            ("speed-module", "speed-module-2", "item"),
+            ("speed-module-2", "item"),
+            ("speed-module-3", "speed-module-2", "item"),
+        ],
         [("speed-module-3", "item")],
+        [
+            ("speed-module", "speed-module-3", "item"),
+            ("speed-module-2", "speed-module-3", "item"),
+            ("speed-module-3", "item"),
+        ],
         [("efficiency-module", "item")],
+        [
+            ("efficiency-module", "item"),
+            ("efficiency-module-2", "efficiency-module", "item"),
+            ("efficiency-module-3", "efficiency-module", "item"),
+        ],
         [("efficiency-module-2", "item")],
+        [
+            ("efficiency-module", "efficiency-module-2", "item"),
+            ("efficiency-module-2", "item"),
+            ("efficiency-module-3", "efficiency-module-2", "item"),
+        ],
         [("efficiency-module-3", "item")],
+        [
+            ("efficiency-module", "efficiency-module-3", "item"),
+            ("efficiency-module-2", "efficiency-module-3", "item"),
+            ("efficiency-module-3", "item"),
+        ],
         [("quality-module", "item")],
+        [
+            ("quality-module", "item"),
+            ("quality-module-2", "quality-module", "item"),
+            ("quality-module-3", "quality-module", "item"),
+        ],
         [("quality-module-2", "item")],
+        [
+            ("quality-module", "quality-module-2", "item"),
+            ("quality-module-2", "item"),
+            ("quality-module-3", "quality-module-2", "item"),
+        ],
         [("quality-module-3", "item")],
+        [
+            ("quality-module", "quality-module-3", "item"),
+            ("quality-module-2", "quality-module-3", "item"),
+            ("quality-module-3", "item"),
+        ],
         [("productivity-module", "item")],
+        [
+            ("productivity-module", "item"),
+            ("productivity-module-2", "productivity-module", "item"),
+            ("productivity-module-3", "productivity-module", "item"),
+        ],
         [("productivity-module-2", "item")],
+        [
+            ("productivity-module", "productivity-module-2", "item"),
+            ("productivity-module-2", "item"),
+            ("productivity-module-3", "productivity-module-2", "item"),
+        ],
         [("productivity-module-3", "item")],
+        [
+            ("productivity-module", "productivity-module-3", "item"),
+            ("productivity-module-2", "productivity-module-3", "item"),
+            ("productivity-module-3", "item"),
+        ],
+        [
+            ("speed-module", "item"),
+            ("speed-module-2", "speed-module", "item"),
+            ("speed-module-3", "speed-module", "item"),
+            ("efficiency-module", "item"),
+            ("efficiency-module-2", "efficiency-module", "item"),
+            ("efficiency-module-3", "efficiency-module", "item"),
+            ("quality-module", "item"),
+            ("quality-module-2", "quality-module", "item"),
+            ("quality-module-3", "quality-module", "item"),
+            ("productivity-module", "item"),
+            ("productivity-module-2", "productivity-module", "item"),
+            ("productivity-module-3", "productivity-module", "item"),
+        ],
+        [
+            ("speed-module", "speed-module-2", "item"),
+            ("speed-module-2", "item"),
+            ("speed-module-3", "speed-module-2", "item"),
+            ("efficiency-module", "efficiency-module-2", "item"),
+            ("efficiency-module-2", "item"),
+            ("efficiency-module-3", "efficiency-module-2", "item"),
+            ("quality-module", "quality-module-2", "item"),
+            ("quality-module-2", "item"),
+            ("quality-module-3", "quality-module-2", "item"),
+            ("productivity-module", "productivity-module-2", "item"),
+            ("productivity-module-2", "item"),
+            ("productivity-module-3", "productivity-module-2", "item"),
+        ],
+        [
+            ("speed-module", "speed-module-3", "item"),
+            ("speed-module-2", "speed-module-3", "item"),
+            ("speed-module-3", "item"),
+            ("efficiency-module", "efficiency-module-3", "item"),
+            ("efficiency-module-2", "efficiency-module-3", "item"),
+            ("efficiency-module-3", "item"),
+            ("quality-module", "quality-module-3", "item"),
+            ("quality-module-2", "quality-module-3", "item"),
+            ("quality-module-3", "item"),
+            ("productivity-module", "productivity-module-3", "item"),
+            ("productivity-module-2", "productivity-module-3", "item"),
+            ("productivity-module-3", "item"),
+        ],
     ],
 ]
 
@@ -174,9 +293,120 @@ all_items_3 = [
     ],
 ]
 
-
 all_items_4 = [
     [
+        [("rocket-silo", "entity")],
+        [("crusher", "entity")],
+        [("cargo-landing-pad", "entity")],
+        [("thruster", "entity")],
+        [("cargo-bay", "entity")],
+        [("asteroid-collector", "entity")],
+        [
+            ("rocket-silo", "entity"),
+            ("crusher", "entity"),
+            ("cargo-landing-pad", "entity"),
+            ("thruster", "entity"),
+            ("cargo-bay", "entity"),
+            ("asteroid-collector", "entity"),
+        ],
+    ],
+]
+
+
+all_items_5 = [
+    [
+        [
+            ("burner-inserter", "entity"),
+            ("inserter", "entity"),
+            ("long-handed-inserter", "entity"),
+            ("fast-inserter", "entity"),
+            ("bulk-inserter", "entity"),
+            ("stack-inserter", "entity"),
+            ("pump", "entity"),
+            ("offshore-pump", "entity"),
+            ("pumpjack", "entity"),
+            ("stone-furnace", "entity"),
+            ("steel-furnace", "entity"),
+            ("electric-furnace", "entity"),
+            ("foundry", "entity"),
+            ("recycler", "entity"),
+            ("agricultural-tower", "entity"),
+            ("biochamber", "entity"),
+            ("captive-biter-spawner", "entity"),
+            ("assembling-machine-1", "entity"),
+            ("assembling-machine-2", "entity"),
+            ("assembling-machine-3", "entity"),
+            ("oil-refinery", "entity"),
+            ("chemical-plant", "entity"),
+            ("centrifuge", "entity"),
+            ("electromagnetic-plant", "entity"),
+            ("cryogenic-plant", "entity"),
+            ("lab", "entity"),
+            ("biolab", "entity"),
+            ("beacon", "entity"),
+            ("speed-module", "item"),
+            ("speed-module-2", "item"),
+            ("speed-module-3", "item"),
+            ("efficiency-module", "item"),
+            ("efficiency-module-2", "item"),
+            ("efficiency-module-3", "item"),
+            ("quality-module", "item"),
+            ("quality-module-2", "item"),
+            ("quality-module-3", "item"),
+            ("productivity-module", "item"),
+            ("productivity-module-2", "item"),
+            ("productivity-module-3", "item"),
+            ("radar", "entity"),
+            ("roboport", "entity"),
+        ],
+        [
+            ("wooden-chest", "entity"),
+            ("iron-chest", "entity"),
+            ("steel-chest", "entity"),
+            ("active-provider-chest", "entity"),
+            ("passive-provider-chest", "entity"),
+            ("storage-chest", "entity"),
+            ("buffer-chest", "entity"),
+            ("requester-chest", "entity"),
+        ],
+        [
+            ("burner-inserter", "entity"),
+            ("inserter", "entity"),
+            ("long-handed-inserter", "entity"),
+            ("fast-inserter", "entity"),
+            ("bulk-inserter", "entity"),
+            ("stack-inserter", "entity"),
+        ],
+        [
+            ("solar-panel", "entity"),
+            ("accumulator", "entity"),
+        ],
+        [
+            ("boiler", "entity"),
+            ("steam-engine", "entity"),
+            ("heating-tower", "entity"),
+            ("nuclear-reactor", "entity"),
+            ("heat-pipe", "entity"),
+            ("heat-exchanger", "entity"),
+            ("steam-turbine", "entity"),
+        ],
+        [
+            ("fusion-reactor", "entity"),
+            ("fusion-generator", "entity"),
+        ],
+        [
+            #
+            ("stone-wall", "entity"),
+            ("gate", "entity"),
+            ("land-mine", "entity"),
+            ("gun-turret", "entity"),
+            ("laser-turret", "entity"),
+            ("flamethrower-turret", "entity"),
+            ("artillery-turret", "entity"),
+            ("rocket-turret", "entity"),
+            ("tesla-turret", "entity"),
+            ("railgun-turret", "entity"),
+        ],
         [
             ("wooden-chest", "entity"),
             ("iron-chest", "entity"),
@@ -258,7 +488,7 @@ all_items_4 = [
             ("rocket-turret", "entity"),
             ("tesla-turret", "entity"),
             ("railgun-turret", "entity"),
-        ]
+        ],
     ]
 ]
 ######################################
@@ -329,9 +559,11 @@ if __name__ == "__main__":
     add_items(book, all_items_2)
     add_items(book, all_items_3)
     add_items(book, all_items_4, False)
+    add_items(book, all_items_5, False)
 
     print()
     print("==================")
     print("book")
     print()
     print(book.to_str())
+    print(book.to_file("out.txt"))
