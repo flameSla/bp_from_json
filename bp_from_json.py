@@ -12,6 +12,8 @@ from enum import Enum
 v1_1_110 = 281479278886912
 v2_0_34 = 562949955649542
 
+list_of_qualities = ("normal", "uncommon", "rare", "epic", "legendary")
+
 
 #############################################
 def input_def(text, default):
@@ -704,6 +706,13 @@ class blueprint:
                     entity_read_items, dict
                 ):  # the format has changed in version 2
                     items += entity_read_items
+                elif isinstance(
+                    entity_read_items, list
+                ):  # the format has changed in version 2
+                    for i in entity_read_items:
+                        item_name = i["id"]["name"]
+                        number_of_items = len(i["items"]["in_inventory"])
+                        items += {item_name: number_of_items}
 
     def get_all_items(self):
         items = dict_bp()
@@ -915,6 +924,9 @@ class blueprint:
 
     def set_label_color(self, r, g, b):
         self.obj["label_color"] = {"r": r, "g": g, "b": b}
+
+    def set_version(self, ver):
+        self.obj["version"] = ver
 
     # -------------------------------------
     #   to_
