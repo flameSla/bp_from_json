@@ -190,8 +190,10 @@ def add_arithmetic_combinator(bp: blueprint, x, y, direction=None) -> entity:
 
 
 # ====================================
-def add_medium_electric_pole(bp: blueprint, x, y, direction=None) -> entity:
-    medium_electric_pole = entity.new_entity("medium-electric-pole", x, y, direction)
+def add_medium_electric_pole(bp: blueprint, x, y, quality) -> entity:
+    medium_electric_pole = entity.new_entity("medium-electric-pole", x, y)
+    if quality != "normal":
+        medium_electric_pole.data["quality"] = quality
     bp.append_entity(medium_electric_pole)
     return medium_electric_pole
 
@@ -263,7 +265,9 @@ def get_segments(font: Tuple) -> Dict:
 
 
 # ====================================
-def add_display(bp: blueprint, segments: Dict, start_pos: complex):
+def add_display(
+    bp: blueprint, segments: Dict, start_pos: complex, quality: str, supply_area: int
+):
     def get_pos_from_index(index: int, width: int) -> complex:
         y = index // width
         x = index % width
@@ -407,13 +411,20 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
         ]
     )
 
-    pos_pole_west = start_pos - 1
-    pos_pole_east = start_pos + width
-    if (pos_pole_east - pos_pole_west).real > 7:
-        raise Exception("The distance between the poles is more than 7")
+    half_of_supply_area = (supply_area - 1) // 2
+    pos_pole_west = start_pos + complex(-1, -3 + half_of_supply_area)
+    pos_pole_east = start_pos + complex(width, -3 + half_of_supply_area)
+    if (pos_pole_east - pos_pole_west).real > supply_area:
+        raise Exception(
+            "The distance between the poles is more than {}".format(supply_area)
+        )
 
-    pole_west = add_medium_electric_pole(bp, pos_pole_west.real, pos_pole_west.imag)
-    pole_east = add_medium_electric_pole(bp, pos_pole_east.real, pos_pole_east.imag)
+    pole_west = add_medium_electric_pole(
+        bp, pos_pole_west.real, pos_pole_west.imag, quality
+    )
+    pole_east = add_medium_electric_pole(
+        bp, pos_pole_east.real, pos_pole_east.imag, quality
+    )
     bp.obj["wires"].append(
         [
             arithmetic_combinator_3.read_entity_number(),
@@ -439,16 +450,16 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
         ]
     )
 
-    def add_poles(start_pole: entity, height):
+    def add_poles(start_pole: entity, start_pos: complex, height):
         x, y = start_pole.get_pos().get_tuple()
-        end_y = y + height - 1
+        end_y = start_pos.imag + height - 1
 
-        additional_pole_is_needed = True
+        additional_pole_is_needed = (end_y - y) > half_of_supply_area
         while additional_pole_is_needed:
-            next_y = end_y if end_y - y <= 7 else y + 7
-            additional_pole_is_needed = False if end_y - y <= 7 else True
+            next_y = end_y if (end_y - y) <= supply_area else y + supply_area
+            additional_pole_is_needed = (end_y - next_y) > half_of_supply_area
 
-            new_pole = add_medium_electric_pole(bp, x, next_y)
+            new_pole = add_medium_electric_pole(bp, x, next_y, quality)
             bp.obj["wires"].append(
                 [
                     start_pole.read_entity_number(),
@@ -460,8 +471,8 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
             start_pole = new_pole
             y = next_y
 
-    add_poles(pole_east, height)
-    add_poles(pole_west, height)
+    add_poles(pole_east, start_pos, height)
+    add_poles(pole_west, start_pos, height)
 
     bp.obj["snap-to-grid"] = {"x": width + 1, "y": height + 3}
 
@@ -471,10 +482,19 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
 # main
 if __name__ == "__main__":
 
-    bp = blueprint.new_blueprint(v2_0_34)
+    supply_area_for_pole = {
+        "normal": 7,
+        "uncommon": 9,
+        "rare": 11,
+        "epic": 13,
+        "legendary": 17,
+    }
+    quality_for_pole = "normal"
 
+    bp = blueprint.new_blueprint(v2_0_34)
     segments = get_segments(font)
-    add_display(bp, segments, 0.5 + 0.5j)
+    supply_area = supply_area_for_pole[quality_for_pole]
+    add_display(bp, segments, 0.5 + 0.5j, quality_for_pole, supply_area)
     label = "display"
     bp.set_label_color(1, 0, 1)
     bp.set_label(label)
