@@ -454,13 +454,25 @@ def get_items(name_of_the_json_file=None):
     with open(name_of_the_json_file, "r", encoding="utf8") as f:
         json_all = json.load(f)
 
-    print(json_all.keys())
+    # print(json_all.keys())
     # json -> dist()
     items = dict_bp()
     for i in json_all["items"]:
         items[i["name"]] = float(i["stack"])  # items["wooden-chest"] = 50.0
 
     return items
+
+
+#############################################
+def get_version_dict(ver_num):
+    def next(ver):
+        return ver % 65536, int(ver / 65536)
+
+    d, ver_num = next(ver_num)
+    c, ver_num = next(ver_num)
+    b, ver_num = next(ver_num)
+    a, ver_num = next(ver_num)
+    return {"major": a, "minor ": b, "patch": c, "developer": d}
 
 
 #############################################
@@ -767,6 +779,7 @@ class blueprint:
 
     def summary_of_book(self):
         res = copy.deepcopy(self)
+        ver2 = get_version_dict(res.obj["version"])["major"] == 2
         if self.is_blueprint_book():
             if "blueprints" in res.obj:
                 del res.obj["blueprints"]
@@ -775,6 +788,13 @@ class blueprint:
                 del res.obj["entities"]
             if "tiles" in res.obj:
                 del res.obj["tiles"]
+            if ver2:
+                if "wires" in res.obj:
+                    del res.obj["wires"]
+                if "schedules" in res.obj:
+                    del res.obj["schedules"]
+                if "stock_connections" in res.obj:
+                    del res.obj["stock_connections"]
         elif self.is_upgrade_planner():
             if "settings" in res.obj:
                 del res.obj["settings"]
