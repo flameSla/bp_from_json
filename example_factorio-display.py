@@ -332,7 +332,11 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
                                 ]
                             )
                             break
-    bp.obj["wires"] = wires
+
+    if "wires" in bp.obj:
+        bp.obj["wires"].extend(wires)
+    else:
+        bp.obj["wires"] = wires
 
     pos = start_pos + 2 - 1j
     constant_combinator = add_constant_combinator(bp, pos.real, pos.imag)
@@ -426,6 +430,38 @@ def add_display(bp: blueprint, segments: Dict, start_pos: complex):
             Wire_circuit_red,
         ]
     )
+    bp.obj["wires"].append(
+        [
+            pole_east.read_entity_number(),
+            Wire_pole_copper,
+            pole_west.read_entity_number(),
+            Wire_pole_copper,
+        ]
+    )
+
+    def add_poles(start_pole: entity, height):
+        x, y = start_pole.get_pos().get_tuple()
+        end_y = y + height - 1
+
+        additional_pole_is_needed = True
+        while additional_pole_is_needed:
+            next_y = end_y if end_y - y <= 7 else y + 7
+            additional_pole_is_needed = False if end_y - y <= 7 else True
+
+            new_pole = add_medium_electric_pole(bp, x, next_y)
+            bp.obj["wires"].append(
+                [
+                    start_pole.read_entity_number(),
+                    Wire_pole_copper,
+                    new_pole.read_entity_number(),
+                    Wire_pole_copper,
+                ]
+            )
+            start_pole = new_pole
+            y = next_y
+
+    add_poles(pole_east, height)
+    add_poles(pole_west, height)
 
     bp.obj["snap-to-grid"] = {"x": width + 1, "y": height + 3}
 
