@@ -476,6 +476,11 @@ def get_version_dict(ver_num):
 
 
 #############################################
+def get_version_from_int(a, b, c, d):
+    return (a << 48) + (b << 32) + (c << 16) + d
+
+
+#############################################
 class dict_bp(dict):
     def __add__(self, other):
         temp = dict_bp(self)
