@@ -7,6 +7,7 @@ from bp_from_json import blueprint
 from bp_from_json import dict_bp
 from bp_from_json import entity
 from bp_from_json import get_items
+from bp_from_json import v2_0_34
 import sys
 import os
 import argparse
@@ -214,7 +215,7 @@ def filtered_trains(
 
 #############################################
 def get_bp(locomotives, cars, contents, station_name, type_of_Train):
-    bp = blueprint.new_blueprint()
+    bp = blueprint.new_blueprint(v2_0_34)
 
     train_number = 0
     train_car_position = add_train(bp, train_number, locomotives, cars, station_name)
