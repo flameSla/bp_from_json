@@ -2,11 +2,26 @@ from bp_from_json import blueprint
 from bp_from_json import v2_0_34
 from bp_from_json import list_of_qualities
 
+# создание чертежей апгрейдов
 
 # bp_text = """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"""
 
 upgrade_planner_text = """0eNqNjsEKwjAQRP9lzimI1ULyKyKy0LUE0k1Mt2op+XeTQ++edmZ3lnk71jRlGvmRAolwhtuxsKqXaWl6ppQ4V3nb8cxxbjvdEsOBRb1uMBCam180CncfCgHFQON/UYPXSqFdHTJlbr9eRv7Cncq9GeXaenB2B6fBu3L5KHDX4Wwv1tbR237oS/kBNRFH1A=="""
 
+all_items_0 = [
+    # книга внешняя
+    [
+        # книга для блока (block)
+        # каждый блок состоит из списков замены
+        # строка может быть двух видов
+        # if len(replace) == 2: name_from = name_to = replace[0]
+        ("wooden-chest", "entity"),  # wooden-chest -> wooden-chest
+        # if len(replace) == 3: name_from, name_to, item_type = replace
+        ("wooden-chest", "iron-chest", "entity"),  # wooden-chest -> iron-chest
+    ],
+]
+
+# каждый all_items это панель в меню выбора предметов
 all_items_1 = [
     [
         [("wooden-chest", "entity")],
@@ -612,8 +627,8 @@ all_items_5 = [
     ]
 ]
 ######################################
-# cl
 # main
+#
 if __name__ == "__main__":
     # get all items
     # bp = blueprint.from_string(bp_text)
@@ -624,6 +639,7 @@ if __name__ == "__main__":
     book = blueprint.new_blueprint_book(v2_0_34)
 
     def get_dict(name_from, name_to, item_type, quality, index):
+        # создать список замены для чертежа
         return {
             "from": {"type": item_type, "name": name_from},
             "to": {"type": item_type, "name": name_to, "quality": quality},
@@ -631,6 +647,7 @@ if __name__ == "__main__":
         }
 
     def new_upgrade_planner(list_of_replacements, quality):
+        # создать upgrade_planner, на входе список замен, из 2 или 3 элементов, см. all_items_0
         bp = blueprint.from_string(upgrade_planner_text)
         mappers = []
         label_from = set()
@@ -666,6 +683,8 @@ if __name__ == "__main__":
         book.append_bp(new_book)
 
     def add_items(book, all_items, create_a_new_book=True):
+        # добавить чертежи апгрейдов в книгу
+        # create_a_new_book -> для каждого блока создать свою книгу
         if create_a_new_book is True:
             new_book = blueprint.new_blueprint_book(v2_0_34)
         else:
