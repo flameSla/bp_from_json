@@ -3,3 +3,11 @@ __pycache__
 *.pyc
 *.todo
 *.ignore
+
+.git/
+.mypy_cache/
+.vscode/
+
+test.py
+test.json
+out.txt
