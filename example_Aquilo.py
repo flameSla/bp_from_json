@@ -21,6 +21,7 @@ def debug(*args):
         print(*args, file=sys.stderr, flush=True)
 
 
+# kw
 thermal_power = {
     "pumpjack": 50,
     "pipe-to-ground": 150,
@@ -29,7 +30,7 @@ thermal_power = {
     "medium-electric-pole": 0,
     "roboport": 300,
     "beacon": 400,
-    "heating-tower": 0,
+    "heating-tower": -40000,
     "bulk-inserter": 50,
     "cryogenic-plant": 100,
     "big-electric-pole": 0,
@@ -64,7 +65,7 @@ thermal_power = {
     "nuclear-reactor": 0,
     "express-splitter": 40,
     "infinity-chest": 0,
-    "heat-exchanger": 0,
+    "heat-exchanger": 10000,
     "steam-turbine": 50,
     "buffer-chest": 0,
 }
@@ -99,6 +100,7 @@ if __name__ == "__main__":
     print(all_items)
 
     total = 0
+    total_neg = 0
     for k, v in all_items.items():
         if k in thermal_power:
             print(
@@ -106,7 +108,11 @@ if __name__ == "__main__":
                     k, v, thermal_power[k], v * thermal_power[k]
                 )
             )
-            total += v * thermal_power[k]
+            if thermal_power[k] > 0:
+                total += v * thermal_power[k]
+            else:
+                total_neg += v * thermal_power[k]
         else:
-            print('"{}": ???,'.format(k))
-    print("total:", total)
+            print('******************* {}": ???,'.format(k))
+    print("total: {:+10.3f}kw".format(total / 1000))
+    print("total: {:+10.3f}kw".format(total_neg / 1000))
